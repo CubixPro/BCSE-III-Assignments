@@ -28,7 +28,6 @@ choice = input("Which CRC do you want to use? (4/24)")
 if choice == 24:
     crc2 = crc1
 
-rep = open(file_rep, "a")
 for i in range(1):
     f = open(file_in, "w")
     for i in range(blocks * block_size):
