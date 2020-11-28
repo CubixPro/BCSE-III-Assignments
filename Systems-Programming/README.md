@@ -1,4 +1,4 @@
-To run and compile the programs:
+To compile and run the programs:
 
 #1 Open dosbox and mount the 8086 directory.
 
