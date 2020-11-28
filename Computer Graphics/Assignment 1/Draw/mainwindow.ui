@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuStart">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menuChange_Grid_Size">
+     <property name="title">
+      <string>Change Pixel Size</string>
+     </property>
+     <addaction name="actionSmall"/>
+     <addaction name="actionMedium"/>
+     <addaction name="actionLarge"/>
+    </widget>
+    <widget class="QMenu" name="menuChange_Grid_Size_2">
+     <property name="title">
+      <string>Change Grid Size</string>
+     </property>
+     <addaction name="actionDefault"/>
+     <addaction name="actionLarge_2"/>
+    </widget>
+    <addaction name="actionCreate"/>
+    <addaction name="separator"/>
+    <addaction name="menuChange_Grid_Size"/>
+    <addaction name="actionShow_Axes"/>
+    <addaction name="menuChange_Grid_Size_2"/>
+   </widget>
+   <addaction name="menuStart"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionStart_New_Grid">
+   <property name="text">
+    <string>Start New Grid</string>
+   </property>
+  </action>
+  <action name="actionCreate">
+   <property name="text">
+    <string>Create New</string>
+   </property>
+  </action>
+  <action name="actionShow_Axes">
+   <property name="text">
+    <string>Show Axes</string>
+   </property>
+  </action>
+  <action name="actionSmall">
+   <property name="text">
+    <string>Small</string>
+   </property>
+  </action>
+  <action name="actionMedium">
+   <property name="text">
+    <string>Medium</string>
+   </property>
+  </action>
+  <action name="actionLarge">
+   <property name="text">
+    <string>Large</string>
+   </property>
+  </action>
+  <action name="actionDefault">
+   <property name="text">
+    <string>Default</string>
+   </property>
+  </action>
+  <action name="actionLarge_2">
+   <property name="text">
+    <string>Large</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
