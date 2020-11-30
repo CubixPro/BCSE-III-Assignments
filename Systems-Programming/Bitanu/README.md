@@ -11,3 +11,4 @@ To compile and run the programs:
     prog1.exe
     
 You can edit the .asm files by using: edit prog1.asm
+Add your own comments in the editor with ; if you want.
