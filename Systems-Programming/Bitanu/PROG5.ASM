@@ -1,7 +1,7 @@
 .model small
 .stack 100h
 .data
-x db "Hello Nibba!$"
+x db "Hello JU!$"
 ter db "Terminating...$"
 .code
 main proc
