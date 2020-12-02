@@ -103,6 +103,8 @@ void frame_widget::paintEvent(QPaintEvent *p)
     QPixmap pix(500, 500);
     QPainter paint(this);
     pix.fill(Qt::white);
+     paint.drawRect(0, 0, 500, 500);
+
     if(grid){
         for(int i = 0 ; i < min(maxwidth, width()) ; i+=size){
             paint.drawLine(i, 0, i, min(maxheight, height()));
