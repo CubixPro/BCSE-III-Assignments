@@ -26,8 +26,8 @@ void frame_widget::createGrid()
 void frame_widget::changeSize(int x)
 {
     size = x;
-    maxwidth = (500/size) * size + size;
-    maxheight = (500/size)*size + size;
+    maxwidth = (500/size) * size ;
+    maxheight = (500/size)*size;
     update();
 }
 
