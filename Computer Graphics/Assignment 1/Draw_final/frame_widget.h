@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QBrush>
+#include <QPair>
 class frame_widget : public QFrame
 {
     Q_OBJECT
@@ -21,9 +22,12 @@ private:
     int maxwidth;
     int maxheight;
     bool visibleAxes;
-    QList<QPoint> points;
+    QList <QPair<QPoint, QColor> > points;
+    QPoint point1;
+    QPoint point2;
     QPoint lastpoint;
-
+    QPoint convertPixel(QPoint p);
+    QColor currentcol;
 
 
 
@@ -40,7 +44,9 @@ public:
     void mouseMoveEvent(QMouseEvent *ev) override;
     void paintEvent(QPaintEvent *p) override;
     void mousePressEvent(QMouseEvent *ev) override;
-
+    QPoint setPoint1();
+    QPoint setPoint2();
+    void changeCurrentColour(QColor q);
 signals:
     void sendCoord(int x, int y);
 };

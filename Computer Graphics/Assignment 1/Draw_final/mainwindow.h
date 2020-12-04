@@ -63,11 +63,24 @@ public:
 
     void on_radioButton_clicked(bool checked);
 
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_radioButton_3_clicked();
+
+    void on_radioButton_4_clicked();
+
+    void on_radioButton_5_clicked();
+
 private:
     Ui::MainWindow *ui;
     //frame_widget *gridFrame;
 
 public slots:
     void showCoord(int x , int y );
+
+signals:
+    void changeColour(QColor p);
 };
 #endif // MAINWINDOW_H

@@ -1,4 +1,28 @@
 #include "frame_widget.h"
+QPoint frame_widget::convertPixel(QPoint p)
+{
+    QPoint pos = p;
+   int x = pos.x();
+   int y = pos.y();
+   if(x >= (width()/(2*size))*size  && x <= ((width()/(2*size))*size  + size)){
+        x = 0;
+   }
+   else if(x >= width()/2)
+    x = (x - (width()/(2*size))*size - size)/size + 1 ;
+   else{
+        x = -(((width()/(2*size))*size  - x)/size + 1) ;
+   }
+   if(y >= (height()/(2*size))*size && y <= ((height()/(2*size))*size + size)  )
+       y = 0;
+   else if(y >= height()/2)
+    y = -((y - (height()/(2*size))*size - size)/size + 1);
+   else{
+       y = ((height()/(2*size))*size - y)/size + 1;
+   }
+   QPoint pf(x, y);
+   return pf;
+}
+
 frame_widget::frame_widget(QWidget *parent):
     QFrame(parent)
 {
@@ -10,6 +34,7 @@ frame_widget::frame_widget(QWidget *parent):
     maxheight = 500;
     visibleAxes = false;
     this->setMouseTracking(true) ;
+    currentcol = QColor(Qt::red);
 
 }
 
@@ -27,7 +52,7 @@ void frame_widget::changeSize(int x)
 {
     size = x;
     maxwidth = (500/size) * size ;
-    maxheight = (500/size)*size;
+    maxheight = (500/size)*size ;
     update();
 }
 
@@ -103,8 +128,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
     QPixmap pix(500, 500);
     QPainter paint(this);
     pix.fill(Qt::white);
-     paint.drawRect(0, 0, 500, 500);
-
+    paint.drawRect(0, 0, min(maxheight, 500), min(maxwidth, 500));
     if(grid){
         for(int i = 0 ; i < min(maxwidth, width()) ; i+=size){
             paint.drawLine(i, 0, i, min(maxheight, height()));
@@ -125,10 +149,11 @@ void frame_widget::paintEvent(QPaintEvent *p)
         paint.drawRect(0, (height()/(2*size))*size,  min(maxwidth, width()), size);
     }
         if(modified){
-        foreach (QPoint p , points ){
-            paint.setBrush(Qt::cyan);
-            int x = p.x();
-            int y = p.y();
+            QPair<QPoint, QColor> p;
+        foreach (p   , points ){
+            paint.setBrush(p.second);
+            int x = p.first.x();
+            int y = p.first.y();
             QPoint newp((x/size)*size, (y/size)*size);
             paint.drawRect(newp.x(), newp.y(), size,  size);
         }
@@ -142,8 +167,29 @@ void frame_widget::mousePressEvent(QMouseEvent *event)
    lastpoint = event->pos();
    if(lastpoint.x() >= maxwidth || lastpoint.y() >= maxheight)
        return;
-   points.append(lastpoint);
+   //QColor colour(Qt::red);
+   points.append({lastpoint, currentcol});
    repaint();
+
+}
+
+QPoint frame_widget::setPoint1()
+{
+    point1 = lastpoint;
+    return convertPixel(point1);
+
+}
+
+QPoint frame_widget::setPoint2()
+{
+    point2 = lastpoint;
+    return convertPixel(point2);
+
+}
+
+void frame_widget::changeCurrentColour(QColor q)
+{
+    currentcol = q;
 
 }
 

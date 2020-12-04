@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent):
     setWindowTitle("Pixel Grid");
     //resize(520, 550);
     connect(ui->frame, &frame_widget::sendCoord, this, &MainWindow::showCoord);
+    connect(this, &MainWindow::changeColour, ui->frame, &frame_widget::changeCurrentColour);
 
   }
 
@@ -120,3 +121,32 @@ void MainWindow::on_actionCreate_New_triggered()
    ui->frame->createGrid();
 }
 
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QPoint p = ui->frame->setPoint1();
+   ui->label_1->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    QPoint p = ui->frame->setPoint2();
+
+ ui->label_2->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
+
+}
+
+void MainWindow::on_radioButton_3_clicked()
+{
+   emit changeColour(QColor(Qt::red)) ;
+}
+
+void MainWindow::on_radioButton_4_clicked()
+{
+   emit changeColour(QColor(Qt::green)) ;
+}
+
+void MainWindow::on_radioButton_5_clicked()
+{
+   emit changeColour(QColor(Qt::blue));
+}
