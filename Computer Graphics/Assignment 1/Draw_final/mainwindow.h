@@ -73,6 +73,8 @@ public:
 
     void on_radioButton_5_clicked();
 
+    void on_pushButton_3_clicked();
+
 private:
     Ui::MainWindow *ui;
     //frame_widget *gridFrame;
@@ -81,6 +83,7 @@ public slots:
     void showCoord(int x , int y );
 
 signals:
+    void drawLinePressed();
     void changeColour(QColor p);
 };
 #endif // MAINWINDOW_H

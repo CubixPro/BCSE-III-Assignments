@@ -1,4 +1,5 @@
 #include "frame_widget.h"
+#include <bits/stdc++.h>
 QPoint frame_widget::convertPixel(QPoint p)
 {
     QPoint pos = p;
@@ -23,6 +24,16 @@ QPoint frame_widget::convertPixel(QPoint p)
    return pf;
 }
 
+QPoint frame_widget::convertCoord(int x, int y)
+{
+   QPoint p((width()/(2 * size))*size, (height()/(2 * size))*size);
+   p.setX(p.x() + size*x);
+   p.setY(p.y() - size*y);
+   return p;
+
+
+}
+
 frame_widget::frame_widget(QWidget *parent):
     QFrame(parent)
 {
@@ -35,7 +46,7 @@ frame_widget::frame_widget(QWidget *parent):
     visibleAxes = false;
     this->setMouseTracking(true) ;
     currentcol = QColor(Qt::red);
-
+    line = false;
 }
 
 
@@ -43,7 +54,7 @@ frame_widget::frame_widget(QWidget *parent):
 
 void frame_widget::createGrid()
 {
-    grid = true;
+    //grid = true;
     points.clear();
     update();
 }
@@ -53,7 +64,8 @@ void frame_widget::changeSize(int x)
     size = x;
     maxwidth = (500/size) * size ;
     maxheight = (500/size)*size ;
-    update();
+    createGrid();
+    //update();
 }
 
 void frame_widget::showAxes()
@@ -129,7 +141,9 @@ void frame_widget::paintEvent(QPaintEvent *p)
     QPainter paint(this);
     pix.fill(Qt::white);
     paint.drawRect(0, 0, min(maxheight, 500), min(maxwidth, 500));
+
     if(grid){
+        paint.setPen(QPen(Qt::gray));
         for(int i = 0 ; i < min(maxwidth, width()) ; i+=size){
             paint.drawLine(i, 0, i, min(maxheight, height()));
         }
@@ -147,7 +161,35 @@ void frame_widget::paintEvent(QPaintEvent *p)
 
         paint.drawRect((width()/(2*size))*size, 0, size, min(maxheight, height()));
         paint.drawRect(0, (height()/(2*size))*size,  min(maxwidth, width()), size);
-    }
+    }if(line){
+            paint.setBrush(QBrush(currentcol));
+            double x = point1.x();
+            double y = point1.y();
+            double dx = (point2.x() - point1.x());
+            double dy = (point2.y() - point1.y());
+            double steps;
+            if(abs(dx) > abs(dy)){
+                steps = abs(dx);
+            }
+            else{
+                steps = abs(dy);
+            }
+            double inc_x = dx/(float)steps;
+            double inc_y = dy/(float)steps;
+            for(int i = 0 ; i < steps ; i++){
+
+                x = x + (inc_x);
+                y = y + (inc_y);
+                QPoint p0 = convertCoord(round(x), round(y));
+                if(QPoint(round(x), round(y)) == point2){
+                    continue;
+                }
+                points.append({p0, currentcol});
+                modified = true;
+                //paint.drawRect(p0.x(), p0.y(), size, size);
+            }
+            line = false;
+        }
         if(modified){
             QPair<QPoint, QColor> p;
         foreach (p   , points ){
@@ -159,6 +201,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
         }
 
     }
+
 
 }
 void frame_widget::mousePressEvent(QMouseEvent *event)
@@ -175,21 +218,28 @@ void frame_widget::mousePressEvent(QMouseEvent *event)
 
 QPoint frame_widget::setPoint1()
 {
-    point1 = lastpoint;
-    return convertPixel(point1);
+    point1 = convertPixel(lastpoint);
+    return (point1);
 
 }
 
 QPoint frame_widget::setPoint2()
 {
-    point2 = lastpoint;
-    return convertPixel(point2);
+    point2 = convertPixel(lastpoint);
+    return point2;
 
 }
 
 void frame_widget::changeCurrentColour(QColor q)
 {
     currentcol = q;
+
+}
+
+void frame_widget::drawLine()
+{
+    line = true;
+    update();
 
 }
 

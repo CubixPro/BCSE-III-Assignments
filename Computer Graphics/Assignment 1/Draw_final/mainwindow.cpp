@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent):
     //resize(520, 550);
     connect(ui->frame, &frame_widget::sendCoord, this, &MainWindow::showCoord);
     connect(this, &MainWindow::changeColour, ui->frame, &frame_widget::changeCurrentColour);
+    connect(this, &MainWindow::drawLinePressed, ui->frame, &frame_widget::drawLine);
 
   }
 
@@ -92,6 +93,8 @@ void MainWindow::showCoord(int x, int y)
 
 void MainWindow::on_spinBox_valueChanged(int arg1)
 {
+    ui->label_1->setText(QString("Point 1"));
+    ui->label_2->setText(QString("Point 2"));
    ui->frame->changeSize(arg1);
 }
 
@@ -149,4 +152,9 @@ void MainWindow::on_radioButton_4_clicked()
 void MainWindow::on_radioButton_5_clicked()
 {
    emit changeColour(QColor(Qt::blue));
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+   emit drawLinePressed();
 }

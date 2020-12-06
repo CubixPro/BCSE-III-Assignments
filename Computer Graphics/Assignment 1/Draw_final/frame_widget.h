@@ -22,12 +22,15 @@ private:
     int maxwidth;
     int maxheight;
     bool visibleAxes;
+    bool line;
     QList <QPair<QPoint, QColor> > points;
     QPoint point1;
     QPoint point2;
     QPoint lastpoint;
     QPoint convertPixel(QPoint p);
     QColor currentcol;
+    QPoint convertCoord(int x, int y);
+
 
 
 
@@ -47,6 +50,7 @@ public:
     QPoint setPoint1();
     QPoint setPoint2();
     void changeCurrentColour(QColor q);
+    void drawLine();
 signals:
     void sendCoord(int x, int y);
 };
