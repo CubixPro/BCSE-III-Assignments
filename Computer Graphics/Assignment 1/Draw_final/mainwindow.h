@@ -75,6 +75,10 @@ public:
 
     void on_pushButton_3_clicked();
 
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_4_clicked();
+
 private:
     Ui::MainWindow *ui;
     //frame_widget *gridFrame;
@@ -84,6 +88,7 @@ public slots:
 
 signals:
     void drawLinePressed();
+    void drawLineBA();
     void changeColour(QColor p);
 };
 #endif // MAINWINDOW_H

@@ -16,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent):
     //resize(520, 550);
     connect(ui->frame, &frame_widget::sendCoord, this, &MainWindow::showCoord);
     connect(this, &MainWindow::changeColour, ui->frame, &frame_widget::changeCurrentColour);
-    connect(this, &MainWindow::drawLinePressed, ui->frame, &frame_widget::drawLine);
+    connect(this, &MainWindow::drawLinePressed, ui->frame, &frame_widget::drawLineDDA);
+    connect(this, &MainWindow::drawLineBA, ui->frame, &frame_widget::drawLineBA);
 
   }
 
@@ -157,4 +158,14 @@ void MainWindow::on_radioButton_5_clicked()
 void MainWindow::on_pushButton_3_clicked()
 {
    emit drawLinePressed();
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+   ui->frame->createGrid();
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+   emit drawLineBA();
 }

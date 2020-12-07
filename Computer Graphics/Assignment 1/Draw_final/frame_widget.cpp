@@ -1,5 +1,7 @@
 #include "frame_widget.h"
 #include <bits/stdc++.h>
+#include "time.h"
+#include <chrono>
 QPoint frame_widget::convertPixel(QPoint p)
 {
     QPoint pos = p;
@@ -46,7 +48,8 @@ frame_widget::frame_widget(QWidget *parent):
     visibleAxes = false;
     this->setMouseTracking(true) ;
     currentcol = QColor(Qt::red);
-    line = false;
+    line_DDA = false;
+    line_BA = false;
 }
 
 
@@ -155,43 +158,122 @@ void frame_widget::paintEvent(QPaintEvent *p)
         paint.drawLine( 0, min(maxheight, height()) - 1,min(maxwidth, width()), min(maxheight, height())- 1);
 
     }
-        if(visibleAxes){
+    if(visibleAxes){
         QBrush qBrush(Qt::white);
         paint.setBrush(qBrush);
 
         paint.drawRect((width()/(2*size))*size, 0, size, min(maxheight, height()));
         paint.drawRect(0, (height()/(2*size))*size,  min(maxwidth, width()), size);
-    }if(line){
-            paint.setBrush(QBrush(currentcol));
-            double x = point1.x();
-            double y = point1.y();
-            double dx = (point2.x() - point1.x());
-            double dy = (point2.y() - point1.y());
-            double steps;
-            if(abs(dx) > abs(dy)){
-                steps = abs(dx);
-            }
-            else{
-                steps = abs(dy);
-            }
-            double inc_x = dx/(float)steps;
-            double inc_y = dy/(float)steps;
-            for(int i = 0 ; i < steps ; i++){
+    }if(line_DDA){
+        paint.setBrush(QBrush(currentcol));
+        auto time1 = std::chrono::high_resolution_clock::now();
+        //DDA ALGORITHM FOR LINE DRAWING
+        double x = point1.x();
+        double y = point1.y();
+        double dx = (point2.x() - point1.x());
+        double dy = (point2.y() - point1.y());
+        double steps;
+        if(abs(dx) > abs(dy)){
+            steps = abs(dx);
+        }
+        else{
+            steps = abs(dy);
+        }
+        double inc_x = dx/(float)steps;
+        double inc_y = dy/(float)steps;
+        for(int i = 0 ; i < steps ; i++){
 
-                x = x + (inc_x);
-                y = y + (inc_y);
-                QPoint p0 = convertCoord(round(x), round(y));
-                if(QPoint(round(x), round(y)) == point2){
-                    continue;
+            x = x + (inc_x);
+            y = y + (inc_y);
+            QPoint p0 = convertCoord(round(x), round(y));
+            if(QPoint(round(x), round(y)) == point2){
+                continue;
+            }
+            points.append({p0, currentcol});
+            modified = true;
+            //paint.drawRect(p0.x(), p0.y(), size, size);
+        }
+        line_DDA = false;
+        auto time2 = std::chrono::high_resolution_clock::now();
+        std::cout << (time2 - time1).count() << '\n';
+    }
+    if(line_BA){
+
+        //Breshenham Algorithm for LINE DRAWING
+        /*if(point1.x() > point2.x()){
+                QPoint temp = point2;
+                point2 = point1;
+                point1 = temp;
+            }
+            int x = point1.x();
+            int y = point1.y();
+            int dx = (point2.x() - point1.x());
+            int dy = (point2.y() - point1.y());
+            int parameter = 2 * dy - dx;
+            for (;x < point2.x() ; x++ ) {
+                QPoint p0;
+                if(parameter < 0){
+                     p0 = convertCoord(x , y);
+                     parameter = parameter + 2 * dy;
+               }
+                else{
+                    p0 = convertCoord(x , y );
+                    y = y + 1;
+                    parameter = parameter  + 2 * dy - 2 * dx;
                 }
                 points.append({p0, currentcol});
                 modified = true;
-                //paint.drawRect(p0.x(), p0.y(), size, size);
+
             }
-            line = false;
+           */
+
+        int x, y, dx, dy, s1, s2, e, flag, i;
+        auto time1 = std::chrono::high_resolution_clock::now();
+        i = 1;
+        x = point1.x();
+        y = point1.y();
+        dx = point2.x() - point1.x();
+        dy = point2.y() - point1.y();
+        s1 = dx > 0 ? 1 : -1;
+        s2 = dy > 0 ? 1 : -1;
+        dx *= s1;
+        dy *= s2;
+
+        e = (dy << 1) - dx;
+        if(dy > dx){
+            int temp = dx;
+            dx = dy;
+            dy = temp;
+            flag = 1;
         }
-        if(modified){
-            QPair<QPoint, QColor> p;
+        else{
+            flag = 0;
+        }
+
+        while(i <= dx){
+            points.append({convertCoord(x, y), currentcol});
+            if(e >= 0){
+                if(flag)
+                    x += s1;
+                else
+                    y+=s2;
+                e-=(dx<<1);
+            }
+            if(flag)
+                y+=s2;
+            else
+                x+=s1;
+            e+=(dy<<1);
+            ++i;
+        }
+
+        modified = true;
+        line_BA = false;
+        auto time2 = std::chrono::high_resolution_clock::now();
+        std::cout << (time2 - time1).count() << '\n';
+    }
+    if(modified){
+        QPair<QPoint, QColor> p;
         foreach (p   , points ){
             paint.setBrush(p.second);
             int x = p.first.x();
@@ -236,11 +318,15 @@ void frame_widget::changeCurrentColour(QColor q)
 
 }
 
-void frame_widget::drawLine()
+void frame_widget::drawLineDDA()
 {
-    line = true;
+    line_DDA = true;
     update();
 
+}
+void frame_widget::drawLineBA(){
+    line_BA = true;
+    update();
 }
 
 

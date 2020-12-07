@@ -22,7 +22,8 @@ private:
     int maxwidth;
     int maxheight;
     bool visibleAxes;
-    bool line;
+    bool line_DDA;
+    bool line_BA;
     QList <QPair<QPoint, QColor> > points;
     QPoint point1;
     QPoint point2;
@@ -50,7 +51,8 @@ public:
     QPoint setPoint1();
     QPoint setPoint2();
     void changeCurrentColour(QColor q);
-    void drawLine();
+    void drawLineDDA();
+    void drawLineBA();
 signals:
     void sendCoord(int x, int y);
 };
