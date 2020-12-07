@@ -227,7 +227,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
             }
            */
 
-        int x, y, dx, dy, s1, s2, e, flag, i;
+        /*int x, y, dx, dy, s1, s2, e, flag, i;
         auto time1 = std::chrono::high_resolution_clock::now();
         i = 1;
         x = point1.x();
@@ -265,7 +265,63 @@ void frame_widget::paintEvent(QPaintEvent *p)
                 x+=s1;
             e+=(dy<<1);
             ++i;
-        }
+        }*/
+        auto time1 = std::chrono::high_resolution_clock::now();
+        QPoint p1 = point1;
+        QPoint p2 = point2;
+        int k = size;
+        int x1=p1.x();
+            int y1=p1.y();
+
+            int x2=p2.x();
+            int y2=p2.y();
+
+            int dx=x2-x1;
+            int dy=y2-y1;
+
+
+
+            int xinc=(dx>0)?1:-1;
+            int yinc=(dy>0)?1:-1;
+
+            dx=abs(dx);
+            dy=abs(dy);
+
+            //Case for gentle slope
+            if(dx>dy)
+            {
+                int p=2*(dy)-dx;
+                int y=y1;
+
+                for(int x=x1; x!=x2; x+=xinc)
+                {
+                    points.append({convertCoord(x,y), currentcol});
+                    if(p>=0)
+                    {
+                        y+=yinc;
+                        p-=2*dx;
+                    }
+                    p+=2*dy;
+                }
+            }
+            //Case for steep slope
+            else
+            {
+                int p=2*(dx)-dy;
+                int x=x1;
+
+                for(int y=y1; y!=y2; y+=yinc)
+                {
+                    points.append({convertCoord(x,y), currentcol});
+                    if(p>=0)
+                    {
+                        x+=xinc;
+                        p-=2*(dy);
+                    }
+                    p+=2*(dx);
+                }
+            }
+
 
         modified = true;
         line_BA = false;
