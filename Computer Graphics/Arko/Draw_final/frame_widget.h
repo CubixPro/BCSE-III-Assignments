@@ -64,6 +64,7 @@ public:
 signals:
     void sendCoord(int x, int y);
     void sendPress(int x, int y);
+    void sendColorLebel(int a, int b, int c);
 };
 
 #endif // FRAME_WIDGET_H

@@ -427,6 +427,7 @@ void frame_widget::changeCurrentColour(int a, char c)
         BColor = a;
     }
     currentcol = q;
+    emit sendColorLebel(RColor, GColor, BColor);
 }
 
 void frame_widget::drawLineDDA()

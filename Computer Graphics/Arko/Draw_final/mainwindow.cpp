@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent):
     setWindowTitle("Pixel Grid");
     connect(ui->frame, &frame_widget::sendCoord, this, &MainWindow::showCoord);
     connect(ui->frame, &frame_widget::sendPress, this, &MainWindow::showPress);
+    connect(ui->frame, &frame_widget::sendColorLebel, this, &MainWindow::showColorLebel);
     connect(this, &MainWindow::changeColour, ui->frame, &frame_widget::changeCurrentColour);
     connect(this, &MainWindow::drawLineDDA, ui->frame, &frame_widget::drawLineDDA);
     connect(this, &MainWindow::drawLineBA, ui->frame, &frame_widget::drawLineBA);
@@ -66,6 +67,11 @@ void MainWindow::showPress(int x, int y)
 {
     ui->press->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
     ui->center->setText("Center-> (" + QString::number(x) + ", " + QString::number(y) + ")");
+}
+
+void MainWindow::showColorLebel(int a, int b, int c)
+{
+    ui->color->setText("(" + QString::number(a) + "," + QString::number(b) + "," + QString::number(c) + ")");
 }
 
 void MainWindow::on_spinBox_valueChanged(int arg1)

@@ -58,6 +58,7 @@ private:
 public slots:
     void showCoord(int x , int y );
     void showPress(int x, int y);
+    void showColorLebel(int a, int b, int c);
 
 signals:
     void drawLineDDA();
