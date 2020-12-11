@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent):
     connect(this, &MainWindow::drawLineDDA, ui->frame, &frame_widget::drawLineDDA);
     connect(this, &MainWindow::drawLineBA, ui->frame, &frame_widget::drawLineBA);
     connect(this, &MainWindow::drawCircle, ui->frame, &frame_widget::drawCircle);
+    connect(this, &MainWindow::drawEllipse, ui->frame, &frame_widget::drawEllipse);
 }
 
 MainWindow::~MainWindow()
@@ -67,6 +68,7 @@ void MainWindow::showPress(int x, int y)
 {
     ui->press->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
     ui->center->setText("Center-> (" + QString::number(x) + ", " + QString::number(y) + ")");
+    ui->center_2->setText("Center of Ellipse-> (" + QString::number(x) + ", " + QString::number(y) + ")");
 }
 
 void MainWindow::showColorLebel(int a, int b, int c)
@@ -118,16 +120,6 @@ void MainWindow::on_pushButton_clicked()
     ui->label_2->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
 }
 
-/*void MainWindow::on_radioButton_3_clicked()
-{
-   emit changeColour(QColor(Qt::red)) ;
-}
-
-void MainWindow::on_radioButton_4_clicked()
-{
-   emit changeColour(QColor(Qt::green)) ;
-}*/
-
 void MainWindow::on_pushButton_3_clicked()
 {
    emit drawLineDDA();
@@ -163,4 +155,11 @@ void MainWindow::on_gSlider_valueChanged(int pos)
 void MainWindow::on_bSlider_valueChanged(int pos)
 {
     emit changeColour(pos, 'B');
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    int r1 = ui->major->value();
+    int r2 = ui->minor->value();
+    emit drawEllipse(r1, r2);
 }

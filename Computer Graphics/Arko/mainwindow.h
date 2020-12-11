@@ -42,8 +42,6 @@ private slots:
     void on_actionCreate_New_triggered();
     void on_pushButton_2_clicked();
     void on_pushButton_clicked();
-    //void on_radioButton_3_clicked();
-    //void on_radioButton_4_clicked();
     void on_pushButton_3_clicked();
     void on_pushButton_5_clicked();
     void on_pushButton_4_clicked();
@@ -51,6 +49,7 @@ private slots:
     void on_rSlider_valueChanged(int position);
     void on_gSlider_valueChanged(int position);
     void on_bSlider_valueChanged(int position);
+    void on_pushButton_7_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -64,6 +63,7 @@ signals:
     void drawLineDDA();
     void drawLineBA();
     void drawCircle(int x, int y);
+    void drawEllipse(int r1, int r2);
     void changeColour(int a, char c);
 };
 #endif // MAINWINDOW_H

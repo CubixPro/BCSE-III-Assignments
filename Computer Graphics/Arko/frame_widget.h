@@ -24,12 +24,15 @@ private:
     int maxwidth;
     int maxheight;
     int radius;
+    int major;
+    int minor;
     bool visibleAxes;
     bool line_DDA;
     bool line_BA;
     bool circle_MP;
     bool circle_BA;
     bool circle_P;
+    bool ellipse_BA;
     QList <QPair<QPoint, QColor> > points;
     QPoint point1;
     QPoint point2;
@@ -60,6 +63,7 @@ public:
     void drawLineDDA();
     void drawLineBA();
     void drawCircle(int x, int y);
+    void drawEllipse(int r1, int r2);
 
 signals:
     void sendCoord(int x, int y);
