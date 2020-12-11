@@ -36,10 +36,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>270</y>
-      <width>189</width>
-      <height>19</height>
+      <x>570</x>
+      <y>300</y>
+      <width>201</width>
+      <height>21</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -62,10 +62,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>290</y>
-      <width>191</width>
-      <height>115</height>
+      <x>570</x>
+      <y>324</y>
+      <width>201</width>
+      <height>81</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -121,8 +121,8 @@
      <rect>
       <x>570</x>
       <y>0</y>
-      <width>191</width>
-      <height>111</height>
+      <width>181</width>
+      <height>71</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -185,14 +185,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_3">
        <property name="text">
-        <string>Draw Line Using DDA</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_4">
-       <property name="text">
-        <string>Draw Line Using BA</string>
+        <string>Draw Line</string>
        </property>
       </widget>
      </item>
@@ -201,7 +194,7 @@
    <widget class="QPushButton" name="pushButton_5">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>630</x>
       <y>530</y>
       <width>80</width>
       <height>25</height>
@@ -214,10 +207,10 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>250</y>
-      <width>191</width>
-      <height>20</height>
+      <x>570</x>
+      <y>275</y>
+      <width>201</width>
+      <height>21</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -240,8 +233,8 @@
    <widget class="QComboBox" name="comboBox">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>120</y>
+      <x>570</x>
+      <y>80</y>
       <width>191</width>
       <height>21</height>
      </rect>
@@ -288,7 +281,7 @@
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>180</y>
+      <y>140</y>
       <width>201</width>
       <height>21</height>
      </rect>
@@ -301,7 +294,7 @@
     <property name="geometry">
      <rect>
       <x>560</x>
-      <y>150</y>
+      <y>110</y>
       <width>121</width>
       <height>24</height>
      </rect>
@@ -330,7 +323,7 @@
     <property name="geometry">
      <rect>
       <x>690</x>
-      <y>152</y>
+      <y>110</y>
       <width>91</width>
       <height>20</height>
      </rect>
@@ -351,7 +344,7 @@
    <widget class="QSlider" name="rSlider">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>620</x>
       <y>430</y>
       <width>121</width>
       <height>21</height>
@@ -389,7 +382,7 @@
    <widget class="QSlider" name="gSlider">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>620</x>
       <y>460</y>
       <width>121</width>
       <height>21</height>
@@ -408,7 +401,7 @@
    <widget class="QSlider" name="bSlider">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>620</x>
       <y>490</y>
       <width>121</width>
       <height>21</height>
@@ -427,7 +420,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>570</x>
       <y>430</y>
       <width>20</width>
       <height>20</height>
@@ -443,7 +436,7 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>570</x>
       <y>460</y>
       <width>20</width>
       <height>20</height>
@@ -459,7 +452,7 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>570</x>
       <y>490</y>
       <width>20</width>
       <height>20</height>
@@ -483,6 +476,99 @@
     </property>
     <property name="text">
      <string>rbg(255,0,0)</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>180</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Major-R</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="major">
+       <property name="value">
+        <number>15</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_5">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>180</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
+     <item>
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Minor-R</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="minor">
+       <property name="value">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_6">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>210</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_10">
+     <item>
+      <widget class="QLabel" name="center_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>240</y>
+      <width>201</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Draw Ellipse</string>
     </property>
    </widget>
   </widget>

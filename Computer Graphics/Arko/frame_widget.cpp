@@ -49,6 +49,7 @@ frame_widget::frame_widget(QWidget *parent):
     line_BA = false;
     circle_MP = false;
     circle_BA = false;
+    ellipse_BA = false;
     RColor = 255;
     GColor = 0;
     BColor = 0;
@@ -376,6 +377,88 @@ void frame_widget::paintEvent(QPaintEvent *p)
         out << "Bresenham's Midpoint : " << time/1000 << "microsecs\n";
     }
 
+    if(ellipse_BA) {
+
+        QElapsedTimer timer;
+        timer.start();
+        QPoint p = convertPixel(lastpoint);
+        int x_center = p.x();
+        int y_center = p.y();
+
+        float dx, dy, d1, d2, x, y;
+        x = 0;
+        y = minor;
+
+        // Initial decision parameter of region 1
+        d1 = (minor * minor) - (major * major * minor) + (0.25 * major * major);
+        dx = 2 * minor * minor * x;
+        dy = 2 * major * major * y;
+
+        // For region 1
+        while (dx < dy)
+        {
+            // Print points based on 4-way symmetry
+            points.append({convertCoord(x+ x_center, y+ y_center), currentcol});
+            points.append({convertCoord(-x+ x_center, y+ y_center), currentcol});
+            points.append({convertCoord(x+ x_center, -y+ y_center), currentcol});
+            points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
+
+            // Checking and updating value of
+            // decision parameter based on algorithm
+            if (d1 < 0)
+            {
+                x++;
+                dx = dx + (2 * minor * minor);
+                d1 = d1 + dx + (minor * minor);
+            }
+            else
+            {
+                x++;
+                y--;
+                dx = dx + (2 * minor * minor);
+                dy = dy - (2 * major * major);
+                d1 = d1 + dx - dy + (minor * minor);
+            }
+        }
+
+        // Decision parameter of region 2
+        d2 = ((minor * minor) * ((x + 0.5) * (x + 0.5))) + ((major * major) * ((y - 1) * (y - 1))) - (major * major * minor * minor);
+
+        // Plotting points of region 2
+        while (y >= 0)
+        {
+
+            // Print points based on 4-way symmetry
+            points.append({convertCoord(x+ x_center, y+ y_center), currentcol});
+            points.append({convertCoord(-x+ x_center, y+ y_center), currentcol});
+            points.append({convertCoord(x+ x_center, -y+ y_center), currentcol});
+            points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
+
+            // Checking and updating parameter
+            // value based on algorithm
+            if (d2 > 0)
+            {
+                y--;
+                dy = dy - (2 * major * major);
+                d2 = d2 + (major * major) - dy;
+            }
+            else
+            {
+                y--;
+                x++;
+                dx = dx + (2 * minor * minor);
+                dy = dy - (2 * major * major);
+                d2 = d2 + dx - dy + (major * major);
+            }
+        }
+
+        modified = true;
+        ellipse_BA = false;
+        int time = timer.nsecsElapsed();
+        QTextStream out(stdout);
+        out << "Bresenham's Ellipse : " << time/1000 << "microsecs\n";
+    }
+
     if(modified){
         QPair<QPoint, QColor> p;
         foreach (p , points ){
@@ -447,5 +530,13 @@ void frame_widget::drawCircle(int x, int y)
     if(x == 0) circle_MP = true;
     else if(x == 1) circle_BA = true;
     else circle_P = true;
+    update();
+}
+
+void frame_widget::drawEllipse(int r1, int r2)
+{
+    major = r1;
+    minor = r2;
+    ellipse_BA = true;
     update();
 }
