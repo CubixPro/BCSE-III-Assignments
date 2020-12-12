@@ -8,7 +8,7 @@ import helper
 from packet import *
 import const
 
-class ackDispatcher:
+class ACKDispatcher:
     def __init__(self, name, channelToDispatcher, dispatcherToSender):
         self.name                   = name
         self.channelToDispatcher    = channelToDispatcher
@@ -18,9 +18,10 @@ class ackDispatcher:
         while True:
             ack = self.channelToDispatcher.recv()
             sender = ack.dest
-            self.dispatcherToSender[sender].send()
+            print("(ACKDispatcher:) Sending data to sender{}".format(sender))
+            self.dispatcherToSender[sender].send(ack)
     
-    def startDispatcher(self):
+    def startACKDispatcher(self):
         thread = threading.Thread(name='ackDispatcher', target=self.sendACKToSender)
         thread.start()
         thread.join()

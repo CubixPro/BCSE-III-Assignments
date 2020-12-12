@@ -17,5 +17,13 @@ delay = 0.5 # in seconds
 bitsForSeqNo = 8
 windowSize = 5 # 2^8-1
 
+####################################
+# for CSMA
+
+randomNumber = 10
+vulnarableTime = 0.001 # data length / bandwidth
+#propagationTime = 0.1
+packetPropagationTime = 0.1 # channel remains busy this time
+
 
 
