@@ -61,31 +61,121 @@ class Sender:
         while True:
 
             ranNumber = random.random() // const.randomNumber
-            time.sleep(ranNumber) # grab a time and sleep for that 0.0 <= time <= 0.1
+            #time.sleep(ranNumber) # grab a time and sleep for that 0.0 <= time <= 0.1
             # sense and grab the channel for sending
-            print("infinite looping...")
+            #print("infinite looping...")
             if self.idle == True:
                 # channel is idle it can send data with prob 1
                 # but as if collision = true means other thread already put data in pipe...collision
                 if self.collision == True:
                     # collision occur...resend data
                     self.collisionCount += 1
-                    print("Tumpa!")
+                    print("*****************COLLISION****************")
 
                 else:
                     # collision doesn't happen, grab the channel
-                    print("Humpi!!!")
+                    print("Humpty dumpty sat on a wall!!!")
                     self.collision = True
                     # wait for dataTransmission time tl + tp
                     time.sleep(const.vulnarableTime)
                     self.idle = False
                     self.senderToChannel.send(packet) # send datapacket
                     time.sleep(const.packetPropagationTime)
-                    print("(Sender{}:) Packet has been sent!".format(self.name+1))
                     # now set the channel to the prev state
                     self.collision = False
                     self.idle = True
                     break
+            else:
+                    # retry again
+                continue
+
+            ###############################################################################
+
+
+    def sendDataWithNonPersistent(self, packet):
+        """
+        ###############################################################################
+        # here goes all the logic
+        ####################### non persistent ##################             
+        # # doesn't involve slotted time concept
+        """
+        while True:
+
+            ranNumber = random.random() // const.randomNumber
+            #time.sleep(ranNumber) # grab a time and sleep for that 0.0 <= time <= 0.1
+            # sense and grab the channel for sending
+            #print("infinite looping...")
+            if self.idle == True:
+                # channel is idle it can send data with prob 1
+                # but as if collision = true means other thread already put data in pipe...collision
+                if self.collision == True:
+                    # collision occur...resend data
+                    self.collisionCount += 1
+                    print("*****************COLLISION****************")
+                    time.sleep(const.randomNonPersistant)
+
+                else:
+                    # collision doesn't happen, grab the channel
+                    print("Humpty dumpty sat on a wall!!!")
+                    self.collision = True
+                    # wait for dataTransmission time tl + tp
+                    time.sleep(const.vulnarableTime)
+                    self.idle = False
+                    self.senderToChannel.send(packet) # send datapacket
+                    time.sleep(const.packetPropagationTime)
+                    # now set the channel to the prev state
+                    self.collision = False
+                    self.idle = True
+                    break
+            else:
+                    # retry again
+                continue
+
+            ###############################################################################
+
+    def fakeFunction(self):
+        return 0
+    def sendDataWithP_Persistent(self, packet):
+        """
+        ###############################################################################
+        # here goes all the logic
+        ####################### p persistent ##################             
+        # # doesn't involve slotted time concept
+        """
+        while True:
+
+            ranNumber = random.random() / const.randomNumber
+            #time.sleep(ranNumber) # grab a time and sleep for that 0.0 <= time <= 0.1
+            # sense and grab the channel for sending
+            #print("infinite looping...")
+            if self.idle == True:
+                # channel is idle it can send data with prob 1
+                # but as if collision = true means other thread already put data in pipe...collision
+
+                probability = random.random()
+                if probability <= 1/const.totalSenderNumber:
+                    self.fakeFunction()
+                else:
+                    shallSend = True
+                    if self.collision == True:
+                        # collision occur...resend data
+                        self.collisionCount += 1
+                        print("*****************COLLISION****************")
+                        time.sleep(const.randomNonPersistant)
+
+                    else:
+                        # collision doesn't happen, grab the channel
+                        print("Humpty dumpty sat on a wall!!!")
+                        self.collision = True
+                        # wait for dataTransmission time tl + tp
+                        time.sleep(const.vulnarableTime)
+                        self.idle = False
+                        self.senderToChannel.send(packet) # send datapacket
+                        time.sleep(const.packetPropagationTime)
+                        # now set the channel to the prev state
+                        self.collision = False
+                        self.idle = True
+                        break
             else:
                     # retry again
                 continue

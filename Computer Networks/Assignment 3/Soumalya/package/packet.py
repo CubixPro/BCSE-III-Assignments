@@ -10,6 +10,7 @@ class Packet:
         self.segmentData = segmentData
         self.sender = sender
         self.dest = dest
+        self.sender = sender
 
 # """
 #  segment data need to be in string
@@ -48,7 +49,8 @@ class Packet:
     
     def extractData(self):
         text = ""
-        data = self.packet[208:496]
+        length = len(self.segmentData)
+        data = self.packet[208:208 + 8*length]
         asciiData = [data[i:i+8] for i in range(0,len(data),8)]
         for letter in asciiData:
             text += chr(int(letter,2))
@@ -60,6 +62,7 @@ class Packet:
     def decodeSeqNo(self):
         seqNo = self.packet[192:200]
         return int(seqNo,2)
+
     def decodeDestAddress(self):
         dest = self.packet[64:128]
         destAddress = int(dest,2)

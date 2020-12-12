@@ -21,7 +21,8 @@ class PktDispatcher:
         while True:
             packet = self.channelToDispatcher.recv()
             receiver = packet.dest
-            print("(Dispatcher:) sending packet to receiver{}".format(receiver))
+            sender = packet.sender
+            print("(Dispatcher:) sending packet to receiver{} from sender{}".format(receiver, sender))
             self.dispatcherToReceiver[receiver].send(packet)
     
     def dispatchACKFromReceiverToChannel(self, receiver): # needs to run for every receiver

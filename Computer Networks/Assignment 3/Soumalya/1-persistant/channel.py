@@ -44,8 +44,9 @@ class Channel:
                 
             else:
                 if random.random() <= const.injectErrorProb:
-                    print("(Channel:) INJECTING ERROR!")
-                    self.injectError(packet)
+                    #print("(Channel:) INJECTING ERROR!")
+                    #self.injectError(packet)
+                    self.fakeFunction()
 
                 if random.random() <= const.delayProb:
                     print("(Channel:) INTRODUCING DELAY")                        
@@ -67,8 +68,9 @@ class Channel:
 
             else:
                 if random.random() <= const.injectErrorProb:
-                    print("(Channel:) ACK INJECTING ERROR!")
-                    self.injectError(ack)
+                    #print("(Channel:) ACK INJECTING ERROR!")
+                    #self.injectError(ack)
+                    self.fakeFunction()
                 if random.random() <= const.delayProb:
                     print("(Channel:) ACK INTRODUCING DELAY")
                     time.sleep(const.delay)

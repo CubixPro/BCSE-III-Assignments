@@ -18,7 +18,7 @@ class ACKDispatcher:
         while True:
             ack = self.channelToDispatcher.recv()
             sender = ack.dest
-            print("(ACKDispatcher:) Sending data to sender{}".format(sender))
+            print("(ACKDispatcher:) Sending data to sender{}".format(sender+1))
             self.dispatcherToSender[sender].send(ack)
     
     def startACKDispatcher(self):
