@@ -34,19 +34,19 @@ class Channel:
 
     # needed a thread to run this for every sender
     def channelizePktFromSenderToDispatcher(self):# sender = 0,1,2..sender address basically
-        time.sleep(0.5)
         while True:    
             print("(Channel:) channel is receiving...")
             packet = self.senderToChannel.recv()
-            #receiver = packet.decodeDestAddress()
             if random.random() <= const.dropOutProb:
                 # dropout the packet
                 print("(Channel:) PACKET DROPPED OUT!")
                 self.fakeFunction()
+                
             else:
                 if random.random() <= const.injectErrorProb:
-                    print("(Channel:) INJECTING ERROR!")
-                    self.injectError(packet)
+                    #print("(Channel:) INJECTING ERROR!")
+                    #self.injectError(packet)
+                    self.fakeFunction()
 
                 if random.random() <= const.delayProb:
                     print("(Channel:) INTRODUCING DELAY")                        
@@ -56,19 +56,21 @@ class Channel:
 
     # needed a thread to run this for every sender
     def channelizeACKFromDispatcherToSender(self): # receiver can be 0,1,2..
-        time.sleep(0.5)
+        #time.sleep(0.5)
         while True:
             print("(Channel:) Channel is receiving...")
-            ack = self.channelToACKDispatcher.recv()
+            ack = self.pktDispatcherToChannel.recv()
             #sender = ack.decodeDestAddress()
             if random.random() <= const.dropOutProb:
                 # dropout the packet
                 print("(Channel:) ACK PACKET DROPPED OUT!")
                 self.fakeFunction()
+
             else:
                 if random.random() <= const.injectErrorProb:
-                    print("(Channel:) ACK INJECTING ERROR!")
-                    self.injectError(ack)
+                    #print("(Channel:) ACK INJECTING ERROR!")
+                    #self.injectError(ack)
+                    self.fakeFunction()
                 if random.random() <= const.delayProb:
                     print("(Channel:) ACK INTRODUCING DELAY")
                     time.sleep(const.delay)

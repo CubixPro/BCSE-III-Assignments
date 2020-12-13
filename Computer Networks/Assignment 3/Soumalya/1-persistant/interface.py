@@ -16,38 +16,42 @@ import const
 def start():
 
     # pipe 1st obj can write....2nd obj can read
-    writeHeadOfSenderToChannelPipe = []
-    readHeadOfSenderToChannelPipe = []
+    # writeHeadOfSenderToChannelPipe = []
+    # readHeadOfSenderToChannelPipe = []
 
-    writeHeadOfChannelToSenderPipe = []
-    readHeadOfChannelToSenderPipe = []
+    writeHeadOfACKDispatcherToSenderPipe = []
+    readHeadOfACKDispatcherToSenderPipe = []
 
 
-    writeHeadOfChannelToReceiverPipe = []
-    readHeadOfChannelToReceiverPipe = []
+    writeHeadOfPktDispatcherToReceiverPipe = []
+    readHeadOfPktDispatcherToReceiverPipe = []
 
-    writeHeadOfReceiverToChannelPipe = []
-    readHeadOfReceiverToChannelPipe = []
+    writeHeadOfReceiverToPktDispatcherPipe = []
+    readHeadOfReceiverToPktDispatcherPipe = []
 
     for i in range(const.totalSenderNumber):
-        readHead, writeHead = multiprocessing.Pipe()
-        writeHeadOfSenderToChannelPipe.append(writeHead) # goes to sender
-        readHeadOfSenderToChannelPipe.append(readHead) # goes to channel
+        # readHead, writeHead = multiprocessing.Pipe()
+        # writeHeadOfSenderToChannelPipe.append(writeHead) # goes to sender
+        # readHeadOfSenderToChannelPipe.append(readHead) # goes to channel
 
         readHead, writeHead = multiprocessing.Pipe()
-        writeHeadOfChannelToSenderPipe.append(writeHead)# goes to channel
-        readHeadOfChannelToSenderPipe.append(readHead) #goes to sender
+        writeHeadOfACKDispatcherToSenderPipe.append(writeHead)# goes to channel
+        readHeadOfACKDispatcherToSenderPipe.append(readHead) #goes to sender
 
     for i in range(const.totalReceiverNumber):
         readHead, writeHead = multiprocessing.Pipe()
-        writeHeadOfChannelToReceiverPipe.append(writeHead) # to channel
-        readHeadOfChannelToReceiverPipe.append(readHead) # to receiver
+        writeHeadOfPktDispatcherToReceiverPipe.append(writeHead) # to channel
+        readHeadOfPktDispatcherToReceiverPipe.append(readHead) # to receiver
 
         readHead, writeHead = multiprocessing.Pipe()
-        writeHeadOfReceiverToChannelPipe.append(writeHead) #goes to receiver
-        readHeadOfReceiverToChannelPipe.append(readHead) # goes to channel
+        writeHeadOfReceiverToPktDispatcherPipe.append(writeHead) #goes to receiver
+        readHeadOfReceiverToPktDispatcherPipe.append(readHead) # goes to channel
 
 
+    readHeadOfSenderToChannelPipe, writeHeadOfSenderToChannelPipe       = multiprocessing.Pipe()
+    readHeadOfchannelToPktDispatcher, writeHeadOfchannelToPktDispatcher = multiprocessing.Pipe()
+    readHeadOfPktDispatcherToChannel, writeHeadOfPktDispatcherToChannel = multiprocessing.Pipe()
+    readHeadOfChannelToACKDispatcher, writeHeadOfChannelToACKDispatcher = multiprocessing.Pipe()
     ######################################
     # make the sender list receiver list and channel object
     #######################################
@@ -55,12 +59,19 @@ def start():
     senderList = []
     receiverList = []
 
+    idle = True
+    collision = False
+    collisionCount = 0
+
     for i in range(const.totalSenderNumber):
         sender = Sender(
             i, 
             'input'+str(i)+'.txt', 
-            writeHeadOfSenderToChannelPipe[i],
-            readHeadOfChannelToSenderPipe[i]
+            writeHeadOfSenderToChannelPipe,# needs to be changed with a queue
+            readHeadOfACKDispatcherToSenderPipe[i],
+            idle,
+            collision,
+            collisionCount
             )
 
         senderList.append(sender)
@@ -68,8 +79,8 @@ def start():
     for i in range(const.totalReceiverNumber):
         receiver = Receiver(
             i,
-            writeHeadOfReceiverToChannelPipe[i],
-            readHeadOfChannelToReceiverPipe[i],
+            writeHeadOfReceiverToPktDispatcherPipe[i],
+            readHeadOfPktDispatcherToReceiverPipe[i],
             False
         )
 
@@ -86,12 +97,25 @@ def start():
 
     channel = Channel(
         0,
-        readHeadOfSenderToChannelPipe,
-        writeHeadOfChannelToSenderPipe,
-        readHeadOfReceiverToChannelPipe,
-        writeHeadOfChannelToReceiverPipe
+        readHeadOfSenderToChannelPipe, # just one pipe
+        writeHeadOfchannelToPktDispatcher,
+        readHeadOfPktDispatcherToChannel,
+        writeHeadOfChannelToACKDispatcher
     )
 
+    pktDispatcher = PktDispatcher(
+        0,
+        readHeadOfchannelToPktDispatcher,
+        writeHeadOfPktDispatcherToChannel,
+        writeHeadOfPktDispatcherToReceiverPipe,
+        readHeadOfReceiverToPktDispatcherPipe
+    ) 
+
+    ackDispatcher = ACKDispatcher(
+        0,
+        readHeadOfChannelToACKDispatcher,
+        writeHeadOfACKDispatcherToSenderPipe
+    )
 
     #####################################################
     # multiprocessing starts
@@ -108,12 +132,15 @@ def start():
         receiverProcess.append(p)
     
     channelProcess = multiprocessing.Process(target= channel.startChannel)
-
+    pktDispatcherProcess = multiprocessing.Process(target=pktDispatcher.startDispatcher)
+    ackDispatcherProcess = multiprocessing.Process(target=ackDispatcher.startACKDispatcher)
 
     for process in senderProcess:
         process.start()
     
     channelProcess.start()
+    pktDispatcherProcess.start()
+    ackDispatcherProcess.start()
 
     for process in receiverProcess:
         process.start()
@@ -122,6 +149,8 @@ def start():
         process.join()
     
     channelProcess.join()
+    pktDispatcherProcess.join()
+    ackDispatcherProcess.join()
 
     for process in receiverProcess:
         process.join()
