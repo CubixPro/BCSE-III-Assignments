@@ -1,3 +1,4 @@
+
 import multiprocessing
 from sender import *
 from ackDispatcher import *
@@ -13,7 +14,7 @@ import const
 # need to change the interface
 ##################################################
 
-def start():
+def start(signal):
 
     # pipe 1st obj can write....2nd obj can read
     # writeHeadOfSenderToChannelPipe = []
@@ -66,13 +67,14 @@ def start():
     for i in range(const.totalSenderNumber):
         sender = Sender(
             i, 
-            'input'+str(i)+'.txt', 
+            'input'+str(i+1)+'.txt', 
             writeHeadOfSenderToChannelPipe,# needs to be changed with a queue
-            readHeadOfACKDispatcherToSenderPipe[i],
-            idle,
-            collision,
-            collisionCount
-            )
+            readHeadOfACKDispatcherToSenderPipe[i])
+            # ,
+            # idle,
+            # collision,
+            # collisionCount
+            # )
 
         senderList.append(sender)
 
@@ -124,7 +126,7 @@ def start():
     receiverProcess = []
 
     for i in range(len(senderList)):
-        p = multiprocessing.Process(target=senderList[i].transmit)
+        p = multiprocessing.Process(target=senderList[i].transmit, args=(idle, collision, collisionCount, signal))
         senderProcess.append(p)
     
     for i in range(len(receiverList)):
@@ -174,4 +176,9 @@ def start():
 
 
 if __name__ == "__main__":
-    start()
+    print("_______________________________________________")
+    print("1) one persistent")
+    print("2) Non persistent")
+    print("3) p-persistent")
+    signal = int(input("Enter your choice: "))
+    start(signal)
