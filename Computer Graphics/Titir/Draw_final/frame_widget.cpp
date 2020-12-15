@@ -2,6 +2,9 @@
 #include <bits/stdc++.h>
 #include "time.h"
 #include <chrono>
+#include <QMessageBox>
+#include <ctime>
+#include <ratio>
 QPoint frame_widget::convertPixel(QPoint p)
 {
     QPoint pos = p;
@@ -39,17 +42,21 @@ QPoint frame_widget::convertCoord(int x, int y)
 frame_widget::frame_widget(QWidget *parent):
     QFrame(parent)
 {
-    size = 100;
     grid = false;
     modified = false;
-    size = 25;
-    maxwidth = 500;
-    maxheight = 500;
+    size = 10;
+    maxwidth = 600;
+    maxheight = 600;
     visibleAxes = false;
     this->setMouseTracking(true) ;
     currentcol = QColor(Qt::red);
     line_DDA = false;
     line_BA = false;
+    circle = false;
+    radius = 5;
+    ellipse = false;
+    circleDrawMethod = 0;
+    rx = ry = 5;
 }
 
 
@@ -65,8 +72,8 @@ void frame_widget::createGrid()
 void frame_widget::changeSize(int x)
 {
     size = x;
-    maxwidth = (500/size) * size ;
-    maxheight = (500/size)*size ;
+    maxwidth = (600/size) * size ;
+    maxheight = (600/size)*size ;
     createGrid();
     //update();
 }
@@ -140,10 +147,10 @@ int min(int a, int b){
 }
 void frame_widget::paintEvent(QPaintEvent *p)
 {
-    QPixmap pix(500, 500);
+    //QPixmap pix(500, 500);
     QPainter paint(this);
-    pix.fill(Qt::white);
-    paint.drawRect(0, 0, min(maxheight, 500), min(maxwidth, 500));
+    //pix.fill(Qt::white);
+    paint.drawRect(0, 0, min(maxheight, 600), min(maxwidth, 600));
 
     if(grid){
         paint.setPen(QPen(Qt::gray));
@@ -195,138 +202,298 @@ void frame_widget::paintEvent(QPaintEvent *p)
         }
         line_DDA = false;
         auto time2 = std::chrono::high_resolution_clock::now();
-        std::cout << (time2 - time1).count() << '\n';
+        std::cout << "DDA : ";
+
+        std::cout << std::chrono::duration_cast<std::chrono::duration<double>>(time2 - time1).count() << '\n';
+        elapsedda = (time2 - time1).count();
     }
     if(line_BA){
 
-        //Breshenham Algorithm for LINE DRAWING
-        /*if(point1.x() > point2.x()){
-                QPoint temp = point2;
-                point2 = point1;
-                point1 = temp;
-            }
-            int x = point1.x();
-            int y = point1.y();
-            int dx = (point2.x() - point1.x());
-            int dy = (point2.y() - point1.y());
-            int parameter = 2 * dy - dx;
-            for (;x < point2.x() ; x++ ) {
-                QPoint p0;
-                if(parameter < 0){
-                     p0 = convertCoord(x , y);
-                     parameter = parameter + 2 * dy;
-               }
-                else{
-                    p0 = convertCoord(x , y );
-                    y = y + 1;
-                    parameter = parameter  + 2 * dy - 2 * dx;
-                }
-                points.append({p0, currentcol});
-                modified = true;
-
-            }
-           */
-
-        /*int x, y, dx, dy, s1, s2, e, flag, i;
-        auto time1 = std::chrono::high_resolution_clock::now();
-        i = 1;
-        x = point1.x();
-        y = point1.y();
-        dx = point2.x() - point1.x();
-        dy = point2.y() - point1.y();
-        s1 = dx > 0 ? 1 : -1;
-        s2 = dy > 0 ? 1 : -1;
-        dx *= s1;
-        dy *= s2;
-
-        e = (dy << 1) - dx;
-        if(dy > dx){
-            int temp = dx;
-            dx = dy;
-            dy = temp;
-            flag = 1;
-        }
-        else{
-            flag = 0;
-        }
-
-        while(i <= dx){
-            points.append({convertCoord(x, y), currentcol});
-            if(e >= 0){
-                if(flag)
-                    x += s1;
-                else
-                    y+=s2;
-                e-=(dx<<1);
-            }
-            if(flag)
-                y+=s2;
-            else
-                x+=s1;
-            e+=(dy<<1);
-            ++i;
-        }*/
+        //Bresenham Algorithm for Line Drawing
         auto time1 = std::chrono::high_resolution_clock::now();
         QPoint p1 = point1;
         QPoint p2 = point2;
-        int k = size;
+        //QMessageBox msgbox;
+
         int x1=p1.x();
-            int y1=p1.y();
+        int y1=p1.y();
 
-            int x2=p2.x();
-            int y2=p2.y();
+        int x2=p2.x();
+        int y2=p2.y();
 
-            int dx=x2-x1;
-            int dy=y2-y1;
+        int dx=x2-x1;
+        int dy=y2-y1;
 
 
 
-            int xinc=(dx>0)?1:-1;
-            int yinc=(dy>0)?1:-1;
+        int xinc=(dx>0)?1:-1;
+        int yinc=(dy>0)?1:-1;
 
-            dx=abs(dx);
-            dy=abs(dy);
+        dx=abs(dx);
+        dy=abs(dy);
 
-            //Case for gentle slope
-            if(dx>dy)
+        //Case for gentle slope
+        if(dx>dy)
+        {
+            int p=2*(dy)-dx;
+            int y=y1;
+
+            for(int x=x1; x!=x2; x+=xinc)
+
             {
-                int p=2*(dy)-dx;
-                int y=y1;
-
-                for(int x=x1; x!=x2; x+=xinc)
-                {
+                if(x != x1)
                     points.append({convertCoord(x,y), currentcol});
-                    if(p>=0)
-                    {
-                        y+=yinc;
-                        p-=2*dx;
-                    }
-                    p+=2*dy;
+                if(p>=0)
+                {
+                    y+=yinc;
+                    p-=2*dx;
                 }
+                p+=2*dy;
             }
-            //Case for steep slope
-            else
+        }
+        //Case for steep slope
+        else
+        {
+            int p=2*(dx)-dy;
+            int x=x1;
+
+            for(int y=y1; y!=y2; y+=yinc)
             {
-                int p=2*(dx)-dy;
-                int x=x1;
-
-                for(int y=y1; y!=y2; y+=yinc)
-                {
+                if(y != y1)
                     points.append({convertCoord(x,y), currentcol});
-                    if(p>=0)
-                    {
-                        x+=xinc;
-                        p-=2*(dy);
-                    }
-                    p+=2*(dx);
+                if(p>=0)
+                {
+                    x+=xinc;
+                    p-=2*(dy);
                 }
+                p+=2*(dx);
             }
+        }
 
 
         modified = true;
         line_BA = false;
         auto time2 = std::chrono::high_resolution_clock::now();
-        std::cout << (time2 - time1).count() << '\n';
+        std::cout << "BA : ";
+        //std::cout << std::chrono::duration_cast<std::chrono::duration<double>>(time2 - time1).count() << '\n';
+        elapsedba = (time2 - time1).count();
+    }
+    if(circle){
+        auto time1 = std::chrono::high_resolution_clock::now();
+
+        if(circleDrawMethod == 0){//draw using midpoint method
+        int x_centre = point1.x();
+        int y_centre = point1.y();
+        int r = radius;
+        int x = r, y = 0;
+
+            // Printing the initial point on the axes
+            // after translation
+            if (r > 0)
+            {
+                points.append({convertCoord(x + x_centre, -y + y_centre), currentcol});
+                points.append({convertCoord(y + x_centre, x + y_centre), currentcol});
+                points.append({convertCoord(-y + x_centre, -x + y_centre), currentcol});
+                points.append({convertCoord(-x + x_centre, y_centre), currentcol});
+            }
+
+            // Initialising the value of P
+            int P = 1 - r;
+            while (x > y)
+            {
+                y++;
+
+                // Mid-point is inside or on the perimeter
+                if (P <= 0)
+                    P = P + 2*y + 1;
+                // Mid-point is outside the perimeter
+                else
+                {
+                    x--;
+                    P = P + 2*y - 2*x + 1;
+                }
+
+                // All the perimeter points have already been printed
+                if (x < y)
+                    break;
+
+                // Printing the generated point and its reflection
+                // in the other octants after translation
+                points.append({convertCoord(x + x_centre, y + y_centre), currentcol});
+                points.append({convertCoord(-x + x_centre, y + y_centre), currentcol});
+                points.append({convertCoord(x + x_centre, -y + y_centre), currentcol});
+                points.append({convertCoord(-x + x_centre, -y + y_centre), currentcol});
+
+                // If the generated point is on the line x = y then
+                // the perimeter points have already been printed
+                if (x != y)
+                {
+                points.append({convertCoord(y + x_centre, x + y_centre), currentcol});
+                points.append({convertCoord(-y + x_centre, x + y_centre), currentcol});
+                points.append({convertCoord(y + x_centre, -x + y_centre), currentcol});
+                points.append({convertCoord(-y + x_centre, -x + y_centre), currentcol});
+                }
+            }
+        }
+        else if(circleDrawMethod == 1){//draw using breshenham
+            int xc = point1.x();
+            int yc = point1.y();
+            int x = 0, y = radius;
+            int d = 3 - 2 * radius;
+                points.append({convertCoord(xc + x, yc + y), currentcol});
+                points.append({convertCoord(xc - x, yc + y), currentcol});
+                points.append({convertCoord(xc + x, yc - y), currentcol});
+                points.append({convertCoord(xc - x, yc - y), currentcol});
+                points.append({convertCoord(xc + y, yc + x), currentcol});
+                points.append({convertCoord(xc - y, yc + x), currentcol});
+                points.append({convertCoord(xc + y, yc - x), currentcol});
+                points.append({convertCoord(xc - y, yc - x), currentcol});
+
+            while(y >= x){
+                x++;
+                if(d > 0){
+                    y--;
+                    d = d + 4 * (x - y) + 10;
+                }
+                else
+                {
+                    d = d + 4 * x + 6;
+                }
+                points.append({convertCoord(xc + x, yc + y), currentcol});
+                points.append({convertCoord(xc - x, yc + y), currentcol});
+                points.append({convertCoord(xc + x, yc - y), currentcol});
+                points.append({convertCoord(xc - x, yc - y), currentcol});
+                points.append({convertCoord(xc + y, yc + x), currentcol});
+                points.append({convertCoord(xc - y, yc + x), currentcol});
+                points.append({convertCoord(xc + y, yc - x), currentcol});
+                points.append({convertCoord(xc - y, yc - x), currentcol});
+
+
+
+
+            }
+
+           }
+        else if(circleDrawMethod == 2){//draw using cartesian coordiantes
+            int xc = point1.x();
+            int yc = point1.y();
+
+
+            for(int x = 0 ; x <= radius/sqrt(2)  ; x++){
+                int y = round(sqrt(radius * radius - x * x));
+                points.append({convertCoord(xc + x, yc + y), currentcol});
+                points.append({convertCoord(xc + x, yc - y), currentcol});
+                points.append({convertCoord(xc - x, yc - y), currentcol});
+                points.append({convertCoord(xc - x, yc + y), currentcol});
+                points.append({convertCoord(xc + y, yc + x), currentcol});
+                points.append({convertCoord(xc + y, yc - x), currentcol});
+                points.append({convertCoord(xc - y, yc - x), currentcol});
+                points.append({convertCoord(xc - y, yc + x), currentcol});
+
+            }
+        }
+        else if(circleDrawMethod == 3){//draw using polar coordinates
+                double pi = 2*acos(0.0);
+                int xc = point1.x();
+                int yc = point1.y();
+                for(double i = 0 ; i <= pi/4 ; i += 1/(float)radius)
+                {
+                    double y = round(radius * cos(i));
+                    double x = round(radius * sin(i));
+                    points.append({convertCoord(xc + x, yc + y), currentcol});
+                    points.append({convertCoord(xc + x, yc - y), currentcol});
+                    points.append({convertCoord(xc - x, yc - y), currentcol});
+                    points.append({convertCoord(xc - x, yc + y), currentcol});
+                    points.append({convertCoord(xc + y, yc + x), currentcol});
+                    points.append({convertCoord(xc + y, yc - x), currentcol});
+                    points.append({convertCoord(xc - y, yc - x), currentcol});
+                    points.append({convertCoord(xc - y, yc + x), currentcol});
+
+                }
+           }
+            auto time2 = std::chrono::high_resolution_clock::now();
+            elapsedcircle = (time2 - time1).count();
+
+            modified = true;
+            circle = false;
+
+    }
+    if(ellipse){
+         auto time1 = std::chrono::high_resolution_clock::now();
+
+        int x_centre = point1.x();
+        int y_centre = point1.y();
+
+        int x = 0;
+        int y = ry;
+
+        int rx2=rx*rx;
+        int ry2=ry*ry;
+        int tworx2=2*rx2;
+        int twory2=2*ry2;
+        int px=0.0;
+        int py=tworx2*y;
+
+        int p1=ry2-rx2*ry+(0.25)*rx2; //Initial value of decision parameter
+
+
+        while(px<py)
+        {
+
+
+            points.append({convertCoord(x_centre + x, y_centre + y), currentcol});
+            points.append({convertCoord(x_centre - x, y_centre + y), currentcol});
+            points.append({convertCoord(x_centre - x, y_centre - y), currentcol});
+            points.append({convertCoord(x_centre + x, y_centre - y), currentcol});
+
+            x++;
+            px+=twory2;
+
+            if(p1>=0)
+            {
+                y--;
+                py-=tworx2;
+                p1=p1+ry2+px-py;
+
+            }
+            else
+            {
+                p1=p1+ry2+px;
+            }
+        }
+
+        //For second region
+        p1=ry2*((double)x+0.5)*((double)x+0.5)+rx2*(y-1)*(y-1)-rx2*ry2; //Initial value of decision paramemter
+
+
+        while(y>=0)
+        {
+
+            points.append({convertCoord(x_centre + x, y_centre + y), currentcol});
+            points.append({convertCoord(x_centre - x, y_centre + y), currentcol});
+            points.append({convertCoord(x_centre - x, y_centre - y), currentcol});
+            points.append({convertCoord(x_centre + x, y_centre - y), currentcol});
+
+            y--;
+            py-=tworx2;
+            if(p1<=0)
+            {
+                x++;
+                px+=twory2;
+                p1=p1+rx2-py+px;
+
+            }
+            else
+            {
+                p1=p1+rx2-py;
+            }
+
+        }
+    auto time2 = std::chrono::high_resolution_clock::now();
+    elapsedellipse = (time2 - time1).count();
+        modified = true;
+        ellipse = false;
+
     }
     if(modified){
         QPair<QPoint, QColor> p;
@@ -384,6 +551,40 @@ void frame_widget::drawLineBA(){
     line_BA = true;
     update();
 }
+
+void frame_widget::drawCircle()
+{
+   circle = true;
+   update();
+}
+
+void frame_widget::changeRadius(int size)
+{
+    radius = size;
+}
+
+void frame_widget::setCircleDraw(int val)
+{
+
+    circleDrawMethod = val;
+}
+
+void frame_widget::drawEllipse()
+{
+    ellipse = true;
+    update();
+}
+
+void frame_widget::setrx(int val)
+{
+    rx = val;
+}
+
+void frame_widget::setry(int val)
+{
+   ry = val;
+}
+
 
 
 

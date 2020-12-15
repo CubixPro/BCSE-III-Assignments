@@ -79,9 +79,44 @@ public:
 
     void on_pushButton_4_clicked();
 
+    void on_radioButton_6_clicked();
+
+    void on_pushButton_6_clicked();
+
+    void on_pushButton_7_clicked();
+
+    void on_r_slider_actionTriggered(int action);
+
+    void on_g_slider_actionTriggered(int action);
+
+    void on_b_slider_actionTriggered(int action);
+
+    void on_r_slider_sliderMoved(int position);
+
+    void on_g_slider_sliderMoved(int position);
+
+    void on_b_slider_sliderMoved(int position);
+
+    void on_pushButton_8_clicked();
+
+    void on_spinBox_2_valueChanged(int arg1);
+
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_pushButton_9_clicked();
+
+    void on_pushButton_10_clicked();
+
+    void on_rx_valueChanged(int arg1);
+
+    void on_ry_valueChanged(int arg1);
+
+    void on_pushButton_11_clicked();
+
 private:
     Ui::MainWindow *ui;
     //frame_widget *gridFrame;
+    int r,  g,  b;
 
 public slots:
     void showCoord(int x , int y );
@@ -90,5 +125,6 @@ signals:
     void drawLinePressed();
     void drawLineBA();
     void changeColour(QColor p);
+
 };
 #endif // MAINWINDOW_H
