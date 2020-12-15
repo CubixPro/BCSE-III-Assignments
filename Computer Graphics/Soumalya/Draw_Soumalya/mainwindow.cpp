@@ -17,12 +17,26 @@ MainWindow::MainWindow(QWidget *parent):
     //resize(520, 550);
     setStyleSheet("background-color:pink;");
     connect(ui->frame, &frame_widget::sendCoord, this, &MainWindow::showCoord);
+
+    // all times showns here
     connect(ui->frame, &frame_widget::sendTimeDDA, this, &MainWindow::showDDATime);
     connect(ui->frame, &frame_widget::sendTimeBresh, this, &MainWindow::showBreshTime);
+    connect(ui->frame, &frame_widget::sendCircleTime, this, &MainWindow::showCircleTime);
+    connect(ui->frame, &frame_widget::sendEllipseTime, this, &MainWindow::showEllipseTime);
+
+
+
+
     connect(ui->frame, &frame_widget::sendCoordForMousePress, this, &MainWindow::showCoordForMousePressEvent);
-    connect(this, &MainWindow::changeColour, ui->frame, &frame_widget::changeCurrentColour);
+    connect(ui->frame, &frame_widget::sendColorLabel, this, &MainWindow::showColorLabel);
+    connect(this, &MainWindow::changeTheColour, ui->frame, &frame_widget::changeCurrentColour);
+
+
+    // all drawings
     connect(this, &MainWindow::drawLinePressedDDA, ui->frame, &frame_widget::drawLineDDA);
     connect(this, &MainWindow::drawLinePressedBresh, ui->frame, &frame_widget::drawLineBresh);
+    connect(this, &MainWindow::drawCircle, ui->frame, &frame_widget::drawCircle);
+    connect(this, &MainWindow::drawEllipse, ui->frame, &frame_widget::drawEllipse);
 
   }
 
@@ -97,6 +111,8 @@ void MainWindow::showCoordForMousePressEvent(int x, int y)
 {
     //std::cout << "hi I am from hyd mama";
     ui->label_3->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
+    ui->label_9->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
+    ui->label_24->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
 }
 
 void MainWindow::showDDATime(double time)
@@ -109,6 +125,18 @@ void MainWindow::showBreshTime(double time)
 {
     time = time/1000;
     ui->label_6->setText(QString::number(time) +" ms");
+}
+
+
+void MainWindow::showCircleTime(double val)
+{
+    double time = val/1000;
+    ui->label_16->setText(QString::number(time) +" ms");
+}
+void MainWindow::showEllipseTime(double val)
+{
+    double time = val/1000;
+    ui->label_20->setText(QString::number(time) +" ms");
 }
 
 void MainWindow::on_spinBox_valueChanged(int arg1)
@@ -188,4 +216,37 @@ void MainWindow::on_pushButton_4_clicked(bool checked)
 void MainWindow::on_pushButton_5_clicked()
 {
     emit drawLinePressedBresh();
+
+}
+
+void MainWindow::showColorLabel(int a, int b, int c)
+{
+    ui->showColor->setText("(" + QString::number(a) + "," + QString::number(b) + "," + QString::number(c) + ")");
+}
+void MainWindow::on_rSlider_valueChanged(int pos)
+{
+    emit changeTheColour(pos,'R');
+}
+void MainWindow::on_bSlider_valueChanged(int pos)
+{
+    emit changeTheColour(pos, 'B');
+}
+
+void MainWindow::on_gSlider_valueChanged(int pos)
+{
+    emit changeTheColour(pos, 'G');
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    int x = ui->comboBox->currentIndex();
+    int y = ui->spinBox_2->value();
+    emit drawCircle(x,y);
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    int major = ui->spinBox_3->value();
+    int minor = ui->spinBox_4->value();
+    emit drawEllipse(major,minor);
 }

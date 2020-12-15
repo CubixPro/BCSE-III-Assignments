@@ -80,6 +80,16 @@ public:
     void on_pushButton_5_clicked();
 
 
+    void on_rSlider_valueChanged(int value);
+
+    void on_bSlider_valueChanged(int value);
+
+    void on_gSlider_valueChanged(int value);
+
+    void on_pushButton_6_clicked();
+
+    void on_pushButton_7_clicked();
+
 private:
     Ui::MainWindow *ui;
     //frame_widget *gridFrame;
@@ -89,6 +99,9 @@ public slots:
     void showCoordForMousePressEvent(int x, int y);
     void showDDATime(double time);
     void showBreshTime(double time);
+    void showColorLabel(int,int,int);
+    void showCircleTime(double);
+    void showEllipseTime(double);
 
 
 signals:
@@ -96,5 +109,8 @@ signals:
     void changeColour(QColor p);
     void drawLinePressedDDA();
     void drawLinePressedBresh();
+    void changeTheColour(int a, char c);
+    void drawCircle(int,int);
+    void drawEllipse(int,int);
 };
 #endif // MAINWINDOW_H
