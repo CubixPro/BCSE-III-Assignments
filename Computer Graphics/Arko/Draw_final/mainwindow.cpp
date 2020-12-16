@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->frame, &frame_widget::sendCoord, this, &MainWindow::showCoord);
     connect(ui->frame, &frame_widget::sendPress, this, &MainWindow::showPress);
     connect(ui->frame, &frame_widget::sendColorLebel, this, &MainWindow::showColorLebel);
+    connect(ui->frame, &frame_widget::sendTime, this, &MainWindow::showTime);
     connect(this, &MainWindow::changeColour, ui->frame, &frame_widget::changeCurrentColour);
     connect(this, &MainWindow::drawLineDDA, ui->frame, &frame_widget::drawLineDDA);
     connect(this, &MainWindow::drawLineBA, ui->frame, &frame_widget::drawLineBA);
@@ -67,8 +68,6 @@ void MainWindow::showCoord(int x, int y)
 void MainWindow::showPress(int x, int y)
 {
     ui->press->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
-    ui->center->setText("Center-> (" + QString::number(x) + ", " + QString::number(y) + ")");
-    ui->center_2->setText("Center of Ellipse-> (" + QString::number(x) + ", " + QString::number(y) + ")");
 }
 
 void MainWindow::showColorLebel(int a, int b, int c)
@@ -76,10 +75,13 @@ void MainWindow::showColorLebel(int a, int b, int c)
     ui->color->setText("(" + QString::number(a) + "," + QString::number(b) + "," + QString::number(c) + ")");
 }
 
+void MainWindow::showTime(int a)
+{
+    ui->time->setText("Time taken : " + QString::number(a) + "μs");
+}
+
 void MainWindow::on_spinBox_valueChanged(int arg1)
 {
-    ui->label_1->setText(QString("Point 1"));
-    ui->label_2->setText(QString("Point 2"));
     ui->frame->changeSize(arg1);
 }
 
@@ -111,13 +113,13 @@ void MainWindow::on_actionCreate_New_triggered()
 void MainWindow::on_pushButton_2_clicked()
 {
     QPoint p = ui->frame->setPoint1();
-    ui->label_1->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
+    ui->center->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
 }
 
 void MainWindow::on_pushButton_clicked()
 {
     QPoint p = ui->frame->setPoint2();
-    ui->label_2->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
+    ui->center_2->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -161,5 +163,6 @@ void MainWindow::on_pushButton_7_clicked()
 {
     int r1 = ui->major->value();
     int r2 = ui->minor->value();
-    emit drawEllipse(r1, r2);
+    int x = ui->comboBox_2->currentIndex();
+    emit drawEllipse(r1, r2, x);
 }

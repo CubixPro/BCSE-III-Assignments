@@ -39,7 +39,7 @@ frame_widget::frame_widget(QWidget *parent):
     size = 100;
     grid = false;
     modified = false;
-    size = 12;
+    size = 10;
     maxwidth = 500;
     maxheight = 500;
     visibleAxes = false;
@@ -49,7 +49,9 @@ frame_widget::frame_widget(QWidget *parent):
     line_BA = false;
     circle_MP = false;
     circle_BA = false;
-    ellipse_BA = false;
+    circle_PA = false;
+    ellipse_MP = false;
+    ellipse_P = false;
     RColor = 255;
     GColor = 0;
     BColor = 0;
@@ -243,12 +245,12 @@ void frame_widget::paintEvent(QPaintEvent *p)
 
         QElapsedTimer timer;
         timer.start();
-        QPoint p = convertPixel(lastpoint);
+        QPoint p = point1;
         int x_center = p.x();
         int y_center = p.y();
 
         int x, y;
-        for(float i=0; i<=3.14; i= i+ (1/(float)radius)) {
+        for(float i=0; i<=1.65; i= i+ (1/(float)radius)) {
             x = round(radius*cos(i));
             y = round(radius*sin(i));
 
@@ -261,15 +263,42 @@ void frame_widget::paintEvent(QPaintEvent *p)
         modified = true;
         circle_P = false;
         int time = timer.nsecsElapsed();
-        QTextStream out(stdout);
-        out << "Polar Coordinates : " << time/1000 << "microsecs\n";
+        emit sendTime(time/1000);
+    }
+
+    if(circle_PA) {
+
+        QElapsedTimer timer;
+        timer.start();
+        QPoint p = point1;
+        int x_center = p.x();
+        int y_center = p.y();
+
+        int y;
+        for(int x=0; x<radius; x++) {
+            y = round(sqrt(pow(radius,2) - pow(x,2)));
+
+            points.append({convertCoord(x+ x_center, y+ y_center), currentcol});
+            points.append({convertCoord(-x+ x_center, y+ y_center), currentcol});
+            points.append({convertCoord(x+ x_center, -y+ y_center), currentcol});
+            points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
+            points.append({convertCoord(y+ x_center, x+ y_center), currentcol});
+            points.append({convertCoord(-y+ x_center, x+ y_center), currentcol});
+            points.append({convertCoord(y+ x_center, -x+ y_center), currentcol});
+            points.append({convertCoord(-y+ x_center, -x+ y_center), currentcol});
+        }
+
+        modified = true;
+        circle_PA = false;
+        int time = timer.nsecsElapsed();
+        emit sendTime(time/1000);
     }
 
     if(circle_MP) {
 
         QElapsedTimer timer;
         timer.start();
-        QPoint p = convertPixel(lastpoint);
+        QPoint p = point1;
         int x_center = p.x();
         int y_center = p.y();
 
@@ -287,18 +316,15 @@ void frame_widget::paintEvent(QPaintEvent *p)
         {
             y++;
 
-            //Initialising the value of P
             if (P <= 0)
                 P = P + 2*y + 1;
 
-            // Mid-point is outside the perimeter
             else
             {
                 x--;
                 P = P + 2*y - 2*x + 1;
             }
 
-            // All the perimeter points have already been printed
             if (x < y)
                 break;
 
@@ -318,47 +344,22 @@ void frame_widget::paintEvent(QPaintEvent *p)
         modified = true;
         circle_MP = false;
         int time = timer.nsecsElapsed();
-        QTextStream out(stdout);
-        out << "MidPoint Circle : " << time/1000 << "microsecs\n";
+        emit sendTime(time/1000);
     }
 
     if(circle_BA) {
 
         QElapsedTimer timer;
         timer.start();
-        QPoint p = convertPixel(lastpoint);
+        QPoint p = point1;
         int x_center = p.x();
         int y_center = p.y();
 
         int x = 0, y = radius;
         int d = 3 - 2 * radius;
 
-        points.append({convertCoord(x+ x_center, y+ y_center), currentcol});
-        points.append({convertCoord(-x+ x_center, y+ y_center), currentcol});
-        points.append({convertCoord(x+ x_center, -y+ y_center), currentcol});
-        points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
-        points.append({convertCoord(y+ x_center, x+ y_center), currentcol});
-        points.append({convertCoord(-y+ x_center, x+ y_center), currentcol});
-        points.append({convertCoord(y+ x_center, -x+ y_center), currentcol});
-        points.append({convertCoord(-y+ x_center, -x+ y_center), currentcol});
-
         while (y >= x)
         {
-            // for each pixel we will
-            // draw all eight pixels
-
-            x++;
-
-            // check for decision parameter
-            // and correspondingly
-            // update d, x, y
-            if (d > 0)
-            {
-                y--;
-                d = d + 4 * (x - y) + 10;
-            }
-            else
-                d = d + 4 * x + 6;
 
             points.append({convertCoord(x+ x_center, y+ y_center), currentcol});
             points.append({convertCoord(-x+ x_center, y+ y_center), currentcol});
@@ -368,20 +369,54 @@ void frame_widget::paintEvent(QPaintEvent *p)
             points.append({convertCoord(-y+ x_center, x+ y_center), currentcol});
             points.append({convertCoord(y+ x_center, -x+ y_center), currentcol});
             points.append({convertCoord(-y+ x_center, -x+ y_center), currentcol});
+
+            x++;
+
+            if (d > 0)
+            {
+                y--;
+                d = d + 4 * (x - y) + 10;
+            }
+            else
+                d = d + 4 * x + 6;
         }
 
         modified = true;
         circle_BA = false;
         int time = timer.nsecsElapsed();
-        QTextStream out(stdout);
-        out << "Bresenham's Midpoint : " << time/1000 << "microsecs\n";
+        emit sendTime((time-20)/1000);
     }
 
-    if(ellipse_BA) {
+    if(ellipse_P) {
 
         QElapsedTimer timer;
         timer.start();
-        QPoint p = convertPixel(lastpoint);
+        QPoint p = point2;
+        int x_center = p.x();
+        int y_center = p.y();
+
+        int x, y;
+        for(float i=0; i<=1.6; i= i+ (1/(float)(major+minor)/2)) {
+            x = round(major*cos(i));
+            y = round(minor*sin(i));
+
+            points.append({convertCoord(x+ x_center, y+ y_center), currentcol});
+            points.append({convertCoord(-x+ x_center, y+ y_center), currentcol});
+            points.append({convertCoord(x+ x_center, -y+ y_center), currentcol});
+            points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
+        }
+
+        modified = true;
+        ellipse_P = false;
+        int time = timer.nsecsElapsed();
+        emit sendTime(time/1000);
+    }
+
+    if(ellipse_MP) {
+
+        QElapsedTimer timer;
+        timer.start();
+        QPoint p = point2;
         int x_center = p.x();
         int y_center = p.y();
 
@@ -389,22 +424,17 @@ void frame_widget::paintEvent(QPaintEvent *p)
         x = 0;
         y = minor;
 
-        // Initial decision parameter of region 1
         d1 = (minor * minor) - (major * major * minor) + (0.25 * major * major);
         dx = 2 * minor * minor * x;
         dy = 2 * major * major * y;
 
-        // For region 1
         while (dx < dy)
         {
-            // Print points based on 4-way symmetry
             points.append({convertCoord(x+ x_center, y+ y_center), currentcol});
             points.append({convertCoord(-x+ x_center, y+ y_center), currentcol});
             points.append({convertCoord(x+ x_center, -y+ y_center), currentcol});
             points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
 
-            // Checking and updating value of
-            // decision parameter based on algorithm
             if (d1 < 0)
             {
                 x++;
@@ -420,22 +450,16 @@ void frame_widget::paintEvent(QPaintEvent *p)
                 d1 = d1 + dx - dy + (minor * minor);
             }
         }
-
-        // Decision parameter of region 2
         d2 = ((minor * minor) * ((x + 0.5) * (x + 0.5))) + ((major * major) * ((y - 1) * (y - 1))) - (major * major * minor * minor);
 
-        // Plotting points of region 2
         while (y >= 0)
         {
 
-            // Print points based on 4-way symmetry
             points.append({convertCoord(x+ x_center, y+ y_center), currentcol});
             points.append({convertCoord(-x+ x_center, y+ y_center), currentcol});
             points.append({convertCoord(x+ x_center, -y+ y_center), currentcol});
             points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
 
-            // Checking and updating parameter
-            // value based on algorithm
             if (d2 > 0)
             {
                 y--;
@@ -453,10 +477,9 @@ void frame_widget::paintEvent(QPaintEvent *p)
         }
 
         modified = true;
-        ellipse_BA = false;
+        ellipse_MP = false;
         int time = timer.nsecsElapsed();
-        QTextStream out(stdout);
-        out << "Bresenham's Ellipse : " << time/1000 << "microsecs\n";
+        emit sendTime(time/1000);
     }
 
     if(modified){
@@ -527,16 +550,18 @@ void frame_widget::drawLineBA()
 void frame_widget::drawCircle(int x, int y)
 {
     radius = y;
-    if(x == 0) circle_MP = true;
-    else if(x == 1) circle_BA = true;
+    if(x == 0) circle_PA = true;
+    else if(x == 2) circle_MP = true;
+    else if(x == 3) circle_BA = true;
     else circle_P = true;
     update();
 }
 
-void frame_widget::drawEllipse(int r1, int r2)
+void frame_widget::drawEllipse(int r1, int r2, int x)
 {
     major = r1;
     minor = r2;
-    ellipse_BA = true;
+    if(x == 1) ellipse_MP = true;
+    else ellipse_P = true;
     update();
 }
