@@ -1,0 +1,1 @@
+Input will be given by user in command prompt
