@@ -131,7 +131,7 @@ public class Simulator_cdma {
         System.out.println("   <- <- <- <-   Stats   -> -> -> ->");
         System.out.println("No. of Senders -> " + noOfStation);
         System.out.println("Number of bits transferred -> " + (73 * 8 * noOfStation));
-        System.out.println("Tike Taken -> " + timeTaken + " nano sec");
+        System.out.println("Time Taken -> " + timeTaken + " nano sec");
         sc.close();
     }
 }
