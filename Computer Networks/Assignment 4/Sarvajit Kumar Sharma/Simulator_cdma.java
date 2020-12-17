@@ -98,7 +98,7 @@ public class Simulator_cdma {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter number of integers-> ");
+        System.out.print("Enter number of senders-> ");
         int noOfStation = Integer.parseInt(sc.nextLine());
 
         int WalshTableSize = Simulator_cdma.nearestPower(noOfStation);
