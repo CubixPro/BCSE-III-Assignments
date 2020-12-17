@@ -97,41 +97,40 @@ public class Simulator_cdma {
     }
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter number of senders-> ");
-        int noOfStation = Integer.parseInt(sc.nextLine());
-
-        int WalshTableSize = Simulator_cdma.nearestPower(noOfStation);
+        int WalshTableSize = 16;
         WalshTable walsh = new WalshTable(WalshTableSize);
-
-        String senderData[] = new String[WalshTableSize];
-        for (int i = 0; i < noOfStation; i++) {
-            String s = "HELLO I AM WITH SENDER AND I BRING DATA OF ->" + String.valueOf(i);
-            System.out.println("SNDR " + i + " RCVR " + i + " -> " + s);
-            senderData[i] = EthernetFrame.MakeEthernetFrame(s, "SNDR " + String.valueOf(i),
-                    "RCVR " + String.valueOf(i));
-        }
-
-        long start = System.nanoTime();
-        int seq[][] = Simulator_cdma.encodeSequence(senderData, noOfStation, WalshTableSize, walsh);
-        String receiverData[] = Simulator_cdma.decodeSequence(seq, noOfStation, WalshTableSize, walsh);
-        long end = System.nanoTime();
-
-        for (int i = 0; i < noOfStation; i++) {
-            String sender = EthernetFrame.getSendAddr(receiverData[i]);
-            String receiver = EthernetFrame.getDestAddr(receiverData[i]);
-            String data = EthernetFrame.getData(receiverData[i]);
-            System.out.println("SNDR " + sender + " " + receiver + " " + " -> " + data);
-        }
-
-        long timeTaken = end - start;
-        System.out.println();
-        System.out.println();
-        System.out.println();
         System.out.println("   <- <- <- <-   Stats   -> -> -> ->");
-        System.out.println("No. of Senders -> " + noOfStation);
-        System.out.println("Number of bits transferred -> " + (73 * 8 * noOfStation));
-        System.out.println("Time Taken -> " + timeTaken + " nano sec");
-        sc.close();
+
+        for (int noOfStation = 2; noOfStation <= 16; noOfStation++) {
+            String senderData[] = new String[WalshTableSize];
+            for (int i = 0; i < noOfStation; i++) {
+                String s = "HELLO I AM WITH SENDER AND I BRING DATA OF ->" + String.valueOf(i);
+                // System.out.println("SNDR " + i + " RCVR " + i + " -> " + s);
+                senderData[i] = EthernetFrame.MakeEthernetFrame(s, "SNDR " + String.valueOf(i),
+                        "RCVR " + String.valueOf(i));
+            }
+
+            long start = System.nanoTime();
+            int seq[][] = Simulator_cdma.encodeSequence(senderData, noOfStation, WalshTableSize, walsh);
+            String receiverData[] = Simulator_cdma.decodeSequence(seq, noOfStation, WalshTableSize, walsh);
+            long end = System.nanoTime();
+
+            for (int i = 0; i < noOfStation; i++) {
+                String sender = EthernetFrame.getSendAddr(receiverData[i]);
+                String receiver = EthernetFrame.getDestAddr(receiverData[i]);
+                String data = EthernetFrame.getData(receiverData[i]);
+                // System.out.println("SNDR " + sender + " " + receiver + " " + " -> " + data);
+            }
+
+            long timeTaken = end - start;
+
+            System.out.println();
+            System.out.println("No. of Senders -> " + noOfStation);
+            System.out.println("Number of bits transferred -> " + (73 * 8 * noOfStation));
+            System.out.println("Time Taken -> " + timeTaken + " nano sec");
+            System.out.println("Throughput -> " + ((73 * 8 * noOfStation * 1000000000.0) / timeTaken) + " bits/sec");
+            System.out.println();
+
+        }
     }
 }
