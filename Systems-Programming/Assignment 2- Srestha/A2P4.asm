@@ -5,7 +5,7 @@ msg1 db 0AH,0DH,'ENTER 1ST NUMBER: $'
 msg2 db 0AH,0DH,'ENTER 2ND NUMBER: $'
 msg3 db 0AH,0DH,'THE RESULT AFTER MULTIPLYING IS: $'
 space db ' $'
-endldb 0AH,0DH,'$'
+endl  db 0AH,0DH,'$'
 
 val1 dw ?
 val2 dw ?
@@ -70,13 +70,13 @@ readnum proc near
 		pop ax
 		mov ah,00h
 		add bx,ax
-	jmploopnum
+	jmp loopnum
 	skip:
 	mov ax,bx
 	pop cx
 	pop bx
 	ret
-readnumendp
+readnum endp
 
 writenum proc near
 	; this procedure will display a decimal number
@@ -109,5 +109,5 @@ writenum proc near
 	pop bx
 	pop ax
 	ret                            
-writenumendp
+writenum endp
 end main
