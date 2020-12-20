@@ -7,9 +7,9 @@ prompt2     db "Enter Num: $"
 msg1        db "Array is: $"
 msg2        db "Selection Sort:$"
 msg3        db "Insertion Sort:$"
-lendb ?
-numsdb 10 DUP(?), "$"
-dec_outdb 2 DUP(?), "$"
+len db ?
+nums db 10 DUP(?), "$"
+dec_out db 2 DUP(?), "$"
 
 .code	                    ; code segment
 call main
@@ -63,31 +63,31 @@ ins_outer:
     dec si
 
 ins_inner:    
-cmpsi, 0
-jlins_outer_update
+cmp si, 0
+jl ins_outer_update
 
-cmpnums[si], dl
-jbeins_outer_update
+cmp nums[si], dl
+jbe ins_outer_update
 
     mov ch, nums[si]
     mov nums[di], ch
     dec di
     dec si
-jmpins_inner
+jmp ins_inner
 
 
 ins_outer_update:
     mov nums[si+1], dl
 inc cl
 cmp cl, len
-jlins_outer
+jl ins_outer
 
     pop dx
     pop cx
     pop bx
     pop ax
     ret
-insertion_sortendp
+insertion_sort endp
 
 ; selection sort 
 selection_sort proc
@@ -103,7 +103,7 @@ sel_outer:
     ; call ins_linefeed
 
     mov ch, 0
-incch
+inc ch
     mov dh, cl
     mov dl, [bx]
 sel_inner:
@@ -113,22 +113,22 @@ xchg cl, ch
     add bx, cx
     mov al, [bx]
 cmp dl, al
-jbesel_inner_upd
+jbe sel_inner_upd
     mov dl, al
     mov dh, cl
 
 sel_inner_upd:
     sub bx, cx
     pop cx
-incch
-cmpch, cl
-jlsel_inner
+inc ch
+cmp ch, cl
+jl sel_inner
 
 sel_done_inner:
     mov ah, [bx]
     push bx
     add bl, dh
-adcbh, 0
+adc bh, 0
     mov [bx], ah
     pop bx
 
@@ -137,14 +137,14 @@ adcbh, 0
 inc bx
     dec cl
 cmp cl, 1
-jgsel_outer
+jg sel_outer
 
     pop dx
     pop cx
     pop bx
     pop ax
     ret
-selection_sortendp
+selection_sort endp
 
 ; get array as input
 get_arr_inp proc
@@ -172,7 +172,7 @@ get_arr_elems_loop:
 
 inc cl
 cmp cl, len
-jlget_arr_elems_loop
+jl get_arr_elems_loop
 
 done_get_arr_elems:
 
@@ -181,7 +181,7 @@ done_get_arr_elems:
     pop bx
     pop ax
     ret
-get_arr_inpendp
+get_arr_inp endp
 
 disp_arr_output proc
     push ax
@@ -199,17 +199,17 @@ disp_arr_output_loop:
     mov al, 32
     call show_char
 
-incbx
+inc bx
 inc cl
 cmp cl, len
-jldisp_arr_output_loop
+jl disp_arr_output_loop
 
     pop dx
     pop cx
     pop bx
     pop ax
     ret
-disp_arr_outputendp
+disp_arr_output endp
 
 ; get decimal value, store in ax
 get_dec_val proc
@@ -227,13 +227,13 @@ cmp al, 13 ;cmp w/ [enter]
 
     mov bx, dx
     mov cl, 3
-shlbx, cl
+shl bx, cl
 shl dx, 1
     add dx, bx
     add dl, al
-jncget_characters
+jnc get_characters
     add dh, 1
-jmpget_characters
+jmp get_characters
 
 done:
     mov ax, dx
@@ -242,7 +242,7 @@ done:
     pop cx
     pop bx
     ret
-get_dec_valendp
+get_dec_val endp
 
 ; display ax value in decimal
 disp_dec_val proc
@@ -255,7 +255,7 @@ disp_dec_val proc
 disp_dec_val_loop:
     dec cl
 cmp cl, 0
-jldisp_dec_val_loop_done
+jl disp_dec_val_loop_done
     mov bx, offset dec_out
     push cx
     mov ch, 0
@@ -270,7 +270,7 @@ jldisp_dec_val_loop_done
     pop ax
 
     mov ah, 0
-jmpdisp_dec_val_loop
+jmp disp_dec_val_loop
 
 disp_dec_val_loop_done:
     mov dx, offset dec_out
@@ -281,7 +281,7 @@ disp_dec_val_loop_done:
     pop bx
     pop ax
     ret
-disp_dec_valendp
+disp_dec_val endp
 
 ; show character, ascii value in al
 show_char proc
@@ -295,7 +295,7 @@ show_char proc
     pop dx
     pop ax
     ret
-show_charendp
+show_char endp
 
 ; show message, location in dx
 show_msg proc
@@ -304,14 +304,14 @@ show_msg proc
     int 21h
     pop ax
     ret
-show_msgendp
+show_msg endp
 
 ; get a single character, modify ah, store in al
 get_char proc
     mov ah, 1
     int 21h
     ret
-get_charendp
+get_char endp
 
 ; insert new-line
 ins_linefeed proc
@@ -323,6 +323,6 @@ ins_linefeed proc
     pop dx
     pop ax
     ret
-ins_linefeedendp
+ins_linefeed endp
 
 end
