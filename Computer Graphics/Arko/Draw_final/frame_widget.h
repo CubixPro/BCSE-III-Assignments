@@ -14,11 +14,15 @@
 #include <QPair>
 #include <QTextStream>
 #include <QElapsedTimer>
-#include <QThread>
+#include <QTimer>
+#include <QRgb>
+#include <QImage>
+
 class frame_widget : public QFrame
 {
     Q_OBJECT
 private:
+    //int pixels;
     int size;
     bool grid;
     bool modified;
@@ -28,8 +32,6 @@ private:
     int major;
     int minor;
     bool visibleAxes;
-    bool line_DDA;
-    bool line_BA;
     bool circle_MP;
     bool circle_BA;
     bool circle_P;
@@ -46,6 +48,12 @@ private:
     int RColor;
     int GColor;
     int BColor;
+    QList <QPoint> clickedPoints;
+    int polygonVertices;
+    bool polygonStart;
+    bool seed;
+    QPoint seedpoint;
+    QImage img;
 
 public:
     frame_widget(QWidget *parent = nullptr);
@@ -63,16 +71,29 @@ public:
     QPoint setPoint1();
     QPoint setPoint2();
     void changeCurrentColour(int a, char c);
-    void drawLineDDA();
-    void drawLineBA();
+    void drawLineDDA(QPoint p1, QPoint p2);
+    void drawLineBA(QPoint p1, QPoint p2);
     void drawCircle(int x, int y);
     void drawEllipse(int r1, int r2, int x);
+    void destroyPolygon(int x);
+    void createPolygon(int x);
+    void drawPolygon();
+    void setSeed();
+    void boundary_fill();
+    void flood_fill();
+    void scanLine_fill();
+    void isMinMax(int a);
 
 signals:
     void sendCoord(int x, int y);
     void sendPress(int x, int y);
     void sendColorLebel(int a, int b, int c);
     void sendTime(int a);
+    void displayPolygonEnd(int x, int y);
+    void displayPolygonStart(int x, int y);
+    void startPolygon();
+    void endPolygon();
+    void sendSeed(int x, int y);
 };
 
 #endif // FRAME_WIDGET_H

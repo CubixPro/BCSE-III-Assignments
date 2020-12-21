@@ -42,14 +42,17 @@ private slots:
     void on_actionCreate_New_triggered();
     void on_pushButton_2_clicked();
     void on_pushButton_clicked();
-    void on_pushButton_3_clicked();
     void on_pushButton_5_clicked();
-    void on_pushButton_4_clicked();
     void on_pushButton_6_clicked();
     void on_rSlider_valueChanged(int position);
     void on_gSlider_valueChanged(int position);
     void on_bSlider_valueChanged(int position);
     void on_pushButton_7_clicked();
+    void on_pushButton_8_clicked();
+    void on_vertices_valueChanged(int arg1);
+    void on_pushButton_9_clicked();
+    void on_pushButton_3_clicked();
+    void on_pushButton_4_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -59,12 +62,11 @@ public slots:
     void showPress(int x, int y);
     void showColorLebel(int a, int b, int c);
     void showTime(int a);
+    void displayPolygonEnd(int x, int y);
+    void displayPolygonStart(int x, int y);
+    void startPolygon();
+    void endPolygon();
+    void showSeed(int x, int y);
 
-signals:
-    void drawLineDDA();
-    void drawLineBA();
-    void drawCircle(int x, int y);
-    void drawEllipse(int r1, int r2, int x);
-    void changeColour(int a, char c);
 };
 #endif // MAINWINDOW_H
