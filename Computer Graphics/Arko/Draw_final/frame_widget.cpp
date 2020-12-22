@@ -2,13 +2,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define maxHt 500
-#define maxWd 500
-#define maxVer 250000
-
-vector<pair<int, int>> edgeList;
-vector<pair<int,int>> edges;
-
 QPoint frame_widget::convertPixel(QPoint p)
 {
    QPoint pos = p;
@@ -49,38 +42,11 @@ bool sortDef(pair<int, int> a, pair<int,int> b) {
     else return false;
 }
 
-frame_widget::frame_widget(QWidget *parent):
-    QFrame(parent)
-{
-    size = 100;
-    grid = false;
-    modified = false;
-    size = 10;
-    maxwidth = 500;
-    maxheight = 500;
-    visibleAxes = false;
-    this->setMouseTracking(true) ;
-    currentcol = QColor(Qt::red);
-    circle_P = false;
-    circle_MP = false;
-    circle_BA = false;
-    circle_PA = false;
-    ellipse_MP = false;
-    ellipse_P = false;
-    RColor = 255;
-    GColor = 0;
-    BColor = 0;
-    polygonVertices = 3;
-    polygonStart = false;
-    seed = false;
-    //pixels = 50;
-    createGrid();
-}
-
 void frame_widget::createGrid()
 {
     points.clear();
     destroyPolygon(polygonVertices);
+    edges.clear();
     img = QImage(maxwidth, maxheight, QImage::Format_RGB32);
 
     for(int i=0; i<maxwidth; i++) {
@@ -90,12 +56,41 @@ void frame_widget::createGrid()
     update();
 }
 
+frame_widget::frame_widget(QWidget *parent):
+    QFrame(parent)
+{
+    grid = false;
+    modified = false;
+    size = 10;
+    maxwidth = 500;
+    maxheight = 500;
+    visibleAxes = false;
+    this->setMouseTracking(true) ;
+    currentcol = QColor(Qt::red);
+    fillColor = QColor(Qt::white);
+    circle_P = false;
+    circle_MP = false;
+    circle_BA = false;
+    circle_PA = false;
+    ellipse_MP = false;
+    ellipse_P = false;
+    RColor = 255;
+    GColor = 0;
+    BColor = 0;
+    RFillColor = 255;
+    GFillColor = 255;
+    BFillColor = 255;
+    polygonVertices = 3;
+    polygonStart = false;
+    seed = false;
+    createGrid();
+}
+
 void frame_widget::changeSize(int x)
 {
     size = x;
     maxwidth = (500/size) * size ;
     maxheight = (500/size)*size ;
-    //pixels = maxwidth/size;
     createGrid();
 }
 
@@ -432,6 +427,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
         }
     }
 }
+
 void frame_widget::mousePressEvent(QMouseEvent *event)
 {
        modified = true;
@@ -458,11 +454,12 @@ void frame_widget::mousePressEvent(QMouseEvent *event)
            }
        }
 
-       points.append({lastpoint, currentcol});QPoint last = convertPixel(lastpoint);
+       points.append({lastpoint, currentcol});
+       QPoint last = convertPixel(lastpoint);
        emit sendPress(last.x(), last.y());
 
        if(seed) {
-           points.append({lastpoint, QColor(Qt::white)});
+           points.append({lastpoint, fillColor});
            seed = false;
            QPoint last = convertPixel(lastpoint);
            emit sendSeed(last.x(), last.y());
@@ -502,10 +499,28 @@ void frame_widget::changeCurrentColour(int a, char c)
     emit sendColorLebel(RColor, GColor, BColor);
 }
 
+void frame_widget::changeCurrentFillColour(int a, char c)
+{
+    QColor q(RFillColor, GFillColor, BFillColor);
+    if(c == 'R') {
+        q.setRed(a);
+        RFillColor = a;
+    }
+    else if(c == 'G') {
+        q.setGreen(a);
+        GFillColor = a;
+    }
+    else {
+        q.setBlue(a);
+        BFillColor = a;
+    }
+    fillColor = q;
+    emit sendFillColorLebel(RFillColor, GFillColor, BFillColor);
+}
+
 void frame_widget::drawLineDDA(QPoint temp1, QPoint temp2)
 {
-    QRgb fillColor = qRgb(255, 255, 255);
-    QRgb edgeColor = qRgb(currentcol.red(), currentcol.green(), currentcol.blue());
+    QRgb edgeColour = qRgb(currentcol.red(), currentcol.green(), currentcol.blue());
     double x = temp1.x();
     double y = temp1.y();
     double dx = (temp2.x() - temp1.x());
@@ -523,7 +538,7 @@ void frame_widget::drawLineDDA(QPoint temp1, QPoint temp2)
         x = x + (inc_x);
         y = y + (inc_y);
         QPoint p0 = convertCoord(round(x), round(y));
-        if(img.pixel(p0.x(), p0.y()) != edgeColor) points.append({p0, fillColor});
+        if(img.pixel(p0.x(), p0.y()) != edgeColour) points.append({p0, fillColor});
     }
     modified = true;
 }
@@ -562,7 +577,6 @@ void frame_widget::drawLineBA(QPoint temp1, QPoint temp2)
                 p-=2*dx;
             }
             p+=2*dy;
-
         }
     }
     else
@@ -612,6 +626,7 @@ void frame_widget::createPolygon(int x)
         clickedPoints.pop_front();
     polygonVertices = x;
     polygonStart = true;
+    edges.clear();
     emit startPolygon();
 }
 
@@ -661,7 +676,7 @@ void frame_widget::setSeed()
 void frame_widget::boundary_fill()
 {
     QRgb edgeColor = qRgb(currentcol.red(), currentcol.green(), currentcol.blue());
-    QRgb fillColor = qRgb(255, 255, 255);
+    QRgb fillColour = qRgb(fillColor.red(), fillColor.green(), fillColor.blue());
     QTextStream out(stdout);
 
     QElapsedTimer timer;
@@ -675,7 +690,7 @@ void frame_widget::boundary_fill()
 
     for(int i=x; i<x+size; i++) {
         for(int j=y; j<y+size; j++) {
-            img.setPixel(i, j, fillColor);
+            img.setPixel(i, j, fillColour);
         }
     }
 
@@ -684,35 +699,35 @@ void frame_widget::boundary_fill()
         x = curr.x();
         y = curr.y();
 
-        if(img.pixel(x + size, y) != edgeColor && img.pixel(x + size, y) != fillColor) {
+        if(img.pixel(x + size, y) != edgeColor && img.pixel(x + size, y) != fillColour) {
             q.append(QPoint(x + size, y));
             for(int i=x+size; i<x+2*size; i++) {
                 for(int j=y; j<y+size; j++) {
-                    img.setPixel(i, j, fillColor);
+                    img.setPixel(i, j, fillColour);
                 }
             }
         }
-        if(img.pixel(x - size, y) != edgeColor && img.pixel(x - size, y) != fillColor) {
+        if(img.pixel(x - size, y) != edgeColor && img.pixel(x - size, y) != fillColour) {
             q.append(QPoint(x - size, y));
             for(int i=x-size; i<x; i++) {
                 for(int j=y; j<y+size; j++) {
-                    img.setPixel(i, j, fillColor);
+                    img.setPixel(i, j, fillColour);
                 }
             }
         }
-        if(img.pixel(x, y + size) != edgeColor && img.pixel(x, y + size) != fillColor) {
+        if(img.pixel(x, y + size) != edgeColor && img.pixel(x, y + size) != fillColour) {
             q.append(QPoint(x, y + size));
             for(int i=x; i<x+size; i++) {
                 for(int j=y+size; j<y+2*size; j++) {
-                    img.setPixel(i, j, fillColor);
+                    img.setPixel(i, j, fillColour);
                 }
             }
         }
-        if(img.pixel(x, y - size) != edgeColor && img.pixel(x, y - size) != fillColor) {
+        if(img.pixel(x, y - size) != edgeColor && img.pixel(x, y - size) != fillColour) {
             q.append(QPoint(x, y - size));
             for(int i=x; i<x+size; i++) {
                 for(int j=y-size; j<y; j++) {
-                    img.setPixel(i, j, fillColor);
+                    img.setPixel(i, j, fillColour);
                 }
             }
         }
@@ -731,7 +746,7 @@ void frame_widget::boundary_fill()
 void frame_widget::flood_fill()
 {
     QRgb prevColor = qRgb(0, 0, 0);
-    QRgb fillColor = qRgb(255, 255, 255);
+    QRgb fillColour = qRgb(fillColor.red(), fillColor.green(), fillColor.blue());
     QTextStream out(stdout);
 
     QElapsedTimer timer;
@@ -745,7 +760,7 @@ void frame_widget::flood_fill()
 
     for(int i=x; i<x+size; i++) {
         for(int j=y; j<y+size; j++) {
-            img.setPixel(i, j, fillColor);
+            img.setPixel(i, j, fillColour);
         }
     }
 
@@ -754,35 +769,35 @@ void frame_widget::flood_fill()
         x = curr.x();
         y = curr.y();
 
-        if(img.pixel(x + size, y) == prevColor && img.pixel(x + size, y) != fillColor) {
+        if(img.pixel(x + size, y) == prevColor && img.pixel(x + size, y) != fillColour) {
             q.append(QPoint(x + size, y));
             for(int i=x+size; i<x+2*size; i++) {
                 for(int j=y; j<y+size; j++) {
-                    img.setPixel(i, j, fillColor);
+                    img.setPixel(i, j, fillColour);
                 }
             }
         }
-        if(img.pixel(x - size, y) == prevColor && img.pixel(x - size, y) != fillColor) {
+        if(img.pixel(x - size, y) == prevColor && img.pixel(x - size, y) != fillColour) {
             q.append(QPoint(x - size, y));
             for(int i=x-size; i<x; i++) {
                 for(int j=y; j<y+size; j++) {
-                    img.setPixel(i, j, fillColor);
+                    img.setPixel(i, j, fillColour);
                 }
             }
         }
-        if(img.pixel(x, y + size) == prevColor && img.pixel(x, y + size) != fillColor) {
+        if(img.pixel(x, y + size) == prevColor && img.pixel(x, y + size) != fillColour) {
             q.append(QPoint(x, y + size));
             for(int i=x; i<x+size; i++) {
                 for(int j=y+size; j<y+2*size; j++) {
-                    img.setPixel(i, j, fillColor);
+                    img.setPixel(i, j, fillColour);
                 }
             }
         }
-        if(img.pixel(x, y - size) == prevColor && img.pixel(x, y - size) != fillColor) {
+        if(img.pixel(x, y - size) == prevColor && img.pixel(x, y - size) != fillColour) {
             q.append(QPoint(x, y - size));
             for(int i=x; i<x+size; i++) {
                 for(int j=y-size; j<y; j++) {
-                    img.setPixel(i, j, fillColor);
+                    img.setPixel(i, j, fillColour);
                 }
             }
         }
@@ -809,21 +824,29 @@ void frame_widget::isMinMax(int i) {
 
 void frame_widget::scanLine_fill()
 {
-    sort(edges.begin(), edges.end(), sortDef);
-    for(int i=0;i<edges.size()-1;i++) {
-        if(edges[i] == edges[i+1])
-            edges.erase(edges.begin() + i);
+    QElapsedTimer timer;
+    timer.start();
+    for(int j=0; j<clickedPoints.size(); j++) {
+        for(int i=0;i<edges.size();i++) {
+            if(edges[i].first == clickedPoints[j].x() && edges[i].second == clickedPoints[j].y()) {
+                edges.erase(edges.begin()+ i);
+                break;
+            }
+        }
     }
-    for(int i=0; i<clickedPoints.size(); i++) isMinMax(i);
+
+    for(int i=0; i<clickedPoints.size(); i++)
+        isMinMax(i);
     sort(edges.begin(), edges.end(), sortDef);
     QTextStream out(stdout);
-    //for(int i=0; i<edges.size();i++)
-    //    out<<edges[i].first<<" "<<edges[i].second<<endl;edges.push_back({edgeList[0].first, edgeList[0].second});
+
     for(int i=0; i<edges.size()-1; i=i+2) {
-        if(edges[i].second == edges[i+1].second)
+        if(edges[i].second == edges[i+1].second){
             drawLineDDA(QPoint(edges[i].first, edges[i].second), QPoint(edges[i+1].first, edges[i+1].second));
+        }
         else i--;
     }
+    int time = timer.nsecsElapsed();
+    emit sendTime(time/1000);
     update();
 }
-

@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->frame, &frame_widget::sendCoord, this, &MainWindow::showCoord);
     connect(ui->frame, &frame_widget::sendPress, this, &MainWindow::showPress);
     connect(ui->frame, &frame_widget::sendColorLebel, this, &MainWindow::showColorLebel);
+    connect(ui->frame, &frame_widget::sendFillColorLebel, this, &MainWindow::showFillColorLebel);
     connect(ui->frame, &frame_widget::sendTime, this, &MainWindow::showTime);
     connect(ui->frame, &frame_widget::displayPolygonEnd, this, &MainWindow::displayPolygonEnd);
     connect(ui->frame, &frame_widget::displayPolygonStart, this, &MainWindow::displayPolygonStart);
@@ -77,7 +78,12 @@ void MainWindow::showSeed(int x, int y)
 
 void MainWindow::showColorLebel(int a, int b, int c)
 {
-    ui->color->setText("(" + QString::number(a) + "," + QString::number(b) + "," + QString::number(c) + ")");
+    ui->color->setText("rgb(" + QString::number(a) + "," + QString::number(b) + "," + QString::number(c) + ")");
+}
+
+void MainWindow::showFillColorLebel(int a, int b, int c)
+{
+    ui->fillcolor->setText("rgb(" + QString::number(a) + "," + QString::number(b) + "," + QString::number(c) + ")");
 }
 
 void MainWindow::showTime(int a)
@@ -152,6 +158,21 @@ void MainWindow::on_gSlider_valueChanged(int pos)
 void MainWindow::on_bSlider_valueChanged(int pos)
 {
     ui->frame->changeCurrentColour(pos, 'B');
+}
+
+void MainWindow::on_rFill_valueChanged(int pos)
+{
+    ui->frame->changeCurrentFillColour(pos, 'R');
+}
+
+void MainWindow::on_gFill_valueChanged(int pos)
+{
+    ui->frame->changeCurrentFillColour(pos, 'G');
+}
+
+void MainWindow::on_bFill_valueChanged(int pos)
+{
+    ui->frame->changeCurrentFillColour(pos, 'B');
 }
 
 void MainWindow::on_pushButton_7_clicked()

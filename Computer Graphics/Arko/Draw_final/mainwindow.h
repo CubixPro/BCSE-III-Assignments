@@ -47,6 +47,9 @@ private slots:
     void on_rSlider_valueChanged(int position);
     void on_gSlider_valueChanged(int position);
     void on_bSlider_valueChanged(int position);
+    void on_rFill_valueChanged(int position);
+    void on_gFill_valueChanged(int position);
+    void on_bFill_valueChanged(int position);
     void on_pushButton_7_clicked();
     void on_pushButton_8_clicked();
     void on_vertices_valueChanged(int arg1);
@@ -61,6 +64,7 @@ public slots:
     void showCoord(int x , int y );
     void showPress(int x, int y);
     void showColorLebel(int a, int b, int c);
+    void showFillColorLebel(int a, int b, int c);
     void showTime(int a);
     void displayPolygonEnd(int x, int y);
     void displayPolygonStart(int x, int y);

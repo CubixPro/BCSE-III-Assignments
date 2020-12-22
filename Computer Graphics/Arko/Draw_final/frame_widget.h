@@ -1,6 +1,9 @@
 #ifndef FRAME_WIDGET_H
 #define FRAME_WIDGET_H
 
+#include <bits/stdc++.h>
+using namespace std;
+
 #include <QObject>
 #include <QWidget>
 #include <QMouseEvent>
@@ -22,7 +25,6 @@ class frame_widget : public QFrame
 {
     Q_OBJECT
 private:
-    //int pixels;
     int size;
     bool grid;
     bool modified;
@@ -44,20 +46,26 @@ private:
     QPoint lastpoint;
     QPoint convertPixel(QPoint p);
     QColor currentcol;
+    QColor fillColor;
     QPoint convertCoord(int x, int y);
     int RColor;
     int GColor;
     int BColor;
+    int RFillColor;
+    int GFillColor;
+    int BFillColor;
     QList <QPoint> clickedPoints;
     int polygonVertices;
     bool polygonStart;
     bool seed;
     QPoint seedpoint;
     QImage img;
+    vector <pair<int, int>> edgeList;
+    vector <pair<int, int>> edges;
 
 public:
-    frame_widget(QWidget *parent = nullptr);
 
+    frame_widget(QWidget *parent = nullptr);
     void createGrid();
     void changeSize(int x);
     void showAxes();
@@ -71,6 +79,7 @@ public:
     QPoint setPoint1();
     QPoint setPoint2();
     void changeCurrentColour(int a, char c);
+    void changeCurrentFillColour(int a, char c);
     void drawLineDDA(QPoint p1, QPoint p2);
     void drawLineBA(QPoint p1, QPoint p2);
     void drawCircle(int x, int y);
@@ -88,6 +97,7 @@ signals:
     void sendCoord(int x, int y);
     void sendPress(int x, int y);
     void sendColorLebel(int a, int b, int c);
+    void sendFillColorLebel(int a, int b, int c);
     void sendTime(int a);
     void displayPolygonEnd(int x, int y);
     void displayPolygonStart(int x, int y);
