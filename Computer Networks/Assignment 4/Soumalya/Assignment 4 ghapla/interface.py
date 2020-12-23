@@ -6,7 +6,7 @@ import sys
 from sender import *
 from receiver import *
 from channelFile import *
-#sys.path.append('../package')
+sys.path.append('../Assignment 4')
 import const
 
 

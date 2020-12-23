@@ -47,20 +47,18 @@ class Sender:
                     dataToSend.append(j * dataBit)
                 ##############################################
                 self.lock.acquire()
-                print("LOCK ACQUIRED!")
                 self.senderToChannel.send(dataToSend)
                 self.lock.release()
-                print("LOCK RELEASED!")
                 ##############################################
-                print("(Sender{}:) data bit send {}".format(self.name+1, dataBit))
-                print("Sender waiting for Channel nextTimeSlot")
+                # print("(Sender{}:) data bit send {}".format(self.name+1, dataBit))
+                # print("Sender waiting for Channel nextTimeSlot")
                 self.nextTimeSlot.wait()
-                print("Wait over for sender!")
+                # print("Wait over for sender!")
 
             byte = file.read(const.defaultDataPacketSize)
             #time.sleep(0.05)
         
-        print("(Sender{}:) DONE SENDING...".format(self.name + 1))
+        # print("(Sender{}:) DONE SENDING...".format(self.name + 1))
 
         while(True):
             silent = 0

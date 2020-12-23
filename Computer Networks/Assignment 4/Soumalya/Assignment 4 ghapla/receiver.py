@@ -3,7 +3,7 @@ import random
 import time
 import threading
 import sys
-#sys.path.append('../package')
+sys.path.append('../Assignment 4')
 import const
 
 
@@ -15,6 +15,7 @@ class Receiver:
         self.waitTillReceived   = waitTillReceived
         self.senderToReceive    = self.selectSender()
         self.codeLength         = len(self.walshTable[0])
+        self.specialData        = ['0', '1', '0', '1', '1', '1', '0']
 
     def selectSender(self):
         num = random.randint(0, const.totalSenderNumber-1)
@@ -27,7 +28,7 @@ class Receiver:
         print("Data:" + str(data))
         string = ''.join(data)
         character = chr(int(string,2))
-        print("Char received: " + character)
+        print("(Receiver{}:)Char received: {}".format(self.name+1, character))
         return character
     
     def openFile(self, sender):
@@ -61,6 +62,16 @@ class Receiver:
             if len(totalData) < 8 and bit != -1:
                 # add the bit to totalData 
                 totalData.append(str(bit))
+
+                # if totalData is full get the character
+                if len(totalData) == 8:
+                    character = self.getCharacter(totalData)
+                    outFile = self.openFile(self.senderToReceive)
+                    outFile.write(character)
+                    outFile.close()
+                    totalData = []
+
+
             elif len(totalData) < 8 and bit == -1:
                 self.doNothing()
             else:

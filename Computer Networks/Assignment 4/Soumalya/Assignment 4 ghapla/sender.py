@@ -3,6 +3,7 @@ import random
 import time
 import threading
 import sys
+sys.path.append('../Assignment 4')
 import const
 
 
@@ -42,12 +43,13 @@ class Sender:
 
     def preProcessing(self):
         for i in range(1,const.totalSenderNumber+1):
-            fileName = "input"+str(i+1)+".txt"
+            fileName = "input"+str(i)+".txt"
             self.data[i] = []
             file = self.openFile(fileName)
             byte = file.read(const.defaultDataPacketSize)
             while byte:
                 data1 = '{0:08b}'.format(ord(byte))
+
                 for j in range(len(data1)):
                     dataToAppend = [] 
                     dataBit = int(data1[j])
