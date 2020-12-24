@@ -113,6 +113,24 @@ public:
 
     void on_pushButton_11_clicked();
 
+    void on_pushButton_13_clicked();
+
+    void on_pushButton_14_clicked();
+
+    void on_pushButton_12_clicked();
+
+    void on_pushButton_15_clicked();
+
+    void on_comboBox_2_activated(int index);
+
+    void on_pushButton_16_clicked();
+
+    void on_pushButton_17_clicked();
+
+    void on_pushButton_18_clicked();
+
+    void on_pushButton_19_clicked();
+
 private:
     Ui::MainWindow *ui;
     //frame_widget *gridFrame;
@@ -120,11 +138,17 @@ private:
 
 public slots:
     void showCoord(int x , int y );
+    void showSeed(int x, int y);
+
 
 signals:
     void drawLinePressed();
     void drawLineBA();
     void changeColour(QColor p);
+    void scanLineClicked();
+    void setVertexClicked();
+    void initializeScanLine();
+
 
 };
 #endif // MAINWINDOW_H

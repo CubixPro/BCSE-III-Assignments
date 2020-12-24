@@ -5,6 +5,18 @@
 #include <QMessageBox>
 #include <ctime>
 #include <ratio>
+#include <QTextStream>
+
+vector<pair<int, int>> myedgeList;
+vector<pair<int, int>> edges;
+bool sortDef(pair<int, int> a, pair<int, int> b)
+{
+    if(a.second > b.second) return true;
+       else if(a.second == b.second) {
+           return (a.first < b.first);
+       }
+       else return false;
+}
 QPoint frame_widget::convertPixel(QPoint p)
 {
     QPoint pos = p;
@@ -39,14 +51,85 @@ QPoint frame_widget::convertCoord(int x, int y)
 
 }
 
+void frame_widget::drawDelayLine(int x1, int y1, int x2, int y2)
+{
+         int dx=x2-x1;
+        int dy=y2-y1;
+
+
+
+        int xinc=(dx>0)?1:-1;
+        int yinc=(dy>0)?1:-1;
+
+        dx=abs(dx);
+        dy=abs(dy);
+
+        //Case for gentle slope
+        if(dx>dy)
+        {
+            int p=2*(dy)-dx;
+            int y=y1;
+
+            for(int x=x1; x!=x2; x+=xinc)
+
+            {
+                if(x != x1)
+
+               {     points.append({convertCoord(x,y), currentcol});
+                    //myedgeList.push_back({x, y});
+                    modified = true;
+                    usleep(90000);
+                    repaint();
+
+
+                }
+                if(p>=0)
+                {
+                    y+=yinc;
+                    p-=2*dx;
+                }
+                p+=2*dy;
+            }
+        }
+        //Case for steep slope
+        else
+        {
+            int p=2*(dx)-dy;
+            int x=x1;
+
+            for(int y=y1; y!=y2; y+=yinc)
+            {
+                if(y != y1)
+                {
+
+                    points.append({convertCoord(x,y), currentcol});
+                    modified = true;
+                    usleep(90000);
+                    repaint();
+                    myedgeList.push_back({x, y});
+
+                        }
+                if(p>=0)
+                {
+                    x+=xinc;
+                    p-=2*(dy);
+                }
+                p+=2*(dx);
+            }
+        }
+
+
+
+}
+
 frame_widget::frame_widget(QWidget *parent):
     QFrame(parent)
 {
     grid = false;
     modified = false;
     size = 10;
-    maxwidth = 600;
-    maxheight = 600;
+    maxwidth = 500;
+    maxheight = 500;
     visibleAxes = false;
     this->setMouseTracking(true) ;
     currentcol = QColor(Qt::red);
@@ -57,6 +140,10 @@ frame_widget::frame_widget(QWidget *parent):
     ellipse = false;
     circleDrawMethod = 0;
     rx = ry = 5;
+    fill = false;
+    seednow = false;
+    delay = false;
+
 }
 
 
@@ -65,15 +152,17 @@ frame_widget::frame_widget(QWidget *parent):
 void frame_widget::createGrid()
 {
     //grid = true;
+    //img = QImage(width(), height(), QImage::Format_RGB32);
     points.clear();
+    clearPolygon();
     update();
 }
 
 void frame_widget::changeSize(int x)
 {
     size = x;
-    maxwidth = (600/size) * size ;
-    maxheight = (600/size)*size ;
+    maxwidth = (500/size) * size ;
+    maxheight = (500/size)*size ;
     createGrid();
     //update();
 }
@@ -147,10 +236,10 @@ int min(int a, int b){
 }
 void frame_widget::paintEvent(QPaintEvent *p)
 {
-    //QPixmap pix(500, 500);
+    QPixmap pix(500, 500);
     QPainter paint(this);
-    //pix.fill(Qt::white);
-    paint.drawRect(0, 0, min(maxheight, 600), min(maxwidth, 600));
+    pix.fill(Qt::white);
+    paint.drawRect(0, 0, min(maxheight, 500), min(maxwidth, 500));
 
     if(grid){
         paint.setPen(QPen(Qt::gray));
@@ -242,7 +331,12 @@ void frame_widget::paintEvent(QPaintEvent *p)
 
             {
                 if(x != x1)
-                    points.append({convertCoord(x,y), currentcol});
+
+               {     points.append({convertCoord(x,y), currentcol});
+                    myedgeList.push_back({x, y});
+
+
+                }
                 if(p>=0)
                 {
                     y+=yinc;
@@ -260,7 +354,12 @@ void frame_widget::paintEvent(QPaintEvent *p)
             for(int y=y1; y!=y2; y+=yinc)
             {
                 if(y != y1)
+                {
+
                     points.append({convertCoord(x,y), currentcol});
+                    myedgeList.push_back({x, y});
+
+                        }
                 if(p>=0)
                 {
                     x+=xinc;
@@ -272,6 +371,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
 
 
         modified = true;
+        myedgeList.push_back({point2.x(), point2.y()});
         line_BA = false;
         auto time2 = std::chrono::high_resolution_clock::now();
         std::cout << "BA : ";
@@ -396,7 +496,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
                 double pi = 2*acos(0.0);
                 int xc = point1.x();
                 int yc = point1.y();
-                for(double i = 0 ; i <= pi/4 ; i += 1/(float)radius)
+                for(double i = 0 ; i <= pi/4  + 0.1  ; i += 1.0/(float)radius)
                 {
                     double y = round(radius * cos(i));
                     double x = round(radius * sin(i));
@@ -496,6 +596,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
 
     }
     if(modified){
+
         QPair<QPoint, QColor> p;
         foreach (p   , points ){
             paint.setBrush(p.second);
@@ -503,14 +604,125 @@ void frame_widget::paintEvent(QPaintEvent *p)
             int y = p.first.y();
             QPoint newp((x/size)*size, (y/size)*size);
             paint.drawRect(newp.x(), newp.y(), size,  size);
+            if(delay == true){
+               // sleep(1);
+            }
         }
-
+        delay = false;
     }
 
 
 }
+/*void frame_widget::flood_fill_until(int x1, int y1, QColor q1){
+
+
+}*/
+
+
+void frame_widget::setBoundaryColour(){
+    boundary_fill_colour = currentcol;
+}
+
+void frame_widget::clearPolygon()
+{
+    polygon.clear();
+    sortededges.clear();
+}
+
+void frame_widget::scanLineFill()
+{
+    for(int i = 0 ; i < sortededges.size() ; i++){
+        for(int j = 0 ; j < sortededges.size() ; j++){
+            if(sortededges[i].p1.y() > sortededges[j].p2.y())
+            {
+                Edge temp = sortededges[i];
+                sortededges[i] = sortededges[i + 1];
+                sortededges[i + 1] = temp;
+            }
+        }
+    }//sort the edges according to y in ascending order
+
+    int scanlineend = sortededges[0].p2.y();
+    for(int i = 1 ; i < sortededges.size() ; i++){
+        if(scanlineend < sortededges[i].p2.y()){
+            scanlineend = sortededges[i].p2.y();
+        }
+    }//find the largest y coordinate
+
+    int scanline = sortededges[0].p1.y();
+
+    vector<int> renderlist;
+
+    for(; scanline <= scanlineend ; scanline ++){
+        renderlist.clear();
+        for(int i = 0 ; i < sortededges.size() ; i++){
+            if(scanline == sortededges[i].p1.y())//intersects smaller vertice
+            {
+              if(scanline == sortededges[i].p2.y()){
+                  sortededges[i].deactivate();
+                  renderlist.push_back(round(sortededges[i].currX));
+              }
+              else{
+                  sortededges[i].activate();
+              }
+            }
+
+            if(scanline == sortededges[i].p2.y())//intersects the bigger vertice
+            {
+                sortededges[i].deactivate();
+                renderlist.push_back((round(sortededges[i].currX)));
+            }
+
+            if(scanline > sortededges[i].p1.y() && scanline < sortededges[i].p2.y()){
+                sortededges[i].update();
+                renderlist.push_back(round( sortededges[i].currX));
+            }
+        }
+
+        int swaptmp;
+
+        for (int i = 0; i < (int)renderlist.size(); i++)
+                    for (int j = 0; j < (int)renderlist.size() - 1; j++)
+                    {
+                        if (renderlist[j] > renderlist[j + 1])
+                        {
+                            swaptmp = renderlist[j];
+                            renderlist[j] = renderlist[j + 1];
+                            renderlist[j + 1] = swaptmp;
+                        }
+
+                    }
+
+        for(int i = 0 ; i < (int)renderlist.size() ; i+= 2){
+            //point1 = QPoint(renderlist[i], scanline);
+            //point2 = QPoint(renderlist[i + 1], scanline);
+            //drawLineBA();
+            //usleep(900000);
+            drawDelayLine(renderlist[i], scanline, renderlist[i + 1], scanline);
+        }
+    }
+
+
+
+
+
+
+}
+
 void frame_widget::mousePressEvent(QMouseEvent *event)
 {
+    if(seednow){
+        QPixmap qPix  = QWidget::grab();
+        QImage image(qPix.toImage());
+        QPoint pixelval = convertCoord(seed.x(), seed.y());
+        QColor q = image.pixel(pixelval.x() + size - 1, pixelval.y() + size - 1);
+        seed_colour = q;
+        seed = convertPixel(event->pos());
+        fill_colour = currentcol;
+        emit sendSeed(seed.x(), seed.y());
+        seednow = false;
+        return;
+    }
      modified = true;
    lastpoint = event->pos();
    if(lastpoint.x() >= maxwidth || lastpoint.y() >= maxheight)
@@ -543,13 +755,22 @@ void frame_widget::changeCurrentColour(QColor q)
 
 void frame_widget::drawLineDDA()
 {
+
     line_DDA = true;
-    update();
+    repaint();
 
 }
 void frame_widget::drawLineBA(){
+
     line_BA = true;
-    update();
+    repaint();
+    QPixmap qPix  = QWidget::grab();
+
+    QImage image(qPix.toImage());
+
+    QColor q = image.pixel(305, 305);
+    qDebug() << q.name();
+    //repaint();
 }
 
 void frame_widget::drawCircle()
@@ -582,10 +803,112 @@ void frame_widget::setrx(int val)
 
 void frame_widget::setry(int val)
 {
-   ry = val;
+    ry = val;
 }
 
+void frame_widget::floodFill()
+{
+    startfloodFill();
+    delay = true;
+    modified = true;
+    update();
+}
+void frame_widget::boundaryFill(){
+    startboundaryFill();
+    modified = true;
+    update();
 
+}
 
+void frame_widget::startboundaryFill(){
+    QPoint temp(seed.x(), seed.y());
+    QPixmap qPix  = QWidget::grab();
+    QImage image(qPix.toImage());
+    QPoint pixelval = convertCoord(seed.x(), seed.y());
+   if(pixelval.x() < 0 || pixelval.x() > width() || pixelval.x() < 0 || pixelval.y() > height())
+    {
+        return;
+    }
+    QColor q = image.pixel(pixelval.x() + size - 1, pixelval.y() + size - 1);
 
+    if(q != boundary_fill_colour && q != fill_colour){
+        points.append({pixelval, fill_colour});
+        modified = true;
+        usleep(90000);
+        repaint();
+        seed = QPoint(temp.x() + 1, temp.y());
+        startboundaryFill();
+        seed = QPoint(temp.x() - 1, temp.y());
+        startboundaryFill();
+        seed = QPoint(temp.x(), temp.y() - 1);
+        startboundaryFill();
+        seed = QPoint(temp.x(), temp.y() + 1);
+        startboundaryFill();
+   }
+
+}
+
+void frame_widget::addPointToPolygon()
+{
+    polygon.push_back(lastpoint);
+
+}
+
+void frame_widget::drawPolygon(){
+    for(int i = 0 ; i < polygon.size() ; i++){
+        point1 = convertPixel(polygon[i]);
+        point2 = convertPixel(polygon[(i + 1 )% polygon.size()]);
+        drawLineBA();
+        if(i == (polygon.size() - 1))
+        {
+            //continue;
+        }
+        if(point1.y() < point2.y()){
+            sortededges.push_back(Edge(point1, point2));
+        }
+        else{
+            sortededges.push_back(Edge(point2, point1));
+        }
+    }
+}
+
+void frame_widget::startfloodFill(){
+    QPoint temp(seed.x(), seed.y());
+    QPixmap qPix  = QWidget::grab();
+    QImage image(qPix.toImage());
+    QPoint pixelval = convertCoord(seed.x(), seed.y());
+    if(pixelval.x() < 0 && pixelval.x() > width() && pixelval.y() < 0 && pixelval.y() > height())
+    {
+        return;
+    }
+    QColor q = image.pixel(pixelval.x() + size - 1, pixelval.y() + size - 1);
+
+    if(q != seed_colour){
+        return;
+    }
+    points.append({pixelval, fill_colour});
+    modified = true;
+    usleep(90000);
+    repaint();
+    seed = QPoint(temp.x() + 1, temp.y());
+    qDebug() << seed ;
+    startfloodFill();
+    seed = QPoint(temp.x() - 1, temp.y());
+    qDebug() << seed ;
+    startfloodFill();
+    seed = QPoint(temp.x() , temp.y() + 1);
+    qDebug() << seed ;
+    startfloodFill();
+    seed = QPoint(temp.x(), temp.y() - 1);
+    qDebug() << seed ;
+    startfloodFill();
+
+}
+
+void frame_widget::setSeedColour()
+{
+    seednow = true;
+   //seed = convertPixel(lastpoint);
+   //fill_colour = currentcol;
+}
 

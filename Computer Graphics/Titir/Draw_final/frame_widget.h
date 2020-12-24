@@ -1,4 +1,4 @@
-#ifndef FRAME_WIDGET_H
+﻿#ifndef FRAME_WIDGET_H
 #define FRAME_WIDGET_H
 
 #include <QObject>
@@ -14,6 +14,18 @@
 #include <QPair>
 #include <bits/stdc++.h>
 #include <chrono>
+#include <QMap>
+#include <QVector>
+#include <bits/stdc++.h>
+#include <QImage>
+#include <QtDebug>
+#define maxVer 360000
+#define maxHt 600
+#include<unistd.h>
+#include <edge.h>
+
+using namespace std;
+
 
 class frame_widget : public QFrame
 {
@@ -39,6 +51,16 @@ private:
     int circleDrawMethod;//1 => midpoint 2 => Bresh 3=>polar
     int rx, ry;
     bool ellipse;
+    bool fill;
+    QPoint seed;
+    QColor fill_colour;
+    QColor seed_colour;
+    QColor boundary_fill_colour;
+    bool seednow ;
+    bool delay;
+    QVector<QPoint> polygon;
+    QVector<Edge> sortededges;
+    void drawDelayLine(int x1, int y1, int x2, int y2);
 
 
 public:
@@ -74,10 +96,21 @@ public:
     void setRadiiEllipse(int rx, int ry);
     void setrx(int val);
     void setry(int val);
+    void floodFill();
+    void setSeedColour();
+    void startfloodFill();
+    void boundaryFill();
+    void startboundaryFill();
+    void addPointToPolygon();
+    void drawPolygon();
+    void setBoundaryColour();
+    void clearPolygon();
+    void scanLineFill();
 
 signals:
 
     void sendCoord(int x, int y);
+    void sendSeed(int x, int y);
 };
 
 #endif // FRAME_WIDGET_H

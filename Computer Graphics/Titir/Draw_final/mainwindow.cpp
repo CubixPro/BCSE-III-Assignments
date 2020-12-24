@@ -20,9 +20,13 @@ MainWindow::MainWindow(QWidget *parent):
     //resize(520, 550);
     ui->colour->setStyleSheet("background-color : red; border : 2px white ; border-radius : 5px");
     connect(ui->frame, &frame_widget::sendCoord, this, &MainWindow::showCoord);
+    connect(ui->frame, &frame_widget::sendSeed, this, &MainWindow::showSeed);
     connect(this, &MainWindow::changeColour, ui->frame, &frame_widget::changeCurrentColour);
     connect(this, &MainWindow::drawLinePressed, ui->frame, &frame_widget::drawLineDDA);
     connect(this, &MainWindow::drawLineBA, ui->frame, &frame_widget::drawLineBA);
+    //connect(this, &MainWindow::scanLineClicked, ui->frame, &frame_widget::on_fill_scan_clicked);
+    //connect(this, &MainWindow::setVertexClicked, ui->frame, &frame_widget::on_set_vertex_clicked);
+    //connect(this, &MainWindow::initializeScanLine, ui->frame, &frame_widget::on_scanline_clicked);
 
   }
 
@@ -93,7 +97,10 @@ void MainWindow::showCoord(int x, int y)
 }
 
 
+void MainWindow::showSeed(int x, int y){
+    ui->seed->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
 
+}
 
 
 
@@ -306,4 +313,60 @@ void MainWindow::on_pushButton_11_clicked()
     std::string s = out.str();
     ui->time_ellipse->setText(QString::fromStdString(s)) ;
 
+}
+
+void MainWindow::on_pushButton_13_clicked()
+{
+   ui->frame->addPointToPolygon();
+}
+
+void MainWindow::on_pushButton_14_clicked()
+{
+   ui->frame->drawPolygon();
+}
+
+void MainWindow::on_pushButton_12_clicked()
+{
+   //ui->frame->startFillPolygon();
+    //emit setVertexClicked();
+    ui->frame->floodFill();
+}
+
+void MainWindow::on_pushButton_15_clicked()
+{
+   ui->frame->clearPolygon();
+}
+
+void MainWindow::on_comboBox_2_activated(int index)
+{
+    /*if(index != 2)
+        ui->frame->startFillPolygon();
+    else{
+        //ui->frame->startScanLine();
+        ui->frame->scanLine_fill();
+    }*/
+}
+
+
+
+void MainWindow::on_pushButton_16_clicked()
+{
+   //emit initializeScanLine();
+    ui->frame->setSeedColour();
+}
+
+void MainWindow::on_pushButton_17_clicked()
+{
+   //emit scanLineClicked();
+    ui->frame->boundaryFill();
+}
+
+void MainWindow::on_pushButton_18_clicked()
+{
+   ui->frame->setBoundaryColour();
+}
+
+void MainWindow::on_pushButton_19_clicked()
+{
+   ui->frame->scanLineFill();
 }
