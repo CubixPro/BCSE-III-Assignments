@@ -104,7 +104,7 @@ void frame_widget::drawDelayLine(int x1, int y1, int x2, int y2)
 
                     points.append({convertCoord(x,y), currentcol});
                     modified = true;
-                    usleep(90000);
+                   usleep(90000);
                     repaint();
                     myedgeList.push_back({x, y});
 
@@ -633,11 +633,11 @@ void frame_widget::scanLineFill()
 {
     for(int i = 0 ; i < sortededges.size() ; i++){
         for(int j = 0 ; j < sortededges.size() - 1 ; j++){
-            if(sortededges[j].p1.y() > sortededges[j + 1].p2.y())
+            if(sortededges[j].p1.y() > sortededges[j + 1].p1.y())
             {
-                Edge temp = sortededges[i];
-                sortededges[i] = sortededges[i + 1];
-                sortededges[i + 1] = temp;
+                Edge temp = sortededges[j];
+                sortededges[j] = sortededges[j + 1];
+                sortededges[j + 1] = temp;
             }
         }
     }//sort the edges according to y in ascending order
