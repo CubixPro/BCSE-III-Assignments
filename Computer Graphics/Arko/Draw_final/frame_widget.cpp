@@ -2,25 +2,55 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+frame_widget::frame_widget(QWidget *parent):
+    QFrame(parent)
+{
+    grid = false;
+    modified = false;
+    size = 10;
+    maxwidth = 530;
+    maxheight = 530;
+    visibleAxes = false;
+    this->setMouseTracking(true) ;
+    currentcol = QColor(Qt::red);
+    fillColor = QColor(Qt::white);
+    circle_P = false;
+    circle_MP = false;
+    circle_BA = false;
+    circle_PA = false;
+    ellipse_MP = false;
+    ellipse_P = false;
+    RColor = 255;
+    GColor = 0;
+    BColor = 0;
+    RFillColor = 255;
+    GFillColor = 255;
+    BFillColor = 255;
+    polygonVertices = 3;
+    polygonStart = false;
+    seed = false;
+    createGrid();
+}
+
 QPoint frame_widget::convertPixel(QPoint p)
 {
    QPoint pos = p;
    int x = pos.x();
    int y = pos.y();
-   if(x >= (width()/(2*size))*size  && x <= ((width()/(2*size))*size  + size)){
+   if(x >= (maxwidth/(2*size))*size  && x <= (maxwidth/(2*size))*size  + size){
         x = 0;
    }
-   else if(x >= width()/2)
-    x = (x - (width()/(2*size))*size - size)/size + 1 ;
+   else if(x >= maxwidth/2)
+    x = (x - (maxwidth/(2*size))*size - size)/size + 1 ;
    else{
-        x = -(((width()/(2*size))*size  - x)/size + 1) ;
+        x = -(((maxwidth/(2*size))*size  - x)/size + 1) ;
    }
-   if(y >= (height()/(2*size))*size && y <= ((height()/(2*size))*size + size)  )
+   if(y >= (maxheight/(2*size))*size && y <= ((maxheight/(2*size))*size + size)  )
        y = 0;
-   else if(y >= height()/2)
-    y = -((y - (height()/(2*size))*size - size)/size + 1);
+   else if(y >= maxheight/2)
+    y = -((y - (maxheight/(2*size))*size - size)/size + 1);
    else{
-       y = ((height()/(2*size))*size - y)/size + 1;
+       y = ((maxheight/(2*size))*size - y)/size + 1;
    }
    QPoint pf(x, y);
    return pf;
@@ -28,7 +58,7 @@ QPoint frame_widget::convertPixel(QPoint p)
 
 QPoint frame_widget::convertCoord(int x, int y)
 {
-   QPoint p((width()/(2 * size))*size, (height()/(2 * size))*size);
+   QPoint p((maxwidth/(2 * size))*size, (maxheight/(2 * size))*size);
    p.setX(p.x() + size*x);
    p.setY(p.y() - size*y);
    return p;
@@ -56,41 +86,11 @@ void frame_widget::createGrid()
     update();
 }
 
-frame_widget::frame_widget(QWidget *parent):
-    QFrame(parent)
-{
-    grid = false;
-    modified = false;
-    size = 10;
-    maxwidth = 500;
-    maxheight = 500;
-    visibleAxes = false;
-    this->setMouseTracking(true) ;
-    currentcol = QColor(Qt::red);
-    fillColor = QColor(Qt::white);
-    circle_P = false;
-    circle_MP = false;
-    circle_BA = false;
-    circle_PA = false;
-    ellipse_MP = false;
-    ellipse_P = false;
-    RColor = 255;
-    GColor = 0;
-    BColor = 0;
-    RFillColor = 255;
-    GFillColor = 255;
-    BFillColor = 255;
-    polygonVertices = 3;
-    polygonStart = false;
-    seed = false;
-    createGrid();
-}
-
 void frame_widget::changeSize(int x)
 {
     size = x;
-    maxwidth = (500/size) * size ;
-    maxheight = (500/size)*size ;
+    maxwidth = (530/size) * size ;
+    maxheight = (530/size)*size ;
     createGrid();
 }
 
@@ -148,15 +148,15 @@ void frame_widget::paintEvent(QPaintEvent *p)
     QPainter paint(this);
     QBrush qBrush(Qt::black);
     paint.setBrush(qBrush);
-    paint.drawRect(0, 0, min(maxheight, 500), min(maxwidth, 500));
+    paint.drawRect(0, 0, maxheight, maxwidth);
 
     if(grid){
         paint.setPen(QPen(Qt::white));
-        for(int i = 0 ; i < min(maxwidth, width()) ; i+=size){
-            paint.drawLine(i, 0, i, min(maxheight, height()));
+        for(int i = 0 ; i < maxwidth ; i+=size){
+            paint.drawLine(i, 0, i, maxheight);
         }
-        for(int j = 0 ; j < min(maxheight, height()) ; j+=size){
-            paint.drawLine(0, j, min(maxwidth, width()), j);
+        for(int j = 0 ; j < maxheight ; j+=size){
+            paint.drawLine(0, j, maxwidth, j);
         }
     }
 
@@ -164,8 +164,8 @@ void frame_widget::paintEvent(QPaintEvent *p)
         QBrush qBrush(Qt::gray);
         paint.setBrush(qBrush);
 
-        paint.drawRect((width()/(2*size))*size, 0, size, min(maxheight, height()));
-        paint.drawRect(0, (height()/(2*size))*size,  min(maxwidth, width()), size);
+        paint.drawRect((maxwidth/(2*size))*size, 0, size, maxheight);
+        paint.drawRect(0, (maxheight/(2*size))*size, maxwidth, size);
     }
 
     if(circle_P) {
@@ -426,6 +426,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
             }
         }
     }
+
 }
 
 void frame_widget::mousePressEvent(QMouseEvent *event)
@@ -601,6 +602,12 @@ void frame_widget::drawLineBA(QPoint temp1, QPoint temp2)
     modified = true;
 }
 
+void frame_widget::drawLine(int x)
+{
+    drawLineBA(point1, point2);
+    update();
+}
+
 void frame_widget::drawCircle(int x, int y)
 {
     radius = y;
@@ -646,6 +653,7 @@ void frame_widget::drawPolygon()
     timer.start();
 
     for(int i=0; i<clickedPoints.size(); i++) {
+
         edgeList.clear();
         QPoint tempPoint1 = clickedPoints[i];
         QPoint tempPoint2 = clickedPoints[(i+1)%clickedPoints.size()];
@@ -838,7 +846,6 @@ void frame_widget::scanLine_fill()
     for(int i=0; i<clickedPoints.size(); i++)
         isMinMax(i);
     sort(edges.begin(), edges.end(), sortDef);
-    QTextStream out(stdout);
 
     for(int i=0; i<edges.size()-1; i=i+2) {
         if(edges[i].second == edges[i+1].second){
@@ -849,4 +856,67 @@ void frame_widget::scanLine_fill()
     int time = timer.nsecsElapsed();
     emit sendTime(time/1000);
     update();
+}
+
+void frame_widget::translate(int x, int y)
+{
+    for(int i=0; i<clickedPoints.size(); i++) {
+        clickedPoints[i].setX(clickedPoints[i].x() + x);
+        clickedPoints[i].setY(clickedPoints[i].y() + y);
+    }
+    drawPolygon();
+}
+
+void frame_widget::scale(double x, double y)
+{
+    double center_x, center_y;
+    QPoint p = convertPixel(lastpoint);
+    center_x = p.x();
+    center_y = p.y();
+
+    for(int i=0; i<clickedPoints.size(); i++) {
+        clickedPoints[i].setX(round(center_x + (clickedPoints[i].x() - center_x)* x));
+        clickedPoints[i].setY(round(center_y + (clickedPoints[i].y() - center_y)* y));
+    }
+    drawPolygon();
+}
+
+void frame_widget::rotate(int x)
+{
+    double center_x = 0, center_y = 0;
+
+    QPoint p = convertPixel(lastpoint);
+    center_x = p.x();
+    center_y = p.y();
+
+    double angle = (x * 3.14)/180;
+    QTextStream out(stdout);
+
+    for(int i=0; i<clickedPoints.size(); i++) {
+        int tempx = clickedPoints[i].x();
+        int tempy = clickedPoints[i].y();
+
+        clickedPoints[i].setX(round(center_x + ((tempx - center_x) * cos(angle)) - ((tempy - center_y) * sin(angle))));
+        clickedPoints[i].setY(round(center_y + ((tempx - center_x) * sin(angle)) + ((tempy - center_y) * cos(angle))));
+    }
+    drawPolygon();
+}
+
+void frame_widget::reflect()
+{
+    double dx = point1.x() - point2.x();
+    double dy = point1.y() - point2.y();
+
+    double a = -dy;
+    double b = dx;
+    double c = point1.x()*dy - point1.y()*dx;
+
+    for(int i=0; i<clickedPoints.size(); i++) {
+        double tempx = clickedPoints[i].x();
+        double tempy = clickedPoints[i].y();
+
+        clickedPoints[i].setX(round(tempx - (2*a*(a*tempx + b*tempy + c))/(a*a + b*b)));
+        clickedPoints[i].setY(round(tempy - (2*b*(a*tempx + b*tempy + c))/(a*a + b*b)));
+    }
+    drawPolygon();
 }

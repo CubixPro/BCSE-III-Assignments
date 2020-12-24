@@ -25,6 +25,7 @@ class frame_widget : public QFrame
 {
     Q_OBJECT
 private:
+
     int size;
     bool grid;
     bool modified;
@@ -40,9 +41,9 @@ private:
     bool circle_PA;
     bool ellipse_MP;
     bool ellipse_P;
-    QList <QPair<QPoint, QColor> > points;
     QPoint point1;
     QPoint point2;
+    QList <QPair<QPoint, QColor> > points;
     QPoint lastpoint;
     QPoint convertPixel(QPoint p);
     QColor currentcol;
@@ -82,6 +83,7 @@ public:
     void changeCurrentFillColour(int a, char c);
     void drawLineDDA(QPoint p1, QPoint p2);
     void drawLineBA(QPoint p1, QPoint p2);
+    void drawLine(int x);
     void drawCircle(int x, int y);
     void drawEllipse(int r1, int r2, int x);
     void destroyPolygon(int x);
@@ -92,6 +94,10 @@ public:
     void flood_fill();
     void scanLine_fill();
     void isMinMax(int a);
+    void translate(int x, int y);
+    void scale(double a, double b);
+    void rotate(int x);
+    void reflect();
 
 signals:
     void sendCoord(int x, int y);

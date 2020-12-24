@@ -183,6 +183,24 @@ void MainWindow::on_pushButton_7_clicked()
     ui->frame->drawEllipse(r1, r2, x);
 }
 
+void MainWindow::on_pushButton_11_clicked()
+{
+    QPoint p = ui->frame->setPoint1();
+    ui->point1->setText("X : "+QString::number(p.x()) + " Y : " + QString::number(p.y()));
+}
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    QPoint p = ui->frame->setPoint2();
+    ui->point2->setText("X : "+QString::number(p.x()) + " Y : " + QString::number(p.y()));
+}
+
+void MainWindow::on_pushButton_line_clicked()
+{
+    int x = ui->comboBox_4->currentIndex();
+    ui->frame->drawLine(x);
+}
+
 void MainWindow::on_pushButton_8_clicked()
 {
     ui->frame->createPolygon(ui->vertices->value());
@@ -234,4 +252,29 @@ void MainWindow::on_pushButton_4_clicked()
     if(x == 0) ui->frame->boundary_fill();
     else if(x == 1) ui->frame->flood_fill();
     else ui->frame->scanLine_fill();
+}
+
+void MainWindow::on_pushButton_translate_clicked()
+{
+    int tx = ui->tranx->value();
+    int ty = ui->trany->value();
+    ui->frame->translate(tx, ty);
+}
+
+void MainWindow::on_pushButton_scale_clicked()
+{
+    double sx = ui->scalex->value();
+    double sy = ui->scaley->value();
+    ui->frame->scale(sx, sy);
+}
+
+void MainWindow::on_pushButton_rotate_clicked()
+{
+    int x = ui->rotate->value();
+    ui->frame->rotate(x);
+}
+
+void MainWindow::on_pushButton_reflect_clicked()
+{
+    ui->frame->reflect();
 }

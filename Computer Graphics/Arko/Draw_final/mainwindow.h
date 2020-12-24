@@ -56,6 +56,13 @@ private slots:
     void on_pushButton_9_clicked();
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
+    void on_pushButton_translate_clicked();
+    void on_pushButton_scale_clicked();
+    void on_pushButton_rotate_clicked();
+    void on_pushButton_11_clicked();
+    void on_pushButton_10_clicked();
+    void on_pushButton_line_clicked();
+    void on_pushButton_reflect_clicked();
 
 private:
     Ui::MainWindow *ui;
