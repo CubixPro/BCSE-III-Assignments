@@ -632,8 +632,8 @@ void frame_widget::clearPolygon()
 void frame_widget::scanLineFill()
 {
     for(int i = 0 ; i < sortededges.size() ; i++){
-        for(int j = 0 ; j < sortededges.size() ; j++){
-            if(sortededges[i].p1.y() > sortededges[j].p2.y())
+        for(int j = 0 ; j < sortededges.size() - 1 ; j++){
+            if(sortededges[j].p1.y() > sortededges[j + 1].p2.y())
             {
                 Edge temp = sortededges[i];
                 sortededges[i] = sortededges[i + 1];
