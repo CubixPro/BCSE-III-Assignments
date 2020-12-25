@@ -26,7 +26,6 @@ class Channel:
             for i in range(const.totalSenderNumber):
             
                 data = []
-                #print("waiting for data...")
                 data = self.senderToChannel.recv()
                 
                 # update channel Data
@@ -41,22 +40,15 @@ class Channel:
                         self.channelToReceiver[receiver].send(self.channelData)
 
                     self.waitTillReceived.wait()
-                    # print("Wait over from channel! Receiver received")
                     
                     # reset self.value and channelData for next bit transfer
                     self.syncValue = 0
                     self.channelData = [0 for i in range(len(data))]
 
-                #self.lock.release()
-                #print("LOCK RELEASED!")
-                #wait untill receiver received msg
-                # time.sleep(0.1)
                 self.nextTimeSlot.set()
-                # print("Channel Timeslot set:")
             
             self.nextTimeSlot.set()
-            time.sleep(0.05)
-            # print("Channel Timeslot set:")
+            time.sleep(const.sleepTime)
             
     
 

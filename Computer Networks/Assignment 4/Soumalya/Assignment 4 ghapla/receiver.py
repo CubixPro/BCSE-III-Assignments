@@ -15,7 +15,8 @@ class Receiver:
         self.waitTillReceived   = waitTillReceived
         self.senderToReceive    = self.selectSender()
         self.codeLength         = len(self.walshTable[0])
-        self.specialData        = ['0', '1', '0', '1', '1', '1', '0']
+        self.totalBitReceived   = 0
+
 
     def selectSender(self):
         num = random.randint(0, const.totalSenderNumber-1)
@@ -41,6 +42,7 @@ class Receiver:
     
     def receiveData(self):
         print("(Receiver{}:) Receiver{} receives data from sender{}".format(self.name+1,self.name+1,self.senderToReceive+1))
+        startTime = time.time()
         totalData = []
         while True:
             channelData = self.channelToReceiver.recv()
@@ -70,6 +72,10 @@ class Receiver:
                     outFile.write(character)
                     outFile.close()
                     totalData = []
+                    self.totalBitReceived += 1
+                    endTime = time.time()
+                    print("(Receiver{}) Time elasped till now: {}s".format(self.name+1, str(endTime-startTime)[:5]))
+                    print("(Receiver{}) Bit received till now: {}".format(self.name+1, self.totalBitReceived))
 
 
             elif len(totalData) < 8 and bit == -1:

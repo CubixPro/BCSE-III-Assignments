@@ -67,7 +67,7 @@ def start(wTable):
     
     nextTimeSlot = threading.Event()
     waitTillReceived = threading.Event()
-    lock = threading.Lock()
+    lock = threading.Lock()     
 
     senderList = []
     receiverList = []

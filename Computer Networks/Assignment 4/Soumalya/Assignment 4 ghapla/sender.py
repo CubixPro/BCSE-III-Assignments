@@ -38,6 +38,7 @@ class Sender:
                     dataToSend[k] += tempData[k]
             
             self.senderToChannel.send(dataToSend)
+            time.sleep(const.sleepTime)
 
 
 
@@ -61,7 +62,7 @@ class Sender:
                     self.data[i].append(dataToAppend)
                 byte = file.read(const.defaultDataPacketSize)
 
-        #print(self.data)
+        
 
                 
 

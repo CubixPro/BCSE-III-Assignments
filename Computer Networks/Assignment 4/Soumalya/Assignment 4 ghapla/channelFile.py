@@ -19,6 +19,7 @@ class Channel:
             data = self.senderToChannel.recv()
             for i in range(const.totalReceiverNumber):
                 self.channelToReceiver[i].send(data)
+                time.sleep(const.sleepTime)
             
     
 
