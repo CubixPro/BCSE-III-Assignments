@@ -370,3 +370,49 @@ void MainWindow::on_pushButton_19_clicked()
 {
    ui->frame->scanLineFill();
 }
+
+void MainWindow::on_spinBox_3_valueChanged(int arg1)
+{
+   ui->frame->settx(arg1);
+}
+
+void MainWindow::on_spinBox_4_valueChanged(int arg1)
+{
+   ui->frame->setty(arg1);
+}
+
+void MainWindow::on_pushButton_20_clicked()
+{
+   ui->frame->ontranslate();
+}
+
+void MainWindow::on_pushButton_24_clicked()
+{
+   ui->frame->setPivotPoint();
+}
+
+void MainWindow::on_pushButton_21_clicked()
+{
+    ui->frame->onscale();
+}
+
+void MainWindow::on_spinBox_5_valueChanged(int arg1)
+{
+   ui->frame->setAngle(arg1);
+}
+
+void MainWindow::on_pushButton_25_clicked()
+{
+   ui->frame->setPivotPoint();
+}
+
+void MainWindow::on_pushButton_22_clicked()
+{
+   ui->frame->onrotate();
+}
+
+
+void MainWindow::on_pushButton_23_clicked()
+{
+   ui->frame->reflect();
+}

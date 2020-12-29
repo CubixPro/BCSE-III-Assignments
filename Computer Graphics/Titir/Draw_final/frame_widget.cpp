@@ -122,6 +122,149 @@ void frame_widget::drawDelayLine(int x1, int y1, int x2, int y2)
 
 }
 
+vector<vector<int>> frame_widget::matMult3_3(vector<vector<int> > x, vector<vector<int> > y)
+{
+    vector<vector<int>> ans(x.size());
+    for(int i = 0 ; i < x.size() ; i++){
+        for(int j = 0 ; j < y[i].size() ; j++){
+            int sum = 0;
+            for(int k = 0 ; k < x[i].size() ; k++){
+                sum += x[i][k] * y[k][j];
+            }
+            ans[i][j] = sum;
+        }
+    }
+    return ans;
+
+}
+
+void frame_widget::translate(int tx, int ty)
+{
+    vector<vector<int>> mat(3);
+    mat[0] = {1, 0, tx * size};
+    mat[1] = {0, 1, ty * size};
+    mat[2] = {0, 0, 1};
+
+    for(int i = 0 ; i < polygon.size() ; i++){
+
+        vector<int> c = {polygon[i].x(), polygon[i].y(), 1};
+        vector<int> newc = matMult3_1(mat, c);
+
+        polygon[i].setX(newc[0]);
+        polygon[i].setY(newc[1]);
+
+        points.append({polygon[i], currentcol});
+
+        //points.append({temp, currentcol});
+
+    }
+    modified = true;
+    drawPolygon();
+    repaint();
+}
+
+void frame_widget::scale(int sx, int sy)
+{
+    vector<vector<int>> mat = {{sx, 0, 0}, {0, sy, 0}, {0, 0, 1}};
+
+    for(int i = 0 ; i < polygon.size() ; i++){
+        vector<int> c = {pivot.x() - polygon[i].x(), pivot.y() - polygon[i].y(), 1};
+        vector<int> newc = matMult3_1(mat, c);
+        polygon[i].setX(pivot.x() - newc[0]);
+        polygon[i].setY(pivot.y() - newc[1]);
+        points.append({polygon[i], currentcol});
+    }
+    modified = true;
+    drawPolygon();
+    repaint();
+}
+
+void frame_widget::rotate(int angle, int piv_x, int piv_y)
+{
+   double dang = (double)((angle * 3.14)/180.0);
+   double sinang = sin(dang);
+   double cosang = cos(dang);
+
+   vector<vector<double>> mat = {{cosang, -sinang, 0}, {sinang, cosang, 0}, {0, 0, 1}};
+
+   for(int i = 0 ; i < polygon.size() ; i++){
+       vector<double> c = {piv_x - (double)polygon[i].x(), piv_y - (double)polygon[i].y(), 1.0};
+       vector<double> newc = matMult3_1D(mat, c);
+
+       polygon[i].setX( -(int)newc[0] + piv_x);
+       polygon[i].setY( -(int)newc[1] + piv_y);
+
+       points.append({polygon[i], currentcol});
+
+   }
+   modified = true;
+   drawPolygon();
+   repaint();
+
+}
+
+void frame_widget::reflect()
+{
+    QPoint p1 = cPoint1; //convertCoord(point1.x(), point1.y());
+    QPoint p2 = cPoint2; //convertCoord(point2.x(), point2.y());
+    double dx = p1.x() - p2.x();
+    double dy = p1.y() - p2.y();
+
+    double a = -dy;
+    double b = dx;
+    double c = (p2.x()*p1.y() - p1.x() * p2.y())/(p2.x() - p1.x()); //p1.x() * dy - p1.y() * dx;
+     double m = dy/dx;
+
+    for(int i = 0 ; i < polygon.size() ; i++){
+
+        double d = (polygon[i].x() + (polygon[i].y() - c) * m)/(1 + m * m);
+        polygon[i].setX(2 * d - polygon[i].x());
+        polygon[i].setY(2 * d * m - polygon[i].y() + 2 * c);
+
+        points.append({polygon[i], currentcol});
+
+    }
+    modified = true;
+    drawPolygon();
+    repaint();
+}
+
+vector<int> frame_widget::matMult3_1(vector<vector<int> > mat, vector<int> coords)
+{
+        if(mat[0].size() == coords.size()){
+            vector<int> ans(mat.size());
+            for(int i = 0 ; i < (int)mat.size() ; i++){
+                int sum = 0;
+                for(int j = 0 ; j < (int)mat[i].size() ; j++){
+                    sum += mat[i][j] * coords[j];
+                }
+                ans[i] = sum;
+            }
+            return ans;
+        }
+        else{
+            vector<int> f(1);
+            return f;
+        }
+}
+
+vector<double> frame_widget::matMult3_1D(vector<vector<double> > mat, vector<double> coords)
+{
+          vector<double> ans(mat.size());
+            for(int i = 0 ; i < (int)mat.size() ; i++){
+                int sum = 0;
+                for(int j = 0 ; j < (int)mat[i].size() ; j++){
+                    sum += mat[i][j] * coords[j];
+                }
+                ans[i] = sum;
+            }
+            return ans;
+
+}
+
+
+
+
 frame_widget::frame_widget(QWidget *parent):
     QFrame(parent)
 {
@@ -143,7 +286,7 @@ frame_widget::frame_widget(QWidget *parent):
     fill = false;
     seednow = false;
     delay = false;
-
+    pivot = convertCoord(0, 0);
 }
 
 
@@ -703,9 +846,60 @@ void frame_widget::scanLineFill()
     }
 
 
+    QColor temp = currentcol;
+    currentcol = polygoncolour;
+    //polygoncolour = currentcol;
+    //currentcol = temp;
+    for(int i = 0 ; i < polygon.size(); i++){
+        points.append({polygon[i], currentcol});
+    }
+    drawPolygon();
+    currentcol = temp;
 
 
 
+}
+
+void frame_widget::settx(int x)
+{
+    tx = x;
+
+}
+
+void frame_widget::setty(int y)
+{
+    ty = y;
+
+}
+
+void frame_widget::setAngle(int ang)
+{
+    angle = ang;
+
+}
+
+void frame_widget::ontranslate()
+{
+    translate(tx, ty);
+
+}
+
+void frame_widget::setPivotPoint()
+{
+    pivot = lastpoint;
+
+
+}
+
+void frame_widget::onscale()
+{
+    scale(tx, ty);
+
+}
+
+void frame_widget::onrotate()
+{
+    rotate(angle, pivot.x(), pivot.y());
 
 }
 
@@ -736,6 +930,7 @@ void frame_widget::mousePressEvent(QMouseEvent *event)
 QPoint frame_widget::setPoint1()
 {
     point1 = convertPixel(lastpoint);
+    cPoint1 = lastpoint;
     return (point1);
 
 }
@@ -743,6 +938,7 @@ QPoint frame_widget::setPoint1()
 QPoint frame_widget::setPoint2()
 {
     point2 = convertPixel(lastpoint);
+    cPoint2 = lastpoint;
     return point2;
 
 }
@@ -870,6 +1066,7 @@ void frame_widget::drawPolygon(){
             sortededges.push_back(Edge(point2, point1));
         }
     }
+    polygoncolour = currentcol;
 }
 
 void frame_widget::startfloodFill(){

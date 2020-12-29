@@ -59,8 +59,22 @@ private:
     bool seednow ;
     bool delay;
     QVector<QPoint> polygon;
+    QColor polygoncolour;
     QVector<Edge> sortededges;
     void drawDelayLine(int x1, int y1, int x2, int y2);
+    vector<int> matMult3_1(vector<vector<int>> mat, vector<int> coords);
+    vector<double> matMult3_1D(vector<vector<double>> mat, vector<double> coords);
+    vector<vector<int>> matMult3_3(vector<vector<int>> x, vector<vector<int>> y);
+    void translate(int tx, int ty);
+    void scale(int sx, int sy);
+    void rotate(int angle, int piv_x, int piv_y);
+    void shear(int shr_x, int shr_y);
+    int tx;
+    int ty;
+    int angle;
+    QPoint pivot;
+    QPoint cPoint1;
+    QPoint cPoint2;
 
 
 public:
@@ -107,6 +121,17 @@ public:
     void clearPolygon();
     void scanLineFill();
 
+    void settx(int x);
+    void setty(int y);
+    void setAngle(int ang);
+
+    void ontranslate();
+    void setPivotPoint();
+    void onscale();
+    void onrotate();
+    void onreflect();
+
+    void reflect();
 signals:
 
     void sendCoord(int x, int y);
