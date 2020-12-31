@@ -63,6 +63,10 @@ private:
     QImage img;
     vector <pair<int, int>> edgeList;
     vector <pair<int, int>> edges;
+    int clip_points[4][2];
+    QPoint endPoint1;
+    QPoint endPoint2;
+    bool accept;
 
 public:
 
@@ -96,8 +100,14 @@ public:
     void isMinMax(int a);
     void translate(int x, int y);
     void scale(double a, double b);
+    void shear(double a, double b);
     void rotate(int x);
     void reflect();
+    void drawRect();
+    void clipLine();
+    void clipPolygon();
+    void getEndPoints(int x1, int y1, int x2, int y2);
+    int computeCode(int a, int b, int x_min, int x_max, int y_min, int y_max);
 
 signals:
     void sendCoord(int x, int y);

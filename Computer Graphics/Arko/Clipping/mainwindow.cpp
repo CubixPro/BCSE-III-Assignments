@@ -125,12 +125,16 @@ void MainWindow::on_pushButton_2_clicked()
 {
     QPoint p = ui->frame->setPoint1();
     ui->center->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
+    ui->point1->setText("Point 1");
+    ui->point2->setText("Point 2");
 }
 
 void MainWindow::on_pushButton_clicked()
 {
     QPoint p = ui->frame->setPoint2();
     ui->center_2->setText("X : " + QString::number(p.x()) + " Y : "+ QString::number(p.y()));
+    ui->point1->setText("Point 1");
+    ui->point2->setText("Point 2");
 }
 
 void MainWindow::on_pushButton_5_clicked()
@@ -183,16 +187,18 @@ void MainWindow::on_pushButton_7_clicked()
     ui->frame->drawEllipse(r1, r2, x);
 }
 
-void MainWindow::on_pushButton_11_clicked()
+void MainWindow::on_pushButton_10_clicked()
 {
     QPoint p = ui->frame->setPoint1();
     ui->point1->setText("X : "+QString::number(p.x()) + " Y : " + QString::number(p.y()));
+    ui->center_2->setText("Ellipse Center");
 }
 
-void MainWindow::on_pushButton_10_clicked()
+void MainWindow::on_pushButton_11_clicked()
 {
     QPoint p = ui->frame->setPoint2();
     ui->point2->setText("X : "+QString::number(p.x()) + " Y : " + QString::number(p.y()));
+    ui->center->setText("Circle Center");
 }
 
 void MainWindow::on_pushButton_line_clicked()
@@ -277,4 +283,26 @@ void MainWindow::on_pushButton_rotate_clicked()
 void MainWindow::on_pushButton_reflect_clicked()
 {
     ui->frame->reflect();
+}
+
+void MainWindow::on_pushButton_shear_clicked()
+{
+    double shx = ui->shearx->value();
+    double shy = ui->sheary->value();
+    ui->frame->shear(shx, shy);
+}
+
+void MainWindow::on_pushButton_rect_clicked()
+{
+    ui->frame->drawRect();
+}
+
+void MainWindow::on_pushButton_clipL_clicked()
+{
+    ui->frame->clipLine();
+}
+
+void MainWindow::on_pushButton_clipP_clicked()
+{
+    ui->frame->clipPolygon();
 }

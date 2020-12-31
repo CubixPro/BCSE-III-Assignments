@@ -136,13 +136,19 @@ void frame_widget::mouseMoveEvent(QMouseEvent *ev)
 }
 
 int min(int a, int b){
-    if(a > b){
+    if(a > b)
         return b;
-    }
-    else{
+    else
         return a;
-    }
 }
+
+int max(int a, int b){
+    if(a < b)
+        return b;
+    else
+        return a;
+}
+
 void frame_widget::paintEvent(QPaintEvent *p)
 {
     QPainter paint(this);
@@ -433,6 +439,7 @@ void frame_widget::mousePressEvent(QMouseEvent *event)
 {
        modified = true;
        lastpoint = event->pos();
+       bool isEnd = false;
        if(lastpoint.x() >= maxwidth || lastpoint.y() >= maxheight)
            return;
 
@@ -447,6 +454,7 @@ void frame_widget::mousePressEvent(QMouseEvent *event)
                QPoint last = convertPixel(lastpoint);
                emit displayPolygonEnd(last.x(), last.y());
                polygonStart = false;
+               isEnd = true;
            }
 
            if(clickedPoints.size() == 1) {
@@ -466,6 +474,7 @@ void frame_widget::mousePressEvent(QMouseEvent *event)
            emit sendSeed(last.x(), last.y());
            seedpoint = convertCoord(last.x(), last.y());
        }
+       if(isEnd) lastpoint = convertCoord(0, 0);
        repaint();
 }
 
@@ -869,7 +878,7 @@ void frame_widget::translate(int x, int y)
 
 void frame_widget::scale(double x, double y)
 {
-    double center_x, center_y;
+    int center_x, center_y;
     QPoint p = convertPixel(lastpoint);
     center_x = p.x();
     center_y = p.y();
@@ -881,10 +890,26 @@ void frame_widget::scale(double x, double y)
     drawPolygon();
 }
 
+void frame_widget::shear(double x, double y)
+{
+    int center_x, center_y;
+    QPoint p = convertPixel(lastpoint);
+    center_x = p.x();
+    center_y = p.y();
+
+    for(int i=0; i<clickedPoints.size(); i++) {
+        int tempx = clickedPoints[i].x();
+        int tempy = clickedPoints[i].y();
+
+        clickedPoints[i].setX(round(tempx + (tempy - center_y)* x));
+        clickedPoints[i].setY(round(tempy + (tempx - center_x)* y));
+    }
+    drawPolygon();
+}
+
 void frame_widget::rotate(int x)
 {
-    double center_x = 0, center_y = 0;
-
+    int center_x, center_y;
     QPoint p = convertPixel(lastpoint);
     center_x = p.x();
     center_y = p.y();
@@ -918,5 +943,152 @@ void frame_widget::reflect()
         clickedPoints[i].setX(round(tempx - (2*a*(a*tempx + b*tempy + c))/(a*a + b*b)));
         clickedPoints[i].setY(round(tempy - (2*b*(a*tempx + b*tempy + c))/(a*a + b*b)));
     }
+    drawPolygon();
+}
+
+void frame_widget::drawRect()
+{
+    while(clickedPoints.size() != 0)
+        clickedPoints.pop_front();
+
+    QPoint p1(point1.x(), point2.y());
+    QPoint p2(point2.x(), point1.y());
+    clickedPoints.append(point1);
+    clickedPoints.append(p1);
+    clickedPoints.append(point2);
+    clickedPoints.append(p2);
+
+    clip_points[0][0]=point1.x();
+    clip_points[0][1]=point1.y();
+    clip_points[1][0]=point1.x();
+    clip_points[1][1]=point2.y();
+    clip_points[2][0]=point2.x();
+    clip_points[2][1]=point2.y();
+    clip_points[3][0]=point2.x();
+    clip_points[3][1]=point1.y();
+
+    drawPolygon();
+}
+
+const int INSIDE = 0; // 0000
+const int LEFT = 1;   // 0001
+const int RIGHT = 2;  // 0010
+const int BOTTOM = 4; // 0100
+const int TOP = 8;    // 1000
+
+int frame_widget::computeCode(int xa, int ya, int x_min, int x_max, int y_min, int y_max)
+{
+    int code = INSIDE;
+    if (xa < x_min)       // to the left of rectangle
+        code |= LEFT;
+    else if (xa > x_max)  // to the right of rectangle
+        code |= RIGHT;
+    if (ya < y_min)       // below the rectangle
+        code |= BOTTOM;
+    else if (ya > y_max)  // above the rectangle
+        code |= TOP;
+
+    return code;
+}
+
+void frame_widget::getEndPoints(int x1, int y1, int x2, int y2)
+{
+    int x_min = min(clip_points[0][0], clip_points[2][0]), x_max = max(clip_points[0][0], clip_points[2][0]);
+    int y_min = min(clip_points[0][1], clip_points[2][1]), y_max = max(clip_points[0][1], clip_points[2][1]);
+
+    int code1 = computeCode(x1, y1, x_min, x_max, y_min, y_max);
+    int code2 = computeCode(x2, y2, x_min, x_max, y_min, y_max);
+
+    accept = false;
+
+    while (true)
+    {
+        if ((code1 == 0) && (code2 == 0))
+        {
+            accept = true;
+            break;
+        }
+        else if (code1 & code2)
+            break;
+        else
+        {
+            int code_out;
+            int x, y;
+
+            if (code1 != 0)
+                code_out = code1;
+            else
+                code_out = code2;
+
+            if (code_out & TOP)
+            {
+                x = x1 + round(((double)(x2 - x1) *(double)(y_max - y1) /(double)(y2 - y1)));
+                y = y_max;
+            }
+            else if (code_out & BOTTOM)
+            {
+                x = x1 + round(((double)(x2 - x1) * (double)(y_min - y1) / (double)(y2 - y1)));
+                y = y_min;
+            }
+            else if (code_out & RIGHT)
+            {
+                y = y1 + round(((double)(y2 - y1) * (double)(x_max - x1) / (double)(x2 - x1)));
+                x = x_max;
+            }
+            else if (code_out & LEFT)
+            {
+                y = y1 + round(((double)(y2 - y1) * (double)(x_min - x1) / (double)(x2 - x1)));
+                x = x_min;
+            }
+
+            if (code_out == code1)
+            {
+                x1 = x;
+                y1 = y;
+                code1 = computeCode(x1, y1, x_min, x_max, y_min, y_max);
+            }
+            else
+            {
+                x2 = x;
+                y2 = y;
+                code2 = computeCode(x2, y2, x_min, x_max, y_min, y_max);
+            }
+        }
+    }
+
+    if (accept) {
+        endPoint1 = QPoint(x1, y1);
+        endPoint2 = QPoint(x2, y2);
+    }
+}
+
+void frame_widget::clipLine()
+{
+    int x1 = point1.x(), y1 = point1.y(), x2 = point2.x(), y2 = point2.y();
+    getEndPoints(x1, y1, x2, y2);
+    if(accept) drawLineBA(endPoint1, endPoint2);
+    update();
+}
+
+void frame_widget::clipPolygon()
+{
+    QList <QPoint> clippedPoints;
+    for(int i=0; i<clickedPoints.size(); i++) {
+        QPoint p1 = clickedPoints[i];
+        QPoint p2 = clickedPoints[(i+1)%clickedPoints.size()];
+
+        int x1 = p1.x(), y1 = p1.y(), x2 = p2.x(), y2 = p2.y();
+        getEndPoints(x1, y1, x2, y2);
+        if(accept) {
+            if(clippedPoints.size() == 0) clippedPoints.append(endPoint1);
+            else if(clippedPoints[clippedPoints.size() -1] != endPoint1) clippedPoints.append(endPoint1);
+            clippedPoints.append(endPoint2);
+        }
+    }
+    while(clickedPoints.size() != 0)
+        clickedPoints.pop_front();
+
+    for(int i=0; i<clippedPoints.size(); i++)
+        clickedPoints.append(clippedPoints[i]);
     drawPolygon();
 }

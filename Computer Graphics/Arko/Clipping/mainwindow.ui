@@ -786,7 +786,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>810</x>
-      <y>290</y>
+      <y>280</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -802,7 +802,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>870</x>
-      <y>290</y>
+      <y>280</y>
       <width>101</width>
       <height>21</height>
      </rect>
@@ -818,7 +818,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>330</y>
+      <y>310</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -840,7 +840,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>360</y>
+      <y>340</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -861,8 +861,8 @@ color: rgb(122, 13, 5);</string>
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>805</x>
-      <y>330</y>
+      <x>800</x>
+      <y>310</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -878,7 +878,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>360</y>
+      <y>340</y>
       <width>51</width>
       <height>20</height>
      </rect>
@@ -894,7 +894,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>390</y>
+      <y>370</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -910,7 +910,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>390</y>
+      <y>370</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -1166,11 +1166,11 @@ color: rgb(122, 13, 5);</string>
      <string>Rotate Polygon</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_10">
+   <widget class="QPushButton" name="pushButton_11">
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>490</y>
+      <y>470</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -1179,11 +1179,11 @@ color: rgb(122, 13, 5);</string>
      <string>Set Point 2</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_11">
+   <widget class="QPushButton" name="pushButton_10">
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>460</y>
+      <y>440</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -1196,7 +1196,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>550</y>
+      <y>530</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -1209,7 +1209,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>1000</x>
-      <y>260</y>
+      <y>320</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -1222,7 +1222,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>460</y>
+      <y>440</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -1238,7 +1238,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>490</y>
+      <y>470</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -1253,9 +1253,9 @@ color: rgb(122, 13, 5);</string>
    <widget class="QLabel" name="label_26">
     <property name="geometry">
      <rect>
-      <x>840</x>
-      <y>430</y>
-      <width>91</width>
+      <x>800</x>
+      <y>410</y>
+      <width>171</width>
       <height>21</height>
      </rect>
     </property>
@@ -1266,7 +1266,7 @@ color: rgb(122, 13, 5);
 </string>
     </property>
     <property name="text">
-     <string>Line Drawing</string>
+     <string>Line and Rectangle Drawing</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1275,8 +1275,8 @@ color: rgb(122, 13, 5);
    <widget class="QComboBox" name="comboBox_4">
     <property name="geometry">
      <rect>
-      <x>798</x>
-      <y>520</y>
+      <x>800</x>
+      <y>500</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -1300,6 +1300,122 @@ color: rgb(122, 13, 5);
       <string>   Parametric</string>
      </property>
     </item>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_15">
+    <property name="geometry">
+     <rect>
+      <x>990</x>
+      <y>250</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_17">
+     <item>
+      <widget class="QLabel" name="label_24">
+       <property name="text">
+        <string>ShearX</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="shearx">
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="singleStep">
+        <double>0.500000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_16">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>250</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_18">
+     <item>
+      <widget class="QLabel" name="label_25">
+       <property name="text">
+        <string>ShearY</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="sheary">
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="singleStep">
+        <double>0.500000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_shear">
+    <property name="geometry">
+     <rect>
+      <x>1000</x>
+      <y>290</y>
+      <width>181</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Shear Polygon</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_rect">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>560</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Draw Rectangle</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_clipL">
+    <property name="geometry">
+     <rect>
+      <x>1000</x>
+      <y>390</y>
+      <width>181</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clip Line</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_clipP">
+    <property name="geometry">
+     <rect>
+      <x>1000</x>
+      <y>420</y>
+      <width>181</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clip Polygon</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
