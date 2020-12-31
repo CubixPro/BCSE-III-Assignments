@@ -16,6 +16,12 @@ MainWindow::MainWindow(QWidget *parent):
     connect(this, &MainWindow::drawMidPointCircle, ui->frame, &frame_widget::drawMidPointCircle);
     connect(this, &MainWindow::drawBresenhamCircle, ui->frame, &frame_widget::drawBresenhamCircle);
     connect(this, &MainWindow::drawEllipse, ui->frame, &frame_widget::drawEllipse);
+    connect(ui->frame, &frame_widget::displayPolygonEnd, this, &MainWindow::displayPolygonEnd);
+    connect(ui->frame, &frame_widget::displayPolygonStart, this, &MainWindow::displayPolygonStart);
+    connect(ui->frame, &frame_widget::startPolygon, this, &MainWindow::startPolygon);
+    connect(ui->frame, &frame_widget::endPolygon, this, &MainWindow::endPolygon);
+    connect(ui->frame, &frame_widget::sendSeed, this, &MainWindow::showSeed);
+
 }
 
 MainWindow::~MainWindow()
@@ -70,6 +76,11 @@ void MainWindow::showPress(int x, int y)
     ui->center_2->setText("Center for Ellipse: (" + QString::number(x) + ", " + QString::number(y) + ")");
 }
 
+void MainWindow::showSeed(int x, int y)
+{
+    ui->seed->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
+}
+
 
 void MainWindow::on_spinBox_valueChanged(int arg1)
 {
@@ -104,6 +115,7 @@ void MainWindow::on_actionCreate_New_triggered()
 
 void MainWindow::on_pushButton_5_clicked()
 {
+   ui->seed->setText("Seed Point");
    ui->frame->createGrid();
 }
 
@@ -141,9 +153,132 @@ void MainWindow::on_radioButton_5_clicked()
    emit changeColour(QColor(Qt::yellow)) ;
 }
 
+void MainWindow::on_radioButton_6_clicked()
+{
+    emit changeColour(QColor(Qt::blue));
+}
+
+
+void MainWindow::on_radioButton_7_clicked()
+{
+    emit changeColour(QColor(Qt::red));
+}
+
 void MainWindow::on_pushButton_7_clicked()
 {
     int r1 = ui->major->value();
     int r2 = ui->minor->value();
     emit drawEllipse(r1, r2);
 }
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    ui->frame->createPolygon(ui->vertices->value());
+}
+
+void MainWindow::on_vertices_valueChanged(int arg1)
+{
+    ui->frame->destroyPolygon(arg1);
+}
+
+void MainWindow::displayPolygonEnd(int x, int y)
+{
+    ui->polygonEnd->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
+    ui->pushButton_4->setDisabled(false);
+}
+
+void MainWindow::displayPolygonStart(int x, int y)
+{
+    ui->polygonStart->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
+}
+
+void MainWindow::endPolygon()
+{
+    ui->polygonStart->setText("Start Point");
+    ui->polygonEnd->setText("End Point");
+    ui->pushButton_4->setDisabled(false);
+}
+
+void MainWindow::startPolygon()
+{
+    ui->pushButton_4->setDisabled(true);
+    ui->polygonStart->setText("Start Point");
+    ui->polygonEnd->setText("End Point");
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    ui->frame->drawPolygon();
+}
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    ui->frame->setSeed();
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    ui->frame->boundary_fill();
+}
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    ui->frame->scanLine_fill();
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+    ui->frame->flood_fill();
+}
+
+void MainWindow::on_pushButton_12_clicked()
+{
+    int tx = ui->transx->value();
+    int ty = ui->transy->value();
+    ui->frame->translate(tx, ty);
+}
+
+void MainWindow::on_pushButton_13_clicked()
+{
+    double sx = ui->scalex->value();
+    double sy = ui->scaley->value();
+    ui->frame->scale(sx, sy);
+}
+
+void MainWindow::on_pushButton_14_clicked()
+{
+    int x = ui->rotate->value();
+    ui->frame->rotate(x);
+}
+
+void MainWindow::on_pushButton_15_clicked()
+{
+    double shx = ui->shearx->value();
+    double shy = ui->sheary->value();
+    ui->frame->shear(shx, shy);
+}
+
+void MainWindow::on_pushButton_16_clicked()
+{
+    QPoint p = ui->frame->setPoint1();
+    ui->point1->setText("X : "+QString::number(p.x()) + " Y : " + QString::number(p.y()));
+}
+
+void MainWindow::on_pushButton_17_clicked()
+{
+    QPoint p = ui->frame->setPoint2();
+    ui->point2->setText("X : "+QString::number(p.x()) + " Y : " + QString::number(p.y()));
+}
+
+void MainWindow::on_pushButton_18_clicked()
+{
+    ui->frame->drawLine();
+}
+
+void MainWindow::on_pushButton_19_clicked()
+{
+    ui->frame->reflect();
+}
+
+
+
