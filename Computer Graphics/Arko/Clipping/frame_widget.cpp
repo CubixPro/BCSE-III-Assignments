@@ -1062,10 +1062,22 @@ void frame_widget::getEndPoints(int x1, int y1, int x2, int y2)
     }
 }
 
+void frame_widget::clearWindow()
+{
+    int x_min = min(clip_points[0][0], clip_points[2][0]), x_max = max(clip_points[0][0], clip_points[2][0]);
+    int y_min = min(clip_points[0][1], clip_points[2][1]), y_max = max(clip_points[0][1], clip_points[2][1]);
+
+    for(int i=x_min+1; i!=x_max; i++) {
+        for(int j=y_min+1; j!=y_max; j++)
+            points.append({convertCoord(i,j), qRgb(0,0,0)});
+    }
+}
+
 void frame_widget::clipLine()
 {
     int x1 = point1.x(), y1 = point1.y(), x2 = point2.x(), y2 = point2.y();
     getEndPoints(x1, y1, x2, y2);
+    clearWindow();
     if(accept) drawLineBA(endPoint1, endPoint2);
     update();
 }
@@ -1090,5 +1102,7 @@ void frame_widget::clipPolygon()
 
     for(int i=0; i<clippedPoints.size(); i++)
         clickedPoints.append(clippedPoints[i]);
+    clearWindow();
     drawPolygon();
+    update();
 }
