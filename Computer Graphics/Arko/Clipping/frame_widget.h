@@ -108,6 +108,7 @@ public:
     void clipPolygon();
     void getEndPoints(int x1, int y1, int x2, int y2);
     int computeCode(int a, int b, int x_min, int x_max, int y_min, int y_max);
+    void clipAlongSide(int x1, int y1, int x2, int y2);
     void clearWindow();
 
 signals:

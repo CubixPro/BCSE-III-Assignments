@@ -1082,7 +1082,7 @@ void frame_widget::clipLine()
     update();
 }
 
-void frame_widget::clipPolygon()
+/*void frame_widget::clipPolygon()
 {
     QList <QPoint> clippedPoints;
     for(int i=0; i<clickedPoints.size(); i++) {
@@ -1102,6 +1102,86 @@ void frame_widget::clipPolygon()
 
     for(int i=0; i<clippedPoints.size(); i++)
         clickedPoints.append(clippedPoints[i]);
+    clearWindow();
+    drawPolygon();
+    update();
+}*/
+
+QPoint intersect(int cx1, int cy1, int cx2, int cy2, int x1, int y1, int x2, int y2)
+{
+    QPoint p;
+    if(cx1 == cx2 && y1 == y2) {
+        p.setX(cx1);
+        p.setY(y1);
+    }
+    else if(cy1 == cy2 && x1 == x2) {
+        p.setX(x1);
+        p.setY(cy1);
+    }
+    else if(cx1 == cx2) {
+        p.setX(cx1);
+        p.setY(( ((cx1 - x1)*(y2 - y1))/ (x2 - x1) ) +y1);
+    }
+    else {
+        p.setY(cy1);
+        p.setX(( ((cy1 - y1)*(x2 - x1))/ (y2 - y1) ) +x1);
+    }
+    return p;
+}
+
+void frame_widget::clipAlongSide(int x1, int y1, int x2, int y2)
+{
+    QList <QPoint> clippedPoints;
+    for(int i=0; i<polygonVertices; i++) {
+
+        int j = (i+1)% polygonVertices;
+        int ix = clickedPoints[i].x(), iy = clickedPoints[i].y();
+        int jx = clickedPoints[j].x(), jy = clickedPoints[j].y();
+
+        int x_in, y_in;
+
+        if(x2==x1 && ix>x1) x_in= 1;
+        else if(x2==x1 && ix<x1) x_in= -1;
+        else if(y2==y1 && iy<y1) x_in= 1;
+        else x_in= -1;
+
+        if(x2==x1 && jx>x1) y_in= 1;
+        else if(x2==x1 && jx<x1) y_in= -1;
+        else if(y2==y1 && jy<y1) y_in= 1;
+        else y_in= -1;
+
+        if(y1<y2 || x1<x2) {
+            x_in *= (-1);
+            y_in *= (-1);
+        }
+
+        if(x_in == 1 && y_in == 1) {
+            clippedPoints.append(QPoint(jx,jy));
+        }
+        else if(x_in == -1 && y_in == 1) {
+            clippedPoints.append(intersect(x1, y1, x2, y2, ix, iy, jx, jy));
+            clippedPoints.append(QPoint(jx,jy));
+        }
+        else if(x_in == 1 && y_in == -1) {
+            clippedPoints.append(intersect(x1, y1, x2, y2, ix, iy, jx, jy));
+        }
+    }
+
+    while(clickedPoints.size() != 0)
+        clickedPoints.pop_front();
+
+    for(int i=0; i<clippedPoints.size(); i++)
+        clickedPoints.append(clippedPoints[i]);
+
+    polygonVertices = clickedPoints.size();
+}
+
+void frame_widget::clipPolygon()
+{
+    for(int i=0; i<4; i++) {
+        clipAlongSide(clip_points[i][0], clip_points[i][1], clip_points[(i+1)%4][0], clip_points[(i+1)%4][0]);
+    }
+
     clearWindow();
     drawPolygon();
     update();
