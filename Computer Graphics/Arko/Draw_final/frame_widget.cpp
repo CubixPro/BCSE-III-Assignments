@@ -7,7 +7,6 @@ frame_widget::frame_widget(QWidget *parent):
     QFrame(parent)
 {
     grid = false;
-    modified = false;
     size = 5;
     maxwidth = 530;
     maxheight = 530;
@@ -95,30 +94,15 @@ void frame_widget::changeSize(int x)
     createGrid();
 }
 
-void frame_widget::showAxes()
-{
-   visibleAxes = true;
-   update();
-}
-
 void frame_widget::changeGridSize(int x)
 {
    maxheight = maxwidth = x;
    update();
 }
 
-void frame_widget::hideAxes()
-{
-   visibleAxes = false;
-   update();
-}
-
 void frame_widget::toggleAxes()
 {
-    if(visibleAxes == true)
-        visibleAxes = false;
-    else
-        visibleAxes = true;
+   visibleAxes = !visibleAxes;
    update();
 }
 
@@ -194,7 +178,6 @@ void frame_widget::paintEvent(QPaintEvent *p)
             points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
         }
 
-        modified = true;
         circle_P = false;
         int time = timer.nsecsElapsed();
         emit sendTime(time/1000);
@@ -222,7 +205,6 @@ void frame_widget::paintEvent(QPaintEvent *p)
             points.append({convertCoord(-y+ x_center, -x+ y_center), currentcol});
         }
 
-        modified = true;
         circle_PA = false;
         int time = timer.nsecsElapsed();
         emit sendTime(time/1000);
@@ -275,7 +257,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
                 points.append({convertCoord(-y+ x_center, -x+ y_center), currentcol});
             }
         }
-        modified = true;
+
         circle_MP = false;
         int time = timer.nsecsElapsed();
         emit sendTime(time/1000);
@@ -315,7 +297,6 @@ void frame_widget::paintEvent(QPaintEvent *p)
                 d = d + 4 * x + 6;
         }
 
-        modified = true;
         circle_BA = false;
         int time = timer.nsecsElapsed();
         emit sendTime((time-20)/1000);
@@ -340,7 +321,6 @@ void frame_widget::paintEvent(QPaintEvent *p)
             points.append({convertCoord(-x+ x_center, -y+ y_center), currentcol});
         }
 
-        modified = true;
         ellipse_P = false;
         int time = timer.nsecsElapsed();
         emit sendTime(time/1000);
@@ -410,13 +390,12 @@ void frame_widget::paintEvent(QPaintEvent *p)
             }
         }
 
-        modified = true;
         ellipse_MP = false;
         int time = timer.nsecsElapsed();
         emit sendTime(time/1000);
     }
 
-    if(modified){
+    {
         QPair<QPoint, QColor> p;
         foreach (p , points ){
             paint.setBrush(p.second);
@@ -437,7 +416,6 @@ void frame_widget::paintEvent(QPaintEvent *p)
 
 void frame_widget::mousePressEvent(QMouseEvent *event)
 {
-       modified = true;
        lastpoint = event->pos();
        bool isEnd = false;
        if(lastpoint.x() >= maxwidth || lastpoint.y() >= maxheight)
@@ -528,7 +506,7 @@ void frame_widget::changeCurrentFillColour(int a, char c)
     emit sendFillColorLebel(RFillColor, GFillColor, BFillColor);
 }
 
-void frame_widget::drawLineDDA(QPoint temp1, QPoint temp2)
+void frame_widget::lineWithDelay(QPoint temp1, QPoint temp2)
 {
     QRgb edgeColour = qRgb(currentcol.red(), currentcol.green(), currentcol.blue());
     double x = temp1.x();
@@ -536,21 +514,47 @@ void frame_widget::drawLineDDA(QPoint temp1, QPoint temp2)
     double dx = (temp2.x() - temp1.x());
     double dy = (temp2.y() - temp1.y());
     double steps;
-    if(abs(dx) > abs(dy)){
+
+    if(abs(dx) > abs(dy))
         steps = abs(dx);
-    }
-    else{
+    else
         steps = abs(dy);
-    }
+
     double inc_x = dx/(float)steps;
     double inc_y = dy/(float)steps;
     for(int i = 0 ; i < steps- 1 ; i++){
         x = x + (inc_x);
         y = y + (inc_y);
         QPoint p0 = convertCoord(round(x), round(y));
-        if(img.pixel(p0.x(), p0.y()) != edgeColour) points.append({p0, fillColor});
+        if(img.pixel(p0.x(), p0.y()) != edgeColour) {
+            points.append({p0, fillColor});
+            repaint();
+            usleep(2000);
+        }
     }
-    modified = true;
+}
+
+void frame_widget::drawLineDDA(QPoint temp1, QPoint temp2)
+{
+    double x = temp1.x();
+    double y = temp1.y();
+    double dx = (temp2.x() - temp1.x());
+    double dy = (temp2.y() - temp1.y());
+    double steps;
+
+    if(abs(dx) > abs(dy))
+        steps = abs(dx);
+    else
+        steps = abs(dy);
+
+    double inc_x = dx/(float)steps;
+    double inc_y = dy/(float)steps;
+    for(int i = 0 ; i < steps- 1 ; i++){
+        x = x + (inc_x);
+        y = y + (inc_y);
+        QPoint p0 = convertCoord(round(x), round(y));
+        points.append({p0, fillColor});
+    }
 }
 
 void frame_widget::drawLineBA(QPoint temp1, QPoint temp2, QRgb col)
@@ -608,12 +612,12 @@ void frame_widget::drawLineBA(QPoint temp1, QPoint temp2, QRgb col)
     }
     points.append({convertCoord(x2,y2), col});
     edgeList.push_back({x2, y2});
-    modified = true;
 }
 
 void frame_widget::drawLine(int x)
 {
-    drawLineBA(point1, point2, qRgb(currentcol.red(), currentcol.green(), currentcol.blue()));
+    if(x == 0) drawLineBA(point1, point2, qRgb(currentcol.red(), currentcol.green(), currentcol.blue()));
+    else drawLineDDA(point1, point2);
     update();
 }
 
@@ -695,9 +699,6 @@ void frame_widget::boundary_fill()
     QRgb edgeColor = qRgb(currentcol.red(), currentcol.green(), currentcol.blue());
     QRgb fillColour = qRgb(fillColor.red(), fillColor.green(), fillColor.blue());
 
-    QElapsedTimer timer;
-    timer.start();
-
     QList<QPoint> q;
     int index = 0;
     q.append(seedpoint);
@@ -752,20 +753,15 @@ void frame_widget::boundary_fill()
 
     for(int i=0; i<q.size(); i++) {
         points.append({q[i], fillColor});
+        repaint();
+        usleep(2000);
     }
-
-    int time = timer.nsecsElapsed();
-    emit sendTime(time/1000);
-    update();
 }
 
 void frame_widget::flood_fill()
 {
     QRgb prevColor = qRgb(0, 0, 0);
     QRgb fillColour = qRgb(fillColor.red(), fillColor.green(), fillColor.blue());
-
-    QElapsedTimer timer;
-    timer.start();
 
     QList<QPoint> q;
     int index = 0;
@@ -821,11 +817,9 @@ void frame_widget::flood_fill()
 
     for(int i=0; i<q.size(); i++) {
         points.append({q[i], fillColor});
+        repaint();
+        usleep(2000);
     }
-
-    int time = timer.nsecsElapsed();
-    emit sendTime(time/1000);
-    update();
 }
 
 void frame_widget::isMinMax(int i) {
@@ -839,8 +833,6 @@ void frame_widget::isMinMax(int i) {
 
 void frame_widget::scanLine_fill()
 {
-    QElapsedTimer timer;
-    timer.start();
     for(int j=0; j<clickedPoints.size(); j++) {
         for(int i=0; i<edges.size(); i++) {
             if(edges[i].first == clickedPoints[j].x() && edges[i].second == clickedPoints[j].y()) {
@@ -856,13 +848,10 @@ void frame_widget::scanLine_fill()
 
     for(int i=0; i<edges.size()-1; i=i+2) {
         if(edges[i].second == edges[i+1].second){
-            drawLineDDA(QPoint(edges[i].first, edges[i].second), QPoint(edges[i+1].first, edges[i+1].second));
+            lineWithDelay(QPoint(edges[i].first, edges[i].second), QPoint(edges[i+1].first, edges[i+1].second));
         }
         else i--;
     }
-    int time = timer.nsecsElapsed();
-    emit sendTime(time/1000);
-    update();
 }
 
 void frame_widget::translate(int x, int y)
@@ -946,6 +935,16 @@ void frame_widget::reflect()
 
 void frame_widget::drawRect()
 {
+    while(clickedPoints.size() != 0)
+        clickedPoints.pop_front();
+    QPoint p1(point1.x(), point2.y());
+    QPoint p2(point2.x(), point1.y());
+
+    clickedPoints.append(point1);
+    clickedPoints.append(p1);
+    clickedPoints.append(point2);
+    clickedPoints.append(p2);
+
     clip_points[0][0]=point1.x();
     clip_points[0][1]=point1.y();
     clip_points[1][0]=point1.x();
@@ -955,39 +954,25 @@ void frame_widget::drawRect()
     clip_points[3][0]=point2.x();
     clip_points[3][1]=point1.y();
 
-    while(clickedPoints.size() != 0)
-        clickedPoints.pop_front();
-
-    QPoint p1(clip_points[0][0], clip_points[0][1]);
-    QPoint p2(clip_points[1][0], clip_points[1][1]);
-    QPoint p3(clip_points[2][0], clip_points[2][1]);
-    QPoint p4(clip_points[3][0], clip_points[3][1]);
-
-
-    clickedPoints.append(p1);
-    clickedPoints.append(p2);
-    clickedPoints.append(p3);
-    clickedPoints.append(p4);
-
     drawPolygon();
 }
 
-const int INSIDE = 0; // 0000
-const int LEFT = 1;   // 0001
-const int RIGHT = 2;  // 0010
-const int BOTTOM = 4; // 0100
-const int TOP = 8;    // 1000
+const int INSIDE = 0;
+const int LEFT = 1;
+const int RIGHT = 2;
+const int BOTTOM = 4;
+const int TOP = 8;
 
 int frame_widget::computeCode(int xa, int ya, int x_min, int x_max, int y_min, int y_max)
 {
     int code = INSIDE;
-    if (xa < x_min)       // to the left of rectangle
+    if (xa < x_min)
         code |= LEFT;
-    else if (xa > x_max)  // to the right of rectangle
+    else if (xa > x_max)
         code |= RIGHT;
-    if (ya < y_min)       // below the rectangle
+    if (ya < y_min)
         code |= BOTTOM;
-    else if (ya > y_max)  // above the rectangle
+    else if (ya > y_max)
         code |= TOP;
 
     return code;

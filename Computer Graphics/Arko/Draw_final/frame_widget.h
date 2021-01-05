@@ -28,7 +28,6 @@ private:
 
     int size;
     bool grid;
-    bool modified;
     int maxwidth;
     int maxheight;
     int radius;
@@ -73,9 +72,7 @@ public:
     frame_widget(QWidget *parent = nullptr);
     void createGrid();
     void changeSize(int x);
-    void showAxes();
     void changeGridSize(int x);
-    void hideAxes();
     void toggleAxes();
     void toggleGrid();
     void mouseMoveEvent(QMouseEvent *ev) override;
@@ -88,6 +85,7 @@ public:
     void drawLineDDA(QPoint p1, QPoint p2);
     void drawLineBA(QPoint p1, QPoint p2, QRgb col);
     void drawLine(int x);
+    void lineWithDelay(QPoint p1, QPoint p2);
     void drawCircle(int x, int y);
     void drawEllipse(int r1, int r2, int x);
     void destroyPolygon(int x);

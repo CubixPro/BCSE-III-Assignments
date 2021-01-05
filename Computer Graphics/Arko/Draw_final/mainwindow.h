@@ -28,18 +28,9 @@ public:
 
 private slots:
 
-    void on_actionCreate_triggered();
-    void on_actionChange_Grid_Size_triggered();
-    void on_actionSmall_triggered();
-    void on_actionMedium_triggered();
-    void on_actionLarge_triggered();
-    void on_actionShow_Axes_triggered();
     void on_spinBox_valueChanged(int arg1);
-    void on_button_clicked();
-    void on_button2_clicked();
     void on_radioButton_clicked();
     void on_radioButton_2_clicked();
-    void on_actionCreate_New_triggered();
     void on_pushButton_2_clicked();
     void on_pushButton_clicked();
     void on_pushButton_5_clicked();

@@ -31,36 +31,6 @@ void MainWindow::createActions()
 
 }
 
-void MainWindow::on_actionCreate_triggered()
-{
-    ui->frame->createGrid();
-}
-
-void MainWindow::on_actionChange_Grid_Size_triggered()
-{
-    ui->frame->changeSize(1);
-}
-
-void MainWindow::on_actionSmall_triggered()
-{
-   ui->frame->changeSize(10);
-}
-
-void MainWindow::on_actionMedium_triggered()
-{
-   ui->frame->changeSize(25);
-}
-
-void MainWindow::on_actionLarge_triggered()
-{
-   ui->frame->changeSize(50);
-}
-
-void MainWindow::on_actionShow_Axes_triggered()
-{
-   ui->frame->showAxes();
-}
-
 void MainWindow::showCoord(int x, int y)
 {
     ui->coord->setText("X : "+QString::number(x) + " Y : " + QString::number(y));
@@ -96,16 +66,6 @@ void MainWindow::on_spinBox_valueChanged(int arg1)
     ui->frame->changeSize(arg1);
 }
 
-void MainWindow::on_button_clicked()
-{
-    ui->frame->toggleAxes();
-}
-
-void MainWindow::on_button2_clicked()
-{
-   ui->frame->toggleGrid();
-}
-
 void MainWindow::on_radioButton_clicked()
 {
    ui->frame->toggleAxes();
@@ -114,11 +74,6 @@ void MainWindow::on_radioButton_clicked()
 void MainWindow::on_radioButton_2_clicked()
 {
    ui->frame->toggleGrid();
-}
-
-void MainWindow::on_actionCreate_New_triggered()
-{
-   ui->frame->createGrid();
 }
 
 void MainWindow::on_pushButton_2_clicked()
