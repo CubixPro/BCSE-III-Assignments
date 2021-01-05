@@ -306,3 +306,9 @@ void MainWindow::on_pushButton_clipP_clicked()
 {
     ui->frame->clipPolygon();
 }
+
+void MainWindow::on_pushButton_curve_clicked()
+{
+    double delU = ui->curveU->value();
+    ui->frame->drawCurve(delU);
+}

@@ -65,10 +65,9 @@ private slots:
     void on_pushButton_reflect_clicked();
     void on_pushButton_shear_clicked();
     void on_pushButton_rect_clicked();
-
     void on_pushButton_clipL_clicked();
-
     void on_pushButton_clipP_clicked();
+    void on_pushButton_curve_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -86,7 +86,7 @@ public:
     void changeCurrentColour(int a, char c);
     void changeCurrentFillColour(int a, char c);
     void drawLineDDA(QPoint p1, QPoint p2);
-    void drawLineBA(QPoint p1, QPoint p2);
+    void drawLineBA(QPoint p1, QPoint p2, QRgb col);
     void drawLine(int x);
     void drawCircle(int x, int y);
     void drawEllipse(int r1, int r2, int x);
@@ -110,6 +110,7 @@ public:
     int computeCode(int a, int b, int x_min, int x_max, int y_min, int y_max);
     void clipAlongSide(int x1, int y1, int x2, int y2);
     void clearWindow();
+    void drawCurve(double delU);
 
 signals:
     void sendCoord(int x, int y);

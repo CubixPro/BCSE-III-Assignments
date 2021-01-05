@@ -1,5 +1,6 @@
 #include "frame_widget.h"
 #include <bits/stdc++.h>
+#include <unistd.h>
 using namespace std;
 
 frame_widget::frame_widget(QWidget *parent):
@@ -7,7 +8,7 @@ frame_widget::frame_widget(QWidget *parent):
 {
     grid = false;
     modified = false;
-    size = 10;
+    size = 5;
     maxwidth = 530;
     maxheight = 530;
     visibleAxes = false;
@@ -157,7 +158,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
     paint.drawRect(0, 0, maxheight, maxwidth);
 
     if(grid){
-        paint.setPen(QPen(Qt::white));
+        paint.setPen(QPen(qRgb(200,200,200)));
         for(int i = 0 ; i < maxwidth ; i+=size){
             paint.drawLine(i, 0, i, maxheight);
         }
@@ -167,7 +168,7 @@ void frame_widget::paintEvent(QPaintEvent *p)
     }
 
     if(visibleAxes){
-        QBrush qBrush(Qt::gray);
+        QBrush qBrush(qRgb(155,255,255));
         paint.setBrush(qBrush);
 
         paint.drawRect((maxwidth/(2*size))*size, 0, size, maxheight);
@@ -432,7 +433,6 @@ void frame_widget::paintEvent(QPaintEvent *p)
             }
         }
     }
-
 }
 
 void frame_widget::mousePressEvent(QMouseEvent *event)
@@ -553,7 +553,7 @@ void frame_widget::drawLineDDA(QPoint temp1, QPoint temp2)
     modified = true;
 }
 
-void frame_widget::drawLineBA(QPoint temp1, QPoint temp2)
+void frame_widget::drawLineBA(QPoint temp1, QPoint temp2, QRgb col)
 {
     QPoint p1 = temp1;
     QPoint p2 = temp2;
@@ -579,7 +579,7 @@ void frame_widget::drawLineBA(QPoint temp1, QPoint temp2)
 
         for(int x=x1; x!=x2; x+=xinc)
         {
-            points.append({convertCoord(x,y), currentcol});
+            points.append({convertCoord(x,y), col});
             edgeList.push_back({x,y});
             if(p>=0)
             {
@@ -596,7 +596,7 @@ void frame_widget::drawLineBA(QPoint temp1, QPoint temp2)
 
         for(int y=y1; y!=y2; y+=yinc)
         {
-            points.append({convertCoord(x,y), currentcol});
+            points.append({convertCoord(x,y), col});
             edgeList.push_back({x, y});
             if(p>=0)
             {
@@ -606,14 +606,14 @@ void frame_widget::drawLineBA(QPoint temp1, QPoint temp2)
             p+=2*(dx);
         }
     }
-    points.append({convertCoord(x2,y2), currentcol});
+    points.append({convertCoord(x2,y2), col});
     edgeList.push_back({x2, y2});
     modified = true;
 }
 
 void frame_widget::drawLine(int x)
 {
-    drawLineBA(point1, point2);
+    drawLineBA(point1, point2, qRgb(currentcol.red(), currentcol.green(), currentcol.blue()));
     update();
 }
 
@@ -666,7 +666,7 @@ void frame_widget::drawPolygon()
         edgeList.clear();
         QPoint tempPoint1 = clickedPoints[i];
         QPoint tempPoint2 = clickedPoints[(i+1)%clickedPoints.size()];
-        drawLineBA(tempPoint1, tempPoint2);
+        drawLineBA(tempPoint1, tempPoint2, qRgb(currentcol.red(), currentcol.green(), currentcol.blue()));
         sort(edgeList.begin(), edgeList.end(), sortDef);
         edges.push_back({edgeList[0].first, edgeList[0].second});
         for(int i=0; i<edgeList.size()-1; i++) {
@@ -694,7 +694,6 @@ void frame_widget::boundary_fill()
 {
     QRgb edgeColor = qRgb(currentcol.red(), currentcol.green(), currentcol.blue());
     QRgb fillColour = qRgb(fillColor.red(), fillColor.green(), fillColor.blue());
-    QTextStream out(stdout);
 
     QElapsedTimer timer;
     timer.start();
@@ -764,7 +763,6 @@ void frame_widget::flood_fill()
 {
     QRgb prevColor = qRgb(0, 0, 0);
     QRgb fillColour = qRgb(fillColor.red(), fillColor.green(), fillColor.blue());
-    QTextStream out(stdout);
 
     QElapsedTimer timer;
     timer.start();
@@ -844,7 +842,7 @@ void frame_widget::scanLine_fill()
     QElapsedTimer timer;
     timer.start();
     for(int j=0; j<clickedPoints.size(); j++) {
-        for(int i=0;i<edges.size();i++) {
+        for(int i=0; i<edges.size(); i++) {
             if(edges[i].first == clickedPoints[j].x() && edges[i].second == clickedPoints[j].y()) {
                 edges.erase(edges.begin()+ i);
                 break;
@@ -948,16 +946,6 @@ void frame_widget::reflect()
 
 void frame_widget::drawRect()
 {
-    while(clickedPoints.size() != 0)
-        clickedPoints.pop_front();
-
-    QPoint p1(point1.x(), point2.y());
-    QPoint p2(point2.x(), point1.y());
-    clickedPoints.append(point1);
-    clickedPoints.append(p1);
-    clickedPoints.append(point2);
-    clickedPoints.append(p2);
-
     clip_points[0][0]=point1.x();
     clip_points[0][1]=point1.y();
     clip_points[1][0]=point1.x();
@@ -966,6 +954,20 @@ void frame_widget::drawRect()
     clip_points[2][1]=point2.y();
     clip_points[3][0]=point2.x();
     clip_points[3][1]=point1.y();
+
+    while(clickedPoints.size() != 0)
+        clickedPoints.pop_front();
+
+    QPoint p1(clip_points[0][0], clip_points[0][1]);
+    QPoint p2(clip_points[1][0], clip_points[1][1]);
+    QPoint p3(clip_points[2][0], clip_points[2][1]);
+    QPoint p4(clip_points[3][0], clip_points[3][1]);
+
+
+    clickedPoints.append(p1);
+    clickedPoints.append(p2);
+    clickedPoints.append(p3);
+    clickedPoints.append(p4);
 
     drawPolygon();
 }
@@ -1040,7 +1042,6 @@ void frame_widget::getEndPoints(int x1, int y1, int x2, int y2)
                 y = y1 + round(((double)(y2 - y1) * (double)(x_min - x1) / (double)(x2 - x1)));
                 x = x_min;
             }
-
             if (code_out == code1)
             {
                 x1 = x;
@@ -1075,37 +1076,18 @@ void frame_widget::clearWindow()
 
 void frame_widget::clipLine()
 {
+    QElapsedTimer timer;
+    timer.start();
+
     int x1 = point1.x(), y1 = point1.y(), x2 = point2.x(), y2 = point2.y();
     getEndPoints(x1, y1, x2, y2);
     clearWindow();
-    if(accept) drawLineBA(endPoint1, endPoint2);
+    if(accept) drawLineBA(endPoint1, endPoint2, qRgb(currentcol.red(), currentcol.green(), currentcol.blue()));
+
+    int time = timer.nsecsElapsed();
+    emit sendTime(time/1000);
     update();
 }
-
-/*void frame_widget::clipPolygon()
-{
-    QList <QPoint> clippedPoints;
-    for(int i=0; i<clickedPoints.size(); i++) {
-        QPoint p1 = clickedPoints[i];
-        QPoint p2 = clickedPoints[(i+1)%clickedPoints.size()];
-
-        int x1 = p1.x(), y1 = p1.y(), x2 = p2.x(), y2 = p2.y();
-        getEndPoints(x1, y1, x2, y2);
-        if(accept) {
-            if(clippedPoints.size() == 0) clippedPoints.append(endPoint1);
-            else if(clippedPoints[clippedPoints.size() -1] != endPoint1) clippedPoints.append(endPoint1);
-            clippedPoints.append(endPoint2);
-        }
-    }
-    while(clickedPoints.size() != 0)
-        clickedPoints.pop_front();
-
-    for(int i=0; i<clippedPoints.size(); i++)
-        clickedPoints.append(clippedPoints[i]);
-    clearWindow();
-    drawPolygon();
-    update();
-}*/
 
 QPoint intersect(int cx1, int cy1, int cx2, int cy2, int x1, int y1, int x2, int y2)
 {
@@ -1138,31 +1120,36 @@ void frame_widget::clipAlongSide(int x1, int y1, int x2, int y2)
         int ix = clickedPoints[i].x(), iy = clickedPoints[i].y();
         int jx = clickedPoints[j].x(), jy = clickedPoints[j].y();
 
-        int x_in, y_in;
+        int first_in, second_in;
 
-        if(x2==x1 && ix>x1) x_in= 1;
-        else if(x2==x1 && ix<x1) x_in= -1;
-        else if(y2==y1 && iy<y1) x_in= 1;
-        else x_in= -1;
+        if(x2==x1 && ix>x1) first_in= 1;
+        else if(x2==x1 && ix<x1) first_in= -1;
+        else if(y2==y1 && iy<y1) first_in= 1;
+        else first_in= -1;
 
-        if(x2==x1 && jx>x1) y_in= 1;
-        else if(x2==x1 && jx<x1) y_in= -1;
-        else if(y2==y1 && jy<y1) y_in= 1;
-        else y_in= -1;
+        if(x2==x1 && jx>x1) second_in= 1;
+        else if(x2==x1 && jx<x1) second_in= -1;
+        else if(y2==y1 && jy<y1) second_in= 1;
+        else second_in= -1;
 
         if(y1<y2 || x1<x2) {
-            x_in *= (-1);
-            y_in *= (-1);
+            first_in *= (-1);
+            second_in *= (-1);
         }
 
-        if(x_in == 1 && y_in == 1) {
+        if(x1==x2 && ix==x1) first_in= 1;
+        else if(y1==y2 && iy==y1) first_in= 1;
+        if(x1==x2 && jx==x1) second_in= 1;
+        else if(y1==y2 && jy==y1) second_in= 1;
+
+        if(first_in == 1 && second_in == 1) {
             clippedPoints.append(QPoint(jx,jy));
         }
-        else if(x_in == -1 && y_in == 1) {
+        else if(first_in == -1 && second_in == 1) {
             clippedPoints.append(intersect(x1, y1, x2, y2, ix, iy, jx, jy));
             clippedPoints.append(QPoint(jx,jy));
         }
-        else if(x_in == 1 && y_in == -1) {
+        else if(first_in == 1 && second_in == -1) {
             clippedPoints.append(intersect(x1, y1, x2, y2, ix, iy, jx, jy));
         }
     }
@@ -1178,11 +1165,60 @@ void frame_widget::clipAlongSide(int x1, int y1, int x2, int y2)
 
 void frame_widget::clipPolygon()
 {
-    for(int i=0; i<4; i++) {
-        clipAlongSide(clip_points[i][0], clip_points[i][1], clip_points[(i+1)%4][0], clip_points[(i+1)%4][0]);
-    }
+    QElapsedTimer timer;
+    timer.start();
 
+    for(int i=0; i<4; i++) {
+        clipAlongSide(clip_points[i][0], clip_points[i][1], clip_points[(i+1)%4][0], clip_points[(i+1)%4][1]);
+    }
     clearWindow();
     drawPolygon();
+
+    int time = timer.nsecsElapsed();
+    emit sendTime(time/1000);
+    update();
+}
+
+int fact(int n)
+{
+    int res = 1;
+    for (int i = 2; i <= n; i++)
+        res = res * i;
+    return res;
+}
+
+int nCr(int n, int r)
+{
+    return fact(n) / (fact(r) * fact(n - r));
+}
+
+void frame_widget::drawCurve(double delU)
+{
+    int n = polygonVertices;
+    for(int i=0; i<n-1; i++)
+        drawLineBA(clickedPoints[i], clickedPoints[i+1], qRgb(0,125,0));
+
+    points.append({convertCoord(clickedPoints[0].x(), clickedPoints[0].y()), currentcol});
+    repaint();
+
+    for(double u = 0.0 ; u <= 1.0 ; u += delU)
+    {
+        double xu = 0.0, yu = 0.0;
+
+        for(int i=0; i<n; i++) {
+            int tempx = convertCoord(clickedPoints[i].x(), clickedPoints[i].y()).x();
+            int tempy = convertCoord(clickedPoints[i].x(), clickedPoints[i].y()).y();
+
+            xu += nCr(n-1, i)*pow(1-u, n-1-i)*pow(u, i)*tempx;
+            yu += nCr(n-1, i)*pow(1-u, n-1-i)*pow(u, i)*tempy;
+        }
+
+        QPoint p = convertPixel(QPoint(round(xu), round(yu)));
+        points.append({convertCoord(p.x(), p.y()), currentcol});
+        usleep(1000);
+        repaint();
+    }
+
+    points.append({convertCoord(clickedPoints[n-1].x(), clickedPoints[n-1].y()), currentcol});
     update();
 }

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(217, 243, 255);</string>
+   <string notr="true">background-color:rgb(219, 255, 178)</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="frame_widget" name="frame">
@@ -37,7 +37,7 @@
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>330</y>
+      <y>370</y>
       <width>201</width>
       <height>21</height>
      </rect>
@@ -63,9 +63,9 @@
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>350</y>
+      <y>390</y>
       <width>201</width>
-      <height>74</height>
+      <height>81</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -98,17 +98,20 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Pixel Size</string>
+          <string>   Pixel Size</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QSpinBox" name="spinBox">
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
          <property name="maximum">
           <number>150</number>
          </property>
          <property name="value">
-          <number>10</number>
+          <number>5</number>
          </property>
         </widget>
        </item>
@@ -133,7 +136,7 @@
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>310</y>
+      <y>350</y>
       <width>201</width>
       <height>21</height>
      </rect>
@@ -242,6 +245,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="radius">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
        <property name="value">
         <number>15</number>
        </property>
@@ -253,7 +259,7 @@
     <property name="geometry">
      <rect>
       <x>620</x>
-      <y>460</y>
+      <y>500</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -274,8 +280,8 @@
    <widget class="QLabel" name="R">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>430</y>
+      <x>610</x>
+      <y>480</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -291,7 +297,7 @@
     <property name="geometry">
      <rect>
       <x>620</x>
-      <y>490</y>
+      <y>530</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -310,7 +316,7 @@
     <property name="geometry">
      <rect>
       <x>620</x>
-      <y>520</y>
+      <y>560</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -328,8 +334,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>559</x>
-      <y>460</y>
+      <x>560</x>
+      <y>500</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -344,8 +350,8 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>559</x>
-      <y>490</y>
+      <x>560</x>
+      <y>530</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -360,8 +366,8 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>559</x>
-      <y>520</y>
+      <x>560</x>
+      <y>560</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -377,13 +383,16 @@
     <property name="geometry">
      <rect>
       <x>660</x>
-      <y>430</y>
-      <width>71</width>
+      <y>480</y>
+      <width>91</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
      <string>rbg(255,0,0)</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget_4">
@@ -408,6 +417,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="major">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
        <property name="value">
         <number>18</number>
        </property>
@@ -437,6 +449,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="minor">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
        <property name="value">
         <number>12</number>
        </property>
@@ -600,10 +615,10 @@ color: rgb(122, 13, 5);</string>
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>830</x>
+      <x>800</x>
       <y>0</y>
-      <width>121</width>
-      <height>20</height>
+      <width>171</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -612,7 +627,7 @@ font-size: 13px;
 color: rgb(122, 13, 5);</string>
     </property>
     <property name="text">
-     <string>Polygon Drawing</string>
+     <string>Polygon and Curve Drawing</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -640,6 +655,9 @@ color: rgb(122, 13, 5);</string>
      </item>
      <item>
       <widget class="QSpinBox" name="vertices">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
        <property name="minimum">
         <number>3</number>
        </property>
@@ -715,7 +733,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>200</y>
+      <y>260</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -744,7 +762,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>240</y>
+      <y>300</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -757,7 +775,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>170</y>
+      <y>230</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -786,7 +804,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>810</x>
-      <y>280</y>
+      <y>340</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -802,7 +820,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>870</x>
-      <y>280</y>
+      <y>340</y>
       <width>101</width>
       <height>21</height>
      </rect>
@@ -818,7 +836,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>310</y>
+      <y>370</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -840,7 +858,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>340</y>
+      <y>400</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -861,8 +879,8 @@ color: rgb(122, 13, 5);</string>
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>310</y>
+      <x>810</x>
+      <y>370</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -878,7 +896,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>340</y>
+      <y>400</y>
       <width>51</width>
       <height>20</height>
      </rect>
@@ -894,13 +912,13 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>370</y>
+      <y>430</y>
       <width>51</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Blue</string>
+     <string> Blue</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -910,7 +928,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>370</y>
+      <y>430</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -950,6 +968,9 @@ color: rgb(122, 13, 5);</string>
      </item>
      <item>
       <widget class="QSpinBox" name="tranx">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
        <property name="minimum">
         <number>-50</number>
        </property>
@@ -982,6 +1003,9 @@ color: rgb(122, 13, 5);</string>
      </item>
      <item>
       <widget class="QSpinBox" name="trany">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
        <property name="minimum">
         <number>-50</number>
        </property>
@@ -1008,8 +1032,8 @@ color: rgb(122, 13, 5);</string>
    <widget class="QLabel" name="label_20">
     <property name="geometry">
      <rect>
-      <x>1035</x>
-      <y>3</y>
+      <x>1040</x>
+      <y>0</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -1169,10 +1193,10 @@ color: rgb(122, 13, 5);</string>
    <widget class="QPushButton" name="pushButton_11">
     <property name="geometry">
      <rect>
-      <x>890</x>
-      <y>470</y>
-      <width>75</width>
-      <height>23</height>
+      <x>1090</x>
+      <y>440</y>
+      <width>81</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -1182,10 +1206,10 @@ color: rgb(122, 13, 5);</string>
    <widget class="QPushButton" name="pushButton_10">
     <property name="geometry">
      <rect>
-      <x>890</x>
-      <y>440</y>
-      <width>75</width>
-      <height>23</height>
+      <x>1090</x>
+      <y>410</y>
+      <width>81</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -1195,9 +1219,9 @@ color: rgb(122, 13, 5);</string>
    <widget class="QPushButton" name="pushButton_line">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>530</y>
-      <width>171</width>
+      <x>1000</x>
+      <y>500</y>
+      <width>181</width>
       <height>21</height>
      </rect>
     </property>
@@ -1209,7 +1233,7 @@ color: rgb(122, 13, 5);</string>
     <property name="geometry">
      <rect>
       <x>1000</x>
-      <y>320</y>
+      <y>330</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -1221,8 +1245,8 @@ color: rgb(122, 13, 5);</string>
    <widget class="QLabel" name="point1">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>440</y>
+      <x>1010</x>
+      <y>410</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -1237,8 +1261,8 @@ color: rgb(122, 13, 5);</string>
    <widget class="QLabel" name="point2">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>470</y>
+      <x>1010</x>
+      <y>440</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -1253,8 +1277,8 @@ color: rgb(122, 13, 5);</string>
    <widget class="QLabel" name="label_26">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>410</y>
+      <x>1010</x>
+      <y>370</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -1275,9 +1299,9 @@ color: rgb(122, 13, 5);
    <widget class="QComboBox" name="comboBox_4">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>500</y>
-      <width>171</width>
+      <x>1010</x>
+      <y>470</y>
+      <width>161</width>
       <height>21</height>
      </rect>
     </property>
@@ -1293,11 +1317,6 @@ color: rgb(122, 13, 5);
     <item>
      <property name="text">
       <string>   DDA</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>   Parametric</string>
      </property>
     </item>
    </widget>
@@ -1381,9 +1400,9 @@ color: rgb(122, 13, 5);
    <widget class="QPushButton" name="pushButton_rect">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>560</y>
-      <width>171</width>
+      <x>1000</x>
+      <y>530</y>
+      <width>181</width>
       <height>21</height>
      </rect>
     </property>
@@ -1394,9 +1413,9 @@ color: rgb(122, 13, 5);
    <widget class="QPushButton" name="pushButton_clipL">
     <property name="geometry">
      <rect>
-      <x>1000</x>
-      <y>390</y>
-      <width>181</width>
+      <x>800</x>
+      <y>500</y>
+      <width>171</width>
       <height>21</height>
      </rect>
     </property>
@@ -1407,14 +1426,118 @@ color: rgb(122, 13, 5);
    <widget class="QPushButton" name="pushButton_clipP">
     <property name="geometry">
      <rect>
-      <x>1000</x>
-      <y>420</y>
-      <width>181</width>
+      <x>800</x>
+      <y>530</y>
+      <width>171</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
      <string>Clip Polygon</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_27">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>470</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">text-decoration: underline;
+font-size: 13px;
+color: rgb(122, 13, 5);
+</string>
+    </property>
+    <property name="text">
+     <string>Clipping</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_28">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>320</y>
+      <width>131</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">text-decoration: underline;
+font-size: 13px;
+color: rgb(122, 13, 5);
+</string>
+    </property>
+    <property name="text">
+     <string>Grid Information</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_curve">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>200</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Draw Curve</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_29">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>170</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string> Curve Smoothness (u) -&gt;</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="curveU">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>170</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <property name="buttonSymbols">
+     <enum>QAbstractSpinBox::NoButtons</enum>
+    </property>
+    <property name="decimals">
+     <number>4</number>
+    </property>
+    <property name="minimum">
+     <double>0.000100000000000</double>
+    </property>
+    <property name="maximum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.000000000000000</double>
+    </property>
+    <property name="value">
+     <double>0.001000000000000</double>
     </property>
    </widget>
   </widget>
