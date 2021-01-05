@@ -557,8 +557,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>290</y>
+      <x>110</x>
+      <y>230</y>
       <width>104</width>
       <height>91</height>
      </rect>
@@ -606,8 +606,8 @@
    <widget class="QPushButton" name="pushButton_12">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>100</y>
+      <x>120</x>
+      <y>80</y>
       <width>80</width>
       <height>25</height>
      </rect>
@@ -619,8 +619,8 @@
    <widget class="QPushButton" name="pushButton_16">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>60</y>
+      <x>120</x>
+      <y>40</y>
       <width>80</width>
       <height>25</height>
      </rect>
@@ -632,8 +632,8 @@
    <widget class="QLabel" name="seed">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>40</y>
+      <x>120</x>
+      <y>20</y>
       <width>81</width>
       <height>17</height>
      </rect>
@@ -648,8 +648,8 @@
    <widget class="QPushButton" name="pushButton_17">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>130</y>
+      <x>120</x>
+      <y>110</y>
       <width>80</width>
       <height>25</height>
      </rect>
@@ -661,8 +661,8 @@
    <widget class="QPushButton" name="pushButton_18">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>170</y>
+      <x>120</x>
+      <y>150</y>
       <width>80</width>
       <height>25</height>
      </rect>
@@ -674,8 +674,8 @@
    <widget class="QPushButton" name="pushButton_19">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>210</y>
+      <x>120</x>
+      <y>190</y>
       <width>80</width>
       <height>25</height>
      </rect>
@@ -687,8 +687,8 @@
    <widget class="QPushButton" name="pushButton_24">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>510</y>
+      <x>170</x>
+      <y>450</y>
       <width>80</width>
       <height>25</height>
      </rect>
@@ -700,8 +700,8 @@
    <widget class="QPushButton" name="pushButton_25">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>540</y>
+      <x>170</x>
+      <y>480</y>
       <width>80</width>
       <height>25</height>
      </rect>
@@ -710,11 +710,11 @@
      <string>Set Pivot</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>480</y>
+      <x>80</x>
+      <y>420</y>
       <width>82</width>
       <height>120</height>
      </rect>
@@ -750,12 +750,12 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>400</y>
-      <width>154</width>
+      <x>80</x>
+      <y>340</y>
+      <width>165</width>
       <height>55</height>
      </rect>
     </property>
@@ -810,9 +810,62 @@
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinBox_5"/>
+        <widget class="QSpinBox" name="spinBox_5">
+         <property name="minimum">
+          <number>-360</number>
+         </property>
+         <property name="maximum">
+          <number>360</number>
+         </property>
+        </widget>
        </item>
       </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>560</y>
+      <width>131</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_18">
+     <item>
+      <widget class="QPushButton" name="pushButton_26">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Set Boundary Point 1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_27">
+       <property name="text">
+        <string>Set Boundary Point 2</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_28">
+       <property name="text">
+        <string>Clip Line</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_29">
+       <property name="text">
+        <string>Clip Polygon</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

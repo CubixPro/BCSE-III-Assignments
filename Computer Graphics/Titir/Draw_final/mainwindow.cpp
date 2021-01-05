@@ -90,6 +90,11 @@ void MainWindow::on_actionLarge_2_triggered()
     //gridFrame->changeGridSize(800);
 }
 
+void MainWindow::on_frame_customContextMenuRequested(const QPoint &pos)
+{
+
+}
+
 void MainWindow::showCoord(int x, int y)
 {
     //std::cout << "hi";
@@ -415,4 +420,38 @@ void MainWindow::on_pushButton_22_clicked()
 void MainWindow::on_pushButton_23_clicked()
 {
    ui->frame->reflect();
+}
+
+void MainWindow::on_pushButton_26_clicked()
+{
+   ui->frame->setBoundaryPoint1();
+}
+
+void MainWindow::on_pushButton_27_clicked()
+{
+   ui->frame->setBoundaryPoint2();
+}
+
+void MainWindow::on_pushButton_28_clicked()
+{
+   ui->frame->clip(true);
+}
+
+void MainWindow::on_radioButton_toggled(bool){
+
+}
+
+void MainWindow::on_spinBox_textChanged(QString const&){
+
+}
+
+void MainWindow::on_radioButton_clicked(bool){
+
+}
+
+
+
+void MainWindow::on_pushButton_29_clicked()
+{
+   ui->frame->clipPolygon();
 }

@@ -23,6 +23,7 @@
 #define maxHt 600
 #include<unistd.h>
 #include <edge.h>
+#include <vertex.h>
 
 using namespace std;
 
@@ -59,9 +60,10 @@ private:
     bool seednow ;
     bool delay;
     QVector<QPoint> polygon;
+    QVector<QPoint> polygonCoord;
     QColor polygoncolour;
     QVector<Edge> sortededges;
-    void drawDelayLine(int x1, int y1, int x2, int y2);
+    void drawDelayLine(int x1, int y1, int x2, int y2, int delay);
     vector<int> matMult3_1(vector<vector<int>> mat, vector<int> coords);
     vector<double> matMult3_1D(vector<vector<double>> mat, vector<double> coords);
     vector<vector<int>> matMult3_3(vector<vector<int>> x, vector<vector<int>> y);
@@ -76,6 +78,15 @@ private:
     QPoint cPoint1;
     QPoint cPoint2;
 
+    QPoint pmax1;
+    QPoint pmax2;
+
+    void clipLine(int x1, int y1, int x2, int y2, int xmin, int xmax, int ymin, int ymax, bool flag);//Liang barskey algorithm
+
+    bool in;//1 means inside, 0 means fully outside
+    QPoint endp1, endp2;
+
+    void drawPolygonCoord(QVector<QPoint> poly, QColor q);
 
 public:
 
@@ -100,6 +111,10 @@ public:
     void mousePressEvent(QMouseEvent *ev) override;
     QPoint setPoint1();
     QPoint setPoint2();
+
+    void setBoundaryPoint1();
+    void setBoundaryPoint2();
+
     void changeCurrentColour(QColor q);
     void drawLineDDA();
     void drawLineBA();
@@ -132,6 +147,13 @@ public:
     void onreflect();
 
     void reflect();
+
+    void clip(bool flag);
+
+    void onPolygonClip();
+
+    void clipPolygon();
+
 signals:
 
     void sendCoord(int x, int y);

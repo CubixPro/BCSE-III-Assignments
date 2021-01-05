@@ -12,12 +12,14 @@ SOURCES += \
     edge.cpp \
     frame_widget.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    vertex.cpp
 
 HEADERS += \
     edge.h \
     frame_widget.h \
-    mainwindow.h
+    mainwindow.h \
+    vertex.h
 
 FORMS += \
     mainwindow.ui

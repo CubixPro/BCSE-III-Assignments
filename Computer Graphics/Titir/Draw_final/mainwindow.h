@@ -149,6 +149,15 @@ public:
 
     void on_pushButton_23_clicked();
 
+    void on_pushButton_26_clicked();
+
+    void on_pushButton_27_clicked();
+
+    void on_pushButton_28_clicked();
+
+    //void on_radioButton_toggled(bool);
+    void on_pushButton_29_clicked();
+
 private:
     Ui::MainWindow *ui;
     //frame_widget *gridFrame;

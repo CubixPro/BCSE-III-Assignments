@@ -51,7 +51,7 @@ QPoint frame_widget::convertCoord(int x, int y)
 
 }
 
-void frame_widget::drawDelayLine(int x1, int y1, int x2, int y2)
+void frame_widget::drawDelayLine(int x1, int y1, int x2, int y2, int delay)
 {
          int dx=x2-x1;
         int dy=y2-y1;
@@ -78,7 +78,8 @@ void frame_widget::drawDelayLine(int x1, int y1, int x2, int y2)
                {     points.append({convertCoord(x,y), currentcol});
                     //myedgeList.push_back({x, y});
                     modified = true;
-                    usleep(90000);
+                    //usleep(90000);
+                    usleep(delay);
                     repaint();
 
 
@@ -104,7 +105,8 @@ void frame_widget::drawDelayLine(int x1, int y1, int x2, int y2)
 
                     points.append({convertCoord(x,y), currentcol});
                     modified = true;
-                   usleep(90000);
+                   //usleep(90000);
+                    usleep(delay);
                     repaint();
                     myedgeList.push_back({x, y});
 
@@ -203,6 +205,134 @@ void frame_widget::rotate(int angle, int piv_x, int piv_y)
 
 }
 
+void frame_widget::clipLine(int x1, int y1, int x2, int y2, int xmin, int xmax, int ymin, int ymax, bool flag)
+{
+    double t1 = 0.0, t2 = 1.0;
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+
+    int i;
+    double t;
+
+    double p[4];
+    double q[4];
+
+    p[0] = -dx;
+    q[0] = x1 - xmin;
+
+    p[1] = dx;
+    q[1] = xmax - x1;
+
+    p[2] = -dy;
+    q[2] = y1 - ymin;
+
+    p[3] = dy;
+    q[3] = ymax - y1;
+
+    for(i = 0 ; i < 4 ; i++){
+        if(p[i]==0 && q[i]<0)//line is parallel and outside
+        {
+                    if(flag)
+                        drawDelayLine(x1, y1, x2, y2, 0);
+                    in = false;
+                    return ;
+        }
+                if(p[i]<0.0)
+                {
+                   t=q[i]/p[i];
+                    if(t>t1)
+                        {
+                          t1=t;
+                        }
+                }
+                if(p[i]>0.0)
+                {
+                    t=q[i]/p[i];
+                    if(t<t2)
+                        {t2=t;}
+                }
+
+    }
+    if(t1<t2)
+        {
+            double xt1, yt1, xt2, yt2;
+             xt1=x1+t1*(x2-x1);
+             yt1=y1+t1*(y2-y1);
+             xt2=x1+t2*(x2-x1);
+             yt2=y1+t2*(y2-y1);
+                srand(time(0));
+                if(flag){
+             QColor temp = currentcol;
+             drawDelayLine(x1, y1, xt1, yt1, 0);
+             currentcol = QColor(rand()%255, rand()%255, rand()%255);
+             drawDelayLine(xt1, yt1, xt2, yt2, 0);
+             currentcol = temp;
+             drawDelayLine(xt2, yt2, x2, y2, 0);
+                }
+             endp1 = QPoint(xt1, yt1);
+             endp2 = QPoint(xt2, yt2);
+                in = true;;
+             update();
+    }
+    else{
+        if(flag)
+            drawDelayLine(x1, y1, x2, y2, 0);
+        in = false;;
+        return;
+    }
+}
+
+void frame_widget::drawPolygonCoord(QVector<QPoint> poly, QColor q)
+{
+    QColor temp = currentcol;
+    currentcol = q;
+   for(int i = 0 ; i < poly.size() ; i++){
+       point1 = poly[i];
+       point2 = poly[(i + 1)%poly.size()];
+
+       points.push_back({convertCoord(point1.x(), point1.y()), q});
+        points.push_back({convertCoord(point2.x(), point2.y()), q});
+
+
+       drawLineBA();
+   }
+   modified = true;
+   currentcol = temp;
+}
+
+void frame_widget::clipPolygon()
+{
+   QVector<QPoint> cPolygon;
+
+   int len = polygon.size();
+   for(int i = 0 ; i < polygon.size() ; i++){
+       point1 = convertPixel(polygon[i]);
+       point2 = convertPixel(polygon[(i + 1)%len]);
+
+       clip(true);
+       if(in){
+           if(cPolygon.size() == 0){
+               cPolygon.append(endp1);
+
+           }
+           else if(cPolygon[cPolygon.size() - 1] != endp1){
+               cPolygon.append(endp1);
+           }
+
+           cPolygon.append(endp2);
+
+       }
+   }
+
+  //polygon = cPolygon;
+  //drawPolygon();
+   //currentcol = Qt::white;
+   drawPolygonCoord(cPolygon, QColor(rand()%255, rand()%255, rand()%255));
+  repaint();
+}
+
+
+
 void frame_widget::reflect()
 {
     QPoint p1 = cPoint1; //convertCoord(point1.x(), point1.y());
@@ -228,6 +358,22 @@ void frame_widget::reflect()
     drawPolygon();
     repaint();
 }
+
+void frame_widget::clip(bool flag)
+{
+   int xmin = min(pmax1.x(), pmax2.x());
+   int xmax  = max(pmax1.x(), pmax2.x());
+
+   int ymin = min(pmax2.y(), pmax1.y());
+   int ymax = max(pmax1.y(), pmax2.y());
+
+
+
+   clipLine(point1.x(), point1.y(), point2.x(), point2.y(), xmin, xmax, ymin, ymax, flag);
+
+}
+
+
 
 vector<int> frame_widget::matMult3_1(vector<vector<int> > mat, vector<int> coords)
 {
@@ -841,7 +987,7 @@ void frame_widget::scanLineFill()
             //point2 = QPoint(renderlist[i + 1], scanline);
             //drawLineBA();
             //usleep(900000);
-            drawDelayLine(renderlist[i], scanline, renderlist[i + 1], scanline);
+            drawDelayLine(renderlist[i], scanline, renderlist[i + 1], scanline, 90000);
         }
     }
 
@@ -940,6 +1086,53 @@ QPoint frame_widget::setPoint2()
     point2 = convertPixel(lastpoint);
     cPoint2 = lastpoint;
     return point2;
+
+}
+
+void frame_widget::setBoundaryPoint1()
+{
+    pmax1 = convertPixel(lastpoint);
+
+}
+
+void frame_widget::setBoundaryPoint2()
+{
+    pmax2 = convertPixel(lastpoint);
+    int xmax = max(pmax1.x(), pmax2.x());
+    int xmin = min(pmax1.x(), pmax2.x());
+
+    int ymax = max(pmax1.y(), pmax2.y());
+    int ymin = min(pmax1.y(), pmax2.y());
+
+    QPoint temp1 = point1;
+    QPoint temp2 = point2;
+
+
+
+    point1 = QPoint(xmax, ymin);
+    points.append({convertCoord(point1.x(), point1.y()), currentcol});
+    point2 = QPoint(xmax, ymax);
+    points.append({convertCoord(point2.x(), point2.y()), currentcol});
+    drawLineBA();
+
+    point2 = QPoint(xmin, ymin);
+    points.append({convertCoord(point2.x(), point2.y()), currentcol});
+    drawLineBA();
+
+    point1 = QPoint(xmin, ymax);
+    points.append({convertCoord(point1.x(), point1.y()), currentcol});
+    drawLineBA();
+
+    point2 = QPoint(xmax, ymax);
+    points.append({convertCoord(point2.x(), point2.y()), currentcol});
+    drawLineBA();
+
+    point1 = temp1;
+    point2 = temp2;
+
+   modified = true;
+
+    repaint();
 
 }
 
