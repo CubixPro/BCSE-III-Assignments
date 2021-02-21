@@ -8,7 +8,7 @@ from termcolor import colored
 class Client():
     def __init__(self):
         self.serverHost = '127.0.0.1' #localhost
-        self.serverPort = '9000'
+        self.serverPort = '9090'
         self.socket     = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
 
@@ -30,7 +30,7 @@ class Client():
         
 
         if(userInput[1] == self.serverHost and userInput[2] == self.serverPort):
-            self.socket.connect(('localhost', 9000))
+            self.socket.connect(('localhost', 9090))
         else: sys.exit("SERVER PORT OR HOST NOT MATCHING...")
 
         # expect a greeting msg from server
@@ -50,6 +50,8 @@ class Client():
 
         while True:
             # now this should be the queries
+            symbol = '#'   if userType.lower() == 'm' else '$'
+            color  = 'red' if userType.lower() == 'm' else 'cyan'
             userInput = input(colored(name +  '>>>' + symbol + " ", color))
             userInput = userInput.split()
             length = len(userInput)
@@ -112,9 +114,11 @@ class Client():
                 
                 elif(userType == 'g' and userInput[counter].lower() == 'upgrademe'):
                     password    = input("Enter your manager password: ")
+                    userType    = 'm'
+                    counter += 1
                     self.socket.send(name.encode())
                     time.sleep(0.05)
-                    self.socket.send(userType.encode())
+                    self.socket.send('g'.encode())
                     time.sleep(0.05)
                     self.socket.send('u'.encode())
                     time.sleep(0.05)
@@ -144,6 +148,7 @@ class Client():
                     self.socket.send(attribute.encode())
                     time.sleep(0.05)
                     self.socket.send(value.encode())
+                    time.sleep(0.05)
 
                     # expect an confirmation from server
                     ans = self.socket.recv(1024).decode()
@@ -168,6 +173,7 @@ class Client():
                     self.socket.send('get'.encode())
                     time.sleep(0.05)
                     self.socket.send(attribute.encode())
+                    time.sleep(0.05)
 
                     # expect an answer from server
                     ans = self.socket.recv(1024).decode()

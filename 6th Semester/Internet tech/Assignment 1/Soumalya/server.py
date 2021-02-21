@@ -7,7 +7,7 @@ from termcolor import colored
 class Server:
     def __init__(self):
         self.serverHost     = '127.0.0.1'
-        self.serverPort     = '9000'
+        self.serverPort     = '9090'
         self.socket         = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.authDict       = dict()
         self.keyStore       = dict()
@@ -60,7 +60,7 @@ class Server:
                     userType = 'm'
                     print(f"{name} has now manager privillage!!")
                 else: 
-                    conn.send("You now have manager privillage!!".encode())
+                    conn.send("WRONG MANAGER PASSWORD!!".encode())
             
             elif(userType == 'm' and typeOfOp == 'put'):
                 attribute = conn.recv(1024).decode()
@@ -76,6 +76,7 @@ class Server:
                 # name should be equal to sent userName
                 attribute = conn.recv(1024).decode()
                 userData = self.keyStore.get(name, 'null')
+                #print(userData)
                 if userData == 'null': # means the user is not in keyStore dict
                     self.keyStore[name] = dict()
                     response = '\n' #prints a blank line in client
@@ -96,7 +97,7 @@ class Server:
 
     def run(self):
 
-        self.socket.bind(('localhost', 9000))
+        self.socket.bind(('localhost', 9090))
         self.socket.listen(10)
         threadPool = []
         while True:
