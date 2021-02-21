@@ -4,7 +4,7 @@
 * Now you should land upon cyan or red colored terminal showing your username
 * Now you need to bind with the server with following command.(The command is same irrespective of your role)</br>
 ```
-bind 127.0.0.1 9000
+bind 127.0.0.1 9090
 ```
 * You are logged into the server(see server prompt)
 * Now you can enter your commands. The commands follow a **specific and different order** for guest(cyan) and manager(red) users. You can concatenate one or more commands if you wish.
