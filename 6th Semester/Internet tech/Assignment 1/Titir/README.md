@@ -14,6 +14,7 @@ The commands supported now are
 * `put [username](optional) [key] [value]`
 * `upgrade [admin password]`
 * `login [username] [password]`
+* `exit`
 
 ##### Put one query in each prompt.
 
