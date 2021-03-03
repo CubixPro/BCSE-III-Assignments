@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Chat App</title>
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <!-- <script defer src="script.js"></script> -->
+  <style>
+    /* Chat containers */
+    *,
+    :after,
+    :before {
+        box-sizing: border-box;
+    }
+
+    .clearfix:after,
+    .clearfix:before {
+        content: "";
+        display: table;
+    }
+
+    .clearfix:after {
+        clear: both;
+        display: block;
+    }
+    p{
+      font-size: 16;
+    }
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .login-wrap {
+        margin-top: 400;
+        width: 100%;
+        margin: auto;
+        max-width: 525px;
+        min-height: 670px;
+        position: relative;
+        background: url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg) no-repeat center;
+        box-shadow: 0 10px 10px 10px rgba(166, 75, 189, 0.24),
+            0 10px 10px 10px rgba(184, 87, 214, 0.19);
+    }
+
+    .login-html {
+        margin-top: 200;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        padding: 90px 70px 50px 70px;
+        background: rgba(40, 57, 101, 0.9);
+    }
+
+    .login-html .sign-in-htm,
+    .login-html .sign-up-htm {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        position: absolute;
+        transform: rotateY(180deg);
+        backface-visibility: hidden;
+        transition: all 0.4s linear;
+    }
+
+    .login-html .sign-in,
+    .login-html .sign-up,
+    .login-form .group .check {
+        display: none;
+    }
+
+    .login-html .tab,
+    .login-form .group .label,
+    .login-form .group .button {
+        text-transform: uppercase;
+    }
+
+    .login-html .tab {
+        font-size: 22px;
+        margin-right: 15px;
+        padding-bottom: 5px;
+        margin: 0 15px 10px 0;
+        display: inline-block;
+        border-bottom: 2px solid transparent;
+    }
+
+    .login-html .sign-in:checked+.tab,
+    .login-html .sign-up:checked+.tab {
+        color: #fff;
+        border-color: #1161ee;
+    }
+
+    .login-form {
+        min-height: 345px;
+        position: relative;
+        perspective: 1000px;
+        margin-top: 100px;
+        transform-style: preserve-3d;
+    }
+
+    .login-form .group {
+        margin-bottom: 15px;
+    }
+
+    .login-form .group .label,
+    .login-form .group .input,
+    .login-form .group .button {
+        width: 100%;
+        color: #fff;
+        display: block;
+    }
+
+    .login-form .group .input,
+    .login-form .group .button {
+        border: none;
+        padding: 15px 20px;
+        border-radius: 25px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .login-form .group input[data-type="password"] {
+        -webkit-text-security: circle;
+    }
+
+    .login-form .group .label {
+        color: #aaa;
+        font-size: 12px;
+    }
+
+    .login-form .group .button {
+        background: #1161ee;
+    }
+
+    .login-form .group label .icon {
+        width: 15px;
+        height: 15px;
+        border-radius: 2px;
+        position: relative;
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .login-form .group label .icon:before,
+    .login-form .group label .icon:after {
+        content: "";
+        width: 10px;
+        height: 2px;
+        background: #fff;
+        position: absolute;
+        transition: all 0.2s ease-in-out 0s;
+    }
+
+    .login-form .group label .icon:before {
+        left: 3px;
+        width: 5px;
+        bottom: 6px;
+        transform: scale(0) rotate(0);
+    }
+
+    .login-form .group label .icon:after {
+        top: 6px;
+        right: 0;
+        transform: scale(0) rotate(0);
+    }
+
+    .login-form .group .check:checked+label {
+        color: #fff;
+    }
+
+    .login-form .group .check:checked+label .icon {
+        background: #1161ee;
+    }
+
+    .login-form .group .check:checked+label .icon:before {
+        transform: scale(1) rotate(45deg);
+    }
+
+    .login-form .group .check:checked+label .icon:after {
+        transform: scale(1) rotate(-45deg);
+    }
+
+    .login-html .sign-in:checked+.tab+.sign-up+.tab+.login-form .sign-in-htm {
+        transform: rotate(0);
+    }
+
+    .login-html .sign-up:checked+.tab+.login-form .sign-up-htm {
+        transform: rotate(0);
+    }
+    
+    .hr {
+        height: 2px;
+        margin: 60px 0 50px 0;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .foot-lnk {
+        text-align: center;
+    }
+    body{
+      background-color:rgb(28, 2, 43)
+    }
+    .container {
+      border: 1px solid #dedede;
+      background-color: #ffffff;
+      border-radius: 5px;
+      padding: 1px;
+    }
+
+    /* Clear floats */
+    .container::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Create two unequal columns that floats next to each other */
+    .column {
+      float: left;
+      height: 750px; /* Should be removed. Only for demonstration */
+    }
+
+    .left {
+      width: 20%;
+      background-color: rgb(113, 127, 173);
+      padding-left: 30px;
+      margin-right: 10px;
+
+    }
+
+    .right {
+      width: 75%;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    /* Style images */
+    .container img {
+      float: left;
+      max-width: 100px;
+      width: 100%;
+      margin-right: 20px;
+      border-radius: 50%;
+    }
+
+    /* Style time text */
+    .time-right {
+      float: right;
+      color: #aaa;
+    }
+
+    #message-container {
+      width: 80%;
+      max-width: 1200px;
+    }
+
+    #message-container div {
+      background-color: rgb(151, 157, 167);
+    }
+
+
+    #send-container {
+      position: fixed;
+      padding-bottom: 30px;
+      bottom: 0;
+      background-color: rgb(130, 132, 134);
+      max-width: 1200px;
+      width: 78%;
+      display: flex;
+      justify-content: center;
+      border-radius: 20px;
+      height: 90px;
+    }
+    #image-input {
+      flex-grow: 1;
+    }
+    #image-label{
+      cursor: pointer;
+      border-width:thin;
+      border-color: #aaa;
+    }
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrap" id="loginPage">
+      <div class="login-html">
+        <input id="tab-1" type="radio" name="tab" class="sign-in" checked />
+        <label for="tab-1" class="tab">
+          Sign In
+        </label>
+        <input id="tab-2" type="radio" name="tab" class="sign-up" />
+        <label for="tab-2" class="tab">
+          Sign Up
+        </label>
+        <div class="login-form">
+          <div class="sign-in-htm">
+            <div class="group">
+              <label for="user" class="label">
+                Username
+              </label>
+              <input
+                id="user"
+                type="text"
+                class="input"
+              />
+            </div>
+            <div class="group">
+              <label for="pass" class="label">
+                Password
+              </label>
+              <input
+                id="pass"
+                type="password"
+                class="input"
+                data-type="password"
+
+              />
+            </div>
+            <div class="group">
+              <input
+                type="submit"
+                class="button"
+                value="Sign In"
+                onclick="handleJoin()"
+              />
+            </div>
+            <div class="hr"></div>
+          </div>
+          <div class="sign-up-htm">
+            <div class="group">
+              <label for="user" class="label">
+                Username
+              </label>
+              <input
+                id="user"
+                type="text"
+                class="input"
+              />
+            </div>
+            <div class="group">
+              <label for="pass" class="label">
+                Password
+              </label>
+              <input
+                id="pass"
+                type="password"
+                class="input"
+                data-type="password"
+
+              />
+            </div>
+            <div class="group">
+              <input
+                id="join"
+                type="submit"
+                class="button"
+                value="Sign Up"
+                onclick="handleJoin()"
+              />
+            </div>
+            <div class="hr"></div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!-- for chat page -->
+  <div class="row" style="display:none" id="chatPage">
+    <div class="column left">
+      <h1 id="username" style="color: rgb(125, 15, 199);"></h1>
+      <h2>Users</h2>
+      <ol id="onlineUserList">
+      </ol>
+    </div>
+    <div class="column right" >
+      <div id="message-container"></div>
+      <form id="send-container">
+        <p><input type="text" id="message-input" placeholder="Enter text message" style="width: 500px;height: 60px;font-size: medium;margin-right: 40px;"></p>
+        <p><input type="text" id="user-input" placeholder="Enter users indices" style="width: 200px;height: 60px;font-size: medium;margin-right: 40px;"></p>
+        <p><input type="file"  accept="image/*" name="image" id="file" onchange="loadFile(event)" style="display: none;"></p>
+        <p><label id="image-label" for="file" style="margin-right: 40px;">Upload Image</label></p>
+        <p><img id="output" for="file" width="40" /></p>
+        <button type="submit" id="send-button" style="height: 60px;margin-top: 15px;width: 80px;">Send</button>
+      </form>
+    </div>
+  </div>  
+  <script>
+    const socket = io("http://localhost:3000", {
+  transports: ["websocket", "polling", "flashsocket"],
+}); // join the server on 3000 port
+var userList = [];
+var selfUserName;
+var password;
+const userNameInput = document.getElementById("user");
+const passwordInput = document.getElementById("pass");
+const messageContainer = document.getElementById("message-container"); // contains the messages
+const messageForm = document.getElementById("send-container"); // the form to send a message
+const messageInput = document.getElementById("message-input"); // form for typing the message
+const usersInput = document.getElementById("user-input");
+const joinButton = document.getElementById("join");
+var imageMessage = null; // form for taking image input
+
+function renderUsers() {
+  const userListRender = document.getElementById("onlineUserList");
+  userListRender.innerHTML = "";
+  for (idx = 0; idx < userList.length; idx++) {
+    const list = document.createElement("li");
+    list.innerText = userList[idx];
+    userListRender.appendChild(list);
+  }
+}
+function appendMessage(textMessage, imageMessage, date, userName, recipients) {
+  const messageElement = document.createElement("div"); // to update the message chat list
+  messageElement.style.marginTop = "10px";
+  messageElement.style.borderRadius = "10px";
+  messageElement.style.paddingLeft="20px"
+  messageElement.setAttribute("class", "container");
+  if (userName) {
+    const titleElement = document.createElement("h2");
+    if (userName === "You") {
+      messageElement.style.backgroundColor = "rgb(180, 90, 239,0.24)";
+    }else{
+      messageElement.style.backgroundColor = "rgb(210, 80, 39,0.20)";
+    }
+    titleElement.innerText = userName;
+    messageElement.appendChild(titleElement);
+  }
+  if (imageMessage) {
+    const imageElement = document.createElement("img");
+    imageElement.setAttribute("src", imageMessage);
+    messageElement.appendChild(imageElement);
+  }
+  if (textMessage) {
+    const textElement = document.createElement("p");
+    textElement.style.fontSize="x-large"
+    textElement.innerText = textMessage;
+    messageElement.appendChild(textElement);
+  }
+  if (date) {
+    const dateElement = document.createElement("span");
+    dateElement.setAttribute("class", "time-right");
+    dateElement.style.paddingRight="20px"
+    dateElement.innerText = date;
+    messageElement.appendChild(dateElement);
+  }
+  if (recipients) {
+    const recipientsElement = document.createElement("p");
+    recipientsElement.style.fontSize="10";
+    var recipientList = "To ->  ";
+    for (var idx = 0; idx < recipients.length; idx++) {
+      recipientList = recipientList + " " + recipients[idx];
+    }
+    recipientsElement.innerText = recipientList;
+    messageElement.appendChild(recipientsElement);
+  }
+  messageContainer.append(messageElement);
+}
+function appendJoins(message, self) {
+  const messageElement = document.createElement("div");
+  messageElement.style.marginTop = "10px";
+  messageElement.style.height = "30px";
+  messageElement.style.borderRadius = "3px";
+  messageElement.style.alignSelf = "center";
+  messageElement.style.width = "70%";
+  if (self) {
+    messageElement.style.backgroundColor = "rgb(235, 245, 245)";
+  }
+  messageElement.innerText = message;
+  messageContainer.append(messageElement);
+}
+function handleJoin() {
+  selfUserName = userNameInput.value;
+  password = passwordInput.value;
+  socket.emit("new-user", { name: selfUserName, password });
+}
+socket.on("connection-status", (data) => {
+  if ((selfUserName === data.name) & (data.status === true)) {
+    document.getElementById("username").innerText = selfUserName;
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("chatPage").style.display = "block";
+    appendJoins("You joined this chatcord", true);
+  }
+});
+socket.on("chat-message", (data) => {
+  appendMessage(data.message, data.image, data.time, data.name); // on receiving a new message
+});
+socket.on("user-connected", (userName) => {
+  appendJoins(`${userName} joined this chatcord`); // on new user connected
+});
+socket.on("user-disconnected", (userName) => {
+  appendJoins(`${userName} left this chatcord`); // on a user disconnected
+});
+socket.on("users-list", (usersList) => {
+  userList = usersList;
+  renderUsers();
+});
+socket.on("prev-chat-message", (data) => {
+  console.log(data);
+  data.forEach((msg) =>
+    appendMessage(msg.message, msg.image, msg.time, msg.name, msg.recipients)
+  );
+});
+messageForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const textMessage = messageInput.value;
+  var recipients = usersInput.value;
+  if (recipients === "") {
+    recipients = userList;
+  } else {
+    recipients = recipients.split(",");
+    for (idx = 0; idx < recipients.length; idx++) {
+      recipients[idx] = userList[parseInt(recipients[idx])];
+    }
+  }
+  for (idx = 0; idx < recipients.length; idx++) {}
+  appendMessage(
+    textMessage,
+    imageMessage,
+    new Date(Date.now()).toLocaleTimeString(),
+    "You",
+    recipients
+  );
+  socket.emit("chat-message", {
+    message: textMessage,
+    image: imageMessage,
+    time: new Date(Date.now()).toLocaleTimeString(),
+    name: selfUserName,
+    recipients: recipients,
+  }); // sending own message includes rendering on self page and sending to server
+  messageInput.value = "";
+  document.getElementById("output").src = "";
+  imageInput = null;
+});
+
+function loadFile(event) {
+  let file = event.target.files[0];
+  let reader = new FileReader();
+  reader.onloadend = function () {
+    imageMessage = reader.result;
+  };
+  reader.readAsDataURL(file);
+  document.getElementById("output").src = URL.createObjectURL(file);
+}
+
+  </script>
+</body>
+</html>
