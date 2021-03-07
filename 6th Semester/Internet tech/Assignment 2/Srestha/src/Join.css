@@ -1,0 +1,34 @@
+html,
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: rgb(202, 245, 245);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.joinContainer {
+  margin: 250px 500px;
+  width: 30%;
+  background-color: #4545f1;
+  font-size: large;
+  color: #f0f8ff;
+}
+
+.heading {
+  padding-top: 5px;
+  text-decoration: underline;
+}
+
+.button {
+  margin-bottom: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 200px;
+  font-size: medium;
+  background-color: rgb(247, 247, 195);
+  color: red;
+  font-size: medium;
+  font-weight: bold;
+}

@@ -1,0 +1,13 @@
+.newrooms {
+  position: absolute;
+  bottom: 0;
+}
+
+.button {
+  width: 200px;
+  height: 30px;
+}
+
+.label {
+  color: azure;
+}
