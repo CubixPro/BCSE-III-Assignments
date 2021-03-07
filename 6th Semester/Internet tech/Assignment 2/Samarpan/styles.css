@@ -1,0 +1,260 @@
+*,
+:after,
+:before {
+    box-sizing: border-box;
+}
+
+* {
+    font-family: 'Akaya Telivigala', cursive;
+}
+
+.main {
+    background-image: url('https://wallpaperaccess.com/full/2139356.jpg');
+    width: 400px;
+    height: 400px;
+    margin: 7em auto;
+    border-radius: 1.5em;
+    box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+}
+
+.sign {
+    padding-top: 40px;
+    color: #800033;
+    font-weight: bold;
+    font-size: 23px;
+}
+
+.un {
+    width: 76%;
+    color: rgb(38, 50, 56);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    background: whitesmoke;   
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    outline: none;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0.02);
+    margin-bottom: 50px;
+    margin-left: 46px;
+    text-align: center;
+    margin-bottom: 27px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+form.form1 {
+    padding-top: 40px;
+}
+
+
+.un:focus {
+    border: 2px solid rgba(0, 0, 0, 0.18) !important;
+    
+}
+
+.submit {
+  cursor: pointer;
+    border-radius: 5em;
+    color: #fff;
+    background: linear-gradient(to right, #9C27B0, #E040FB);
+    border: 0;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-family: 'Ubuntu', sans-serif;
+    margin-left: 35%;
+    font-size: 13px;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+}
+
+a {
+    text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
+    color: #E1BEE7;
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .main {
+        border-radius: 0px;
+    } 
+}
+    
+
+
+.wrapper-chat {
+    display: flex;
+}
+
+.cp1 {
+    cursor: pointer;
+}
+
+.select-room {
+    font-style: bold;
+    font-size: 20px;
+    color: #663d00;
+    
+}
+
+h3 {
+    font-weight: bold;
+    color: #0b62e3;
+}
+
+#main-section {
+    overflow: hidden; 
+    width: 100%;
+}
+
+#sidebar {
+    margin-top: 2em;
+    float: left; 
+    min-height: 96vh;
+    padding-left: 1em;
+    padding-top: 3em;
+    padding-right:1em;
+    border-right: 0.5px solid #898c91;
+    background-image: linear-gradient(to bottom,#bdfcf7, #22bdb0);
+    height: 100%;
+    overflow: hidden;
+}
+
+#sidebar p {
+    padding-left: 2em;
+    padding-right:2em;
+}
+
+#sidebar.view-sidebar {
+    display: none;
+}
+
+#show-sidebar-button {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s;
+    color: #335177;
+}
+
+@media (max-width: 567px) {
+    #sidebar {
+        display: none;
+    }
+
+    #sidebar.view-sidebar {
+        display: block;
+    }
+
+    #show-sidebar-button {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+#right-pannel {
+    overflow: hidden; 
+}
+
+#message-container {
+    margin-top: 5em;
+    min-height: 82vh;
+    max-height: 82vh;
+    overflow-y: scroll; 
+}
+
+#send-container {
+    padding-left: 1em;
+    padding-right: 1em;
+    bottom: 0;
+}
+
+input[type=text]:focus{
+    border-color: #ffc107;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 10px #ffc107;
+}
+
+#send-container {
+    border-color: #ffc107;
+    border-width: 5px;
+}
+
+#logo-span {
+    font-size: 30px;
+}
+
+
+@keyframes fadeIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+    
+.others-msg {
+    margin-right:7em;
+    margin-left: 1em;
+    padding: 0.5em 0.5em 0.5em 1em;
+    border-radius: 5px;
+    border-color: grey;
+    border-width: 0.5px;
+    border-style: solid;
+    background-color: #4f1f11;
+    color: #f5ab95;
+    overflow: auto;
+    /* animation */
+    animation-name: fadeIn;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+}
+
+.my-msg {
+    margin-left:7em;
+    margin-right:1em;
+    padding: 0.5em 0.5em 0.5em 1em;
+    border-radius: 5px;
+    background-color: #032915;
+    color:#bef5ae;
+    border-color: #206ED2;
+    border-width: 1px;
+    border-style: solid;
+    overflow: auto;
+    /* animation */
+    animation-name: fadeIn;
+    animation-duration: 0.75s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+}
+
+.system-msg {
+    margin-left: 40%;
+    padding: 0.5em 0.5em 0.5em 1em;
+    color: #656d78;
+    font-size:0.9em;
+}
+
+.timestamp {
+    color: #faf8e3;
+    font-size:0.7em;
+}
+
+.other-username {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #daa8ed;
+}
+
+.my-username {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #f2e74e;
+}
+
+#image-input {
+    flex-grow: 1;
+}
+#image-label{
+    cursor: pointer;
+    border-width:thin;
+    border-color: #aaa;
+}

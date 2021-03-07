@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Chat App</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> 
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&display=swap" rel="stylesheet">
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Login Page -->
+  <div class="main" id="loginPage">
+    <p class="sign" align="center">Welcome to uTalk!</p>
+    <br><br>
+    <form class="form1">
+      <input class="un" id="user" align="center" type="text" placeholder="Username">
+      <br><br><br><br>
+      <a class="submit" align="center" onclick="handleJoin()">Let me in <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+    </form>            
+  </div>
+
+  <!-- Chat Page -->
+  <div class="wrapper-chat" id="chatPage" style="display: none; background-color: #ffffe6;">
+    <nav class="navbar navbar-expand-sm navbar-light fixed-top" style="background-color: #021738">
+        <div class="container-fluid">
+            <span id="logo-span" style="color: #b3ed74"><i class="fa fa-commenting-o" aria-hidden="true"></i>uTALK!</span>
+        </div>
+    </nav>
+
+    <div id="main-section">
+        <nav id="sidebar">
+          <h2 style="color: #004d00">Welcome</h2>
+          <h2 id="username" style="color: #002266"></h2>
+          <br><br>
+          <h3>Active Users</h3>
+          <p class="select-room cp1" id="onlineUserList"></p>
+        </nav>
+
+        <div id="right-pannel">
+            <div id="message-container">
+
+            </div>
+            <form class="input-group" id="send-container">
+                <input type="text" id="message-input" class="form-control width100" placeholder="Type your message here..." aria-label="Type a message" aria-describedby="basic-addon2" autocomplete="off">
+                <span class="input-group-btn"> 
+                  <input type="file"  accept="image/*" name="image" id="file" onchange="loadFile(event)" style="display: none;">
+                  <label id="image-label" for="file" style="margin-right: 40px;"><i class="fa fa-picture-o" aria-hidden="true"></i></label>
+                </span>
+                <span class="input-group-btn">
+                    <button type="submit" id="send-button" class="btn btn-warning"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                </span>
+              </form>
+        </div>
+    </div>
+  </div>
+
+
+
+  <script>
+
+    const socket = io("http://localhost:3000", {transports: ["websocket", "polling", "flashsocket"],}); 
+    var userList = [];
+    var selfUserName;
+    const userNameInput = document.getElementById("user");
+    const messageContainer = document.getElementById("message-container"); 
+    const messageForm = document.getElementById("send-container"); 
+    const messageInput = document.getElementById("message-input"); 
+    const joinButton = document.getElementById("join");
+    var imageMessage = null; 
+
+    function renderUsers() {
+      const userListRender = document.getElementById("onlineUserList");
+      userListRender.innerHTML = "";
+      for(idx=0; idx < userList.length;idx++) {
+        const entity = document.createElement("input");
+        entity.type="checkbox";
+        entity.id=idx;
+        entity.name="name";
+        entity.value="value";
+        var label = document.createElement('label');
+        label.htmlFor=idx;
+        label.appendChild(document.createTextNode(userList[idx]));
+        userListRender.appendChild(entity);
+        userListRender.appendChild(label);
+        var blank = document.createElement("br");
+        userListRender.appendChild(blank);
+      }
+    }
+
+    function appendMessage(textMessage, imageMessage, date, userName, recipients) {
+      const messageElement = document.createElement("div"); 
+      if (userName) {
+        const titleElement = document.createElement("span");
+        if (userName === "You") {
+          messageElement.setAttribute("class", "my-msg");
+          titleElement.setAttribute("class", "my-username");
+         }else{
+          messageElement.setAttribute("class", "others-msg");
+          titleElement.setAttribute("class", "other-username");
+        }
+        titleElement.innerText = userName;
+        messageElement.appendChild(titleElement);
+      }
+
+      if (recipients) {
+        const recipientsElement = document.createElement("span");
+        recipientsElement.setAttribute("class", "my-msg");
+        var recipientList = "To: ";
+        for (var idx = 0; idx < recipients.length; idx++) {
+          recipientList = recipientList + " @" + recipients[idx];
+        }
+        recipientsElement.innerText = recipientList;
+        messageElement.appendChild(recipientsElement);
+      }
+
+      if (imageMessage) {
+        const imageElement = document.createElement("img");
+        imageElement.setAttribute("src", imageMessage);
+        messageElement.appendChild(imageElement);
+      }
+
+      if (textMessage) {
+        const textElement = document.createElement("p");
+        textElement.innerText = textMessage;
+        messageElement.appendChild(textElement);
+      }
+
+      if (date) {
+        const dateElement = document.createElement("span");
+        dateElement.setAttribute("class", "timestamp");
+        dateElement.innerText = date;
+        messageElement.appendChild(dateElement);
+      }
+      messageContainer.append(messageElement);
+    }
+
+    function appendJoins(message, self) {
+      const messageElement = document.createElement("div");
+      messageElement.setAttribute("class", "system-msg");
+      messageElement.innerText = message;
+      messageContainer.append(messageElement);
+    }
+
+    function handleJoin() {
+      selfUserName = userNameInput.value;
+      socket.emit("new-user", { name: selfUserName });
+    }
+
+    socket.on("connection-status", (data) => {
+      if ((selfUserName === data.name) & (data.status === true)) {
+        document.getElementById("username").innerText = selfUserName;
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("chatPage").style.display = "block";
+        appendJoins("You joined uTalk!", true);
+      }
+    });
+
+    socket.on("chat-message", (data) => {
+      appendMessage(data.message, data.image, data.time, data.name); 
+    });
+
+    socket.on("user-connected", (userName) => {
+      appendJoins(`${userName} joined uTalk!`); 
+    });
+
+    socket.on("user-disconnected", (userName) => {
+      appendJoins(`${userName} left uTalk!`); 
+    });
+
+    socket.on("users-list", (usersList) => {
+      userList = usersList;
+      renderUsers();
+    });
+
+    socket.on("prev-chat-message", (data) => {
+      data.forEach((msg) =>
+        appendMessage(msg.message, msg.image, msg.time, msg.name, msg.recipients)
+      );
+    });
+
+    messageForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const textMessage = messageInput.value;
+      var recipients = [];
+
+      for(idx = 0; idx<userList.length ;idx++) {
+        var trycheck = document.getElementById(idx);
+        if(trycheck.checked) {
+          recipients.push(userList[idx]);
+        }
+      }
+
+      appendMessage(textMessage, imageMessage, new Date(Date.now()).toLocaleTimeString(), "You", recipients);
+
+      socket.emit("chat-message", {
+        message: textMessage,
+        image: imageMessage,
+        time: new Date(Date.now()).toLocaleTimeString(),
+        name: selfUserName,
+        recipients: recipients,
+      }); 
+      messageInput.value = "";
+      imageMessage = null;
+    });
+
+    function loadFile(event) {
+      let file = event.target.files[0];
+      let reader = new FileReader();
+      reader.onloadend = function () {
+        imageMessage = reader.result;
+      };
+      reader.readAsDataURL(file);
+      document.getElementById("output").src = URL.createObjectURL(file);
+    }
+  </script>
+
+</body>
+</html>
