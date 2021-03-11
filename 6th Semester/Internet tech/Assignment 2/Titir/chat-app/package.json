@@ -1,0 +1,24 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/app.js",
+    "start:server": "node server/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Titir Adhikary",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http": "^0.0.1-security",
+    "randomcolor": "^0.6.2",
+    "socket.io": "^3.1.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
