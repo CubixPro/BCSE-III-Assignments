@@ -5,7 +5,7 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import '../styles/dashboard.css';
 
 import Message from './message';
-import Input from './input';
+import Image from './image';
 let socket;
 
 class Dashboard extends Component {
@@ -26,7 +26,9 @@ class Dashboard extends Component {
             messages: [],
             currMessage: '',
             usersInCurrRoom: [],
-            redirect: false
+            redirect: false,
+            file: null,
+            imageSrc: null,
         }
         this.toggleUsers = this.toggleUsers.bind(this);
         this.toggleRooms = this.toggleRooms.bind(this);
@@ -35,7 +37,7 @@ class Dashboard extends Component {
         this.userLogout = this.userLogout.bind(this);
         this.switchRoom = this.switchRoom.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
-        this.setMessage = this.setMessage.bind(this);
+        this.addImage = this.addImage.bind(this);
         this.leaveRoom = this.leaveRoom.bind(this);
 
         socket.emit('addId', {name: props.location.state.name});
@@ -150,14 +152,25 @@ class Dashboard extends Component {
 
     sendMessage(event) {
         event.preventDefault();
-        if(this.state.currMessage) {
-            socket.emit('sendMessage', {room: this.state.currRoom, message: this.state.currMessage});
-            this.setState({ currMessage: ''});
-        }
+        if(this.state.file) {
+            let name = this.state.file.name;
+            const blob = new Blob([this.state.file], {type: this.state.file.type}) 
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onload = () => {
+                console.log(reader.result);
+                this.setState({ imageSrc: reader.result }, () => {
+                    socket.emit('sendMessageWithImage', {room: this.state.currRoom, message: this.state.currMessage, image: this.state.imageSrc, imageName: name});
+                });
+            };
+        } 
+        else if(this.state.currMessage) socket.emit('sendMessage', {room: this.state.currRoom, message: this.state.currMessage});
+            
+        this.setState({ currMessage: '', file: null, imageSrc: null});
     }
 
-    setMessage(value) {
-        this.setState({ currMessage: value});
+    addImage(files) {
+        this.setState({ file: files[0] })
     }
 
     render() {
@@ -173,7 +186,10 @@ class Dashboard extends Component {
                     <div>
                         {this.state.users.map((user, index) => {
                             return (
-                                <div key={index}>{user.username}</div>
+                                <div>
+                                    <span className="roomList" key={index}>{user.username}</span>
+                                    <button>Join</button>
+                                </div>
                             )
                         })}
                     </div>
@@ -215,6 +231,15 @@ class Dashboard extends Component {
             else return <div></div>
         })
 
+        const messages = () => {
+            return (
+                this.state.messages.map((message, index) => {
+                    if(message.image) return <div key={index}><Image message={message} name={this.state.name} /></div>
+                    else return <div key={index}><Message message={message} name={this.state.name} /></div>
+                })                 
+            )
+        }
+
         const showChatBox = () => {
             if(this.state.chatBool) {
 
@@ -232,9 +257,33 @@ class Dashboard extends Component {
                             })}
                         </div>
                         <ScrollToBottom className="messages">
-                            {this.state.messages.map((message, index) => <div key={index}><Message message={message} name={this.state.name} /></div>)}
+                            {messages()}
                         </ScrollToBottom>
-                        <Input id="text-bar" message={this.state.currmessage} setMessage={this.setMessage} sendMessage={this.sendMessage} />
+                        <form className="form">
+                            <input
+                                className="input"
+                                id="text-bar"
+                                type="text"
+                                placeholder="Type a message"
+                                value={this.state.currMessage}
+                                autoComplete='off'
+                                onChange={({ target: { value } }) => this.setState({ currMessage: value})}
+                                onKeyPress={event => {
+                                    if(event.key === 'Enter') {
+                                        this.sendMessage(event);
+                                        document.getElementById('text-bar').value = '';
+                                    }}
+                                }
+                            />
+                            <button className="sendButton" onClick={e => {document.getElementById('text-bar').value = ''; this.sendMessage(e)} }>Send</button>
+                            <input 
+                                className="image-input"
+                                id="fileDialog" 
+                                type="file" 
+                                onChange={({ target: { files } }) => {
+                                    this.addImage(files);
+                                }}/>
+                        </form>
                     </div>
                 )
             }
@@ -245,17 +294,15 @@ class Dashboard extends Component {
             <div className="OuterContainer">
                 <div className="DashboardList">
                     <h2 className="DashboardUser">{this.state.name}</h2>
-                    <button className="dashboardButtons" onClick={() => this.toggleUsers()}>Start Personal Chat</button>
-                    <div className="dashboardItems">{showUsers()}</div>
+                    {/* <button className="dashboardButtons" onClick={() => this.toggleUsers()}>Start Personal Chat</button>
+                    <div className="dashboardItems">{showUsers()}</div> */}
                     <button className="dashboardButtons" onClick={() => this.toggleRooms()}>Start Group Chat</button>
                     <div className="dashboardItems">{showRooms()}</div>
                     <button className="dashboardButtons" onClick={() => this.toggleNewRoom()}>Create New Group</button>
                     <div className="dashboardItems">{createRoom()}</div>
                     <button className="dashboardButtons logoutButton" onClick={() => this.userLogout()}>Logout</button>
                 </div>
-                <div className="DashboardChat">
-                    {showChatBox()}
-                </div>
+                <div className="DashboardChat">{showChatBox()}</div>
             </div>
         )
     }

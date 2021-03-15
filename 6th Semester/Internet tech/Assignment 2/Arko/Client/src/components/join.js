@@ -7,7 +7,7 @@ let socket;
 class Join extends Component {
 
     constructor(props) {
-        super();
+        super(props);
         this.state ={
             username: '',
             password: '',

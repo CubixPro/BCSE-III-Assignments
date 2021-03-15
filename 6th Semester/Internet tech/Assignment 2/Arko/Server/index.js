@@ -70,14 +70,18 @@ io.on('connection', (socket) => {
 
     socket.on('sendMessage', ({room, message}) => {
         const user = getUser(socket.id);
-
         io.to(room).emit('message', {user: user.username, text: message});
+    })
+
+    socket.on('sendMessageWithImage', ({room, message, image, imageName}) => {
+        const user = getUser(socket.id);
+        io.to(room).emit('message', {user: user.username, text: message, image: image, imageName: imageName});
     })
 
     socket.on('leaveRoom', ({roomName, name}, callback) => {
         const user = removeUserFromRoom(roomName, name);
     
-        io.to(roomName).emit('message', { user: 'admin', text: `${user.username} has left.` });
+        io.to(roomName).emit('message', { user: 'admin', text: `${user.username} has left.`});
         io.to(roomName).emit('roomData', { room: `${user.username}`, users: getAllUsersInRoom(roomName)});
         console.log(`${name} has left room ${roomName}`);
 
