@@ -208,6 +208,14 @@ export default class Chat extends Component {
             </label>
             <input type="submit" value="Send" />
           </form>
+        <label htmlFor="sendImage">
+                <input
+                  id="sendImage"
+                  type="file"
+                  value=""
+                  onChange={(e) => this.onImageClick(e)}
+        />
+        </label>
         </div>
       </div>
     );
