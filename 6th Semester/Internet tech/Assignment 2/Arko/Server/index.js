@@ -4,8 +4,9 @@ const http = require('http');
 
 const PORT = 5000;
 const router = require('./router')
-const { addRoom, addUser, addUserToRoom, removeUserFromRoom, removeUser, getUser, getAllUsersInRoom, getAllRooms, getAllUsers, addIdToUsers } = require('./users');
-const { addRegisteredUser, deleteRegisteredUser, checkRegisteredUser} = require('./auth')
+const { addRoom, addUser, addUserToRoom, removeUserFromRoom, removeUser, getUser, getUserByUsername, getAllUsersInRoom, getAllRooms, getAllUsers, addIdToUsers } = require('./users');
+const { addRegisteredUser, deleteRegisteredUser, checkRegisteredUser} = require('./auth');
+const e = require('cors');
 
 const app = express();
 const server = http.createServer(app);
@@ -60,28 +61,38 @@ io.on('connection', (socket) => {
 
         const roomData = addUserToRoom(room, name);
 
-        socket.emit('message', { user: 'admin', text: `${name}, Welcome to the room ${roomData.room}`});
-        socket.broadcast.to(roomData.room).emit('message', { user: 'admin', text: `${name}, has joined.`});
+        socket.emit('message', { user: 'admin', text: `${name}, Welcome to the room ${roomData.room}`, type: 'multi'});
+        socket.broadcast.to(roomData.room).emit('message', { user: 'admin', text: `${name}, has joined.`, type: 'multi'});
 
         socket.join(roomData.room);
 
         io.to(roomData.room).emit('roomData', { room: roomData.room, users: getAllUsersInRoom(roomData.room)});
     });
 
-    socket.on('sendMessage', ({room, message}) => {
+    socket.on('sendMessage', ({room, sender, message, type}) => {
         const user = getUser(socket.id);
-        io.to(room).emit('message', {user: user.username, text: message});
+        if(type === 'multi') io.to(room).emit('message', {user: user.username, text: message, type: type});
+        else {
+            const id = getUserByUsername(sender);
+            io.to(id).emit('message', {user: user.username, text: message, type: type})
+            socket.emit('message', {user: user.username, text: message, type: type})
+        }
     })
 
-    socket.on('sendMessageWithImage', ({room, message, image, imageName}) => {
+    socket.on('sendMessageWithImage', ({room, sender, message, image, imageName, type}) => {
         const user = getUser(socket.id);
-        io.to(room).emit('message', {user: user.username, text: message, image: image, imageName: imageName});
+        if(type === 'multi') io.to(room).emit('message', {user: user.username, text: message, image: image, imageName: imageName, type: type});
+        else {
+            const id = getUserByUsername(sender);
+            io.to(id).emit('message', {user: user.username, text: message, image: image, imageName: imageName, type: type});
+            socket.emit('message', {user: user.username, text: message, image: image, imageName: imageName, type: type});
+        }
     })
 
     socket.on('leaveRoom', ({roomName, name}, callback) => {
         const user = removeUserFromRoom(roomName, name);
     
-        io.to(roomName).emit('message', { user: 'admin', text: `${user.username} has left.`});
+        io.to(roomName).emit('message', { user: 'admin', text: `${user.username} has left.`, type: 'multi'});
         io.to(roomName).emit('roomData', { room: `${user.username}`, users: getAllUsersInRoom(roomName)});
         console.log(`${name} has left room ${roomName}`);
 

@@ -48,6 +48,11 @@ const getUser = (id) => {
     return users.find((user) => user.id === id);
 }
 
+const getUserByUsername = (name) => {
+    const index = users.findIndex((user) => user.username === name);
+    return users[index].id;
+}
+
 const getAllUsersInRoom = (requiredRoom) => {
     return rooms.filter((room) => room.room === requiredRoom)[0].users;
 }
@@ -66,4 +71,4 @@ const addIdToUsers = (name, socketId) => {
     users[index].id = socketId;
 }
 
-module.exports = { addRoom, addUser, addUserToRoom, removeUserFromRoom, removeUser, getUser, getAllUsersInRoom, getAllRooms, getAllUsers, addIdToUsers};
+module.exports = { addRoom, addUser, addUserToRoom, removeUserFromRoom, removeUser, getUser, getUserByUsername, getAllUsersInRoom, getAllRooms, getAllUsers, addIdToUsers};
