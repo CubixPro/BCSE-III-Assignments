@@ -1,0 +1,33 @@
+.joinOuterContainer {
+    background-color: rgb(199, 199, 233);
+    height: 92vh;
+    padding: 28vh 28vw;
+    display: flex;
+    justify-content: space-around;
+}
+
+.joinInnerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.heading {
+    font-family: 'Gill Sans', 'Gill Sans MT';
+    font-size: 28px;
+    color: green;
+}
+
+.joinInput {
+    width: 200px;
+    height: 30px;
+    margin: 7px
+}
+
+.joinButton {
+    width: 120px;
+    height: 30px;
+    margin-top: 8px;
+    font-family: 'Gill Sans MT','Trebuchet MS';
+    font-size: large;
+}
