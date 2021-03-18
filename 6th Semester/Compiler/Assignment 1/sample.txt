@@ -1,0 +1,4 @@
+This is a sample txt file.
+It contains two lines.
+It contains some words and characters.
+Bye Human.

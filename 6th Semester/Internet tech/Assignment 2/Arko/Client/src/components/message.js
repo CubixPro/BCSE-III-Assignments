@@ -1,11 +1,13 @@
 import React from 'react';
 
-const Message = ({ message: { text, user }, name }) => {
+const Message = ({ message: { text, user, type }, name }) => {
     let isSentByCurrUser = false;
 
     if (user === name) {
         isSentByCurrUser = true;
     }
+
+    if(type !== 'multi') user = null
 
     if(isSentByCurrUser) {
         return (

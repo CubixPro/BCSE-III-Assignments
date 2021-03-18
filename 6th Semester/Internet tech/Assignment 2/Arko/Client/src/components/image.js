@@ -15,21 +15,22 @@ class Image extends Component {
             return (
                 <div className="messageContainerSelf">
                     <div className="messageBox backgroundBlue">
-                        <p className="messageText">{this.props.message.text}</p>
-                        <div className="image"><img width="325" src={this.props.message.image} alt={this.props.message.imageName} /></div>
+                        <div className="image"><img width="280" src={this.props.message.image} alt={this.props.message.imageName} /></div>
+                        <p className="messageText userText">{this.props.message.text}</p>
                     </div>
                 </div>
             )
         }
     
         else {
+            if(this.props.message.type !== 'multi') this.props.message.user = null;
             return (
                 <div className="messageContainerOthers">
                     <div className="messageBox backgroundWhite">
+                        <div className="image"> <img width="280" src={this.props.message.image} alt={this.props.message.imageName} /> </div>
                         <p className="messageText">{this.props.message.text}</p>
-                        <div className="image"> <img width="325" src={this.props.message.image} alt={this.props.message.imageName} /> </div>
                     </div>
-                    <p className="sentUser">{this.props.name}</p>
+                    <p className="sentUser">{this.props.message.user}</p>
                 </div>
             )
         }

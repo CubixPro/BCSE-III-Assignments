@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Redirect } from 'react-router-dom';
 import io from 'socket.io-client';
+import '../styles/join.css';
 
 let socket;
 
