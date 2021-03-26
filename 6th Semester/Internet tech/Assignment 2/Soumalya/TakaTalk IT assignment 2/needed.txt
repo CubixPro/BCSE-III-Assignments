@@ -1,0 +1,16 @@
+<React.fragment> </React.fragment>
+componentDidMount
+lifecyclemethod
+componentDidUpdate
+
+// two parameters
+// if value of the second variable mutates, first variable is called
+useEffect(()=>{
+    
+}, []);
+
+1:01 hr
+
+
+
+nandini.mukhopadhyay@jadavpuruniversity.in
