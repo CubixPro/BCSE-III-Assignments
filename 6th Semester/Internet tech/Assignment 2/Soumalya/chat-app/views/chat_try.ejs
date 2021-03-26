@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="chat_css.css">
+</head>
+
+<body>
+    <section class="msger">
+        <header class="msger-header">
+            <div class="msger-header-title">
+                <i class="fas fa-comment-alt"></i> Welcome to MeChat
+            </div>
+            <div class="username">
+                <%= username %><br>
+               
+            </div>
+            <div>
+                <% if (num > 1) { %>
+                    We now have <%= num %> users. 
+                    <% } %>
+                    <% if (num == 1) { %>
+                    You're the first user.
+                    <% } %>
+            </div>
+
+            <div class="msger-header-options">
+                <span><i class="fas fa-cog"></i></span>
+            </div>
+        </header>
+
+        <main class="msger-chat">
+            <div class="msg left-msg">
+                <div class="msg-img" style="background-image: url(https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg)">
+                </div>
+
+                <div class="msg-bubble">
+                    <div class="msg-info">
+                        <div class="msg-info-name">Admin</div>
+                        <div id="current time" class="msg-info-time">2.45</div>
+                    </div>
+
+                    <div class="msg-text">
+                        Hi, welcome to TakaTalk! 
+                    </div>
+                   
+
+
+                </div>
+            </div>
+
+
+
+            <% for(var i=0 ; i < messages.length ; i++) { %>
+                <div class="msg left-msg">
+                    <div class="msg-img"
+                        style="background-image: url(https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg)">
+                    </div>
+
+                    <div class="msg-bubble">
+                        <div class="msg-info">
+                            <div class="msg-info-name">
+                                <%= messages[i].username %>
+                            </div>
+                            <div class="msg-info-time">
+                                <%= messages[i].t %>
+                            </div>
+                        </div>
+                        <% if (messages[i].image=="" ) { %>
+                            <div class="msg-text">
+                                <%= messages[i].value %>
+                            </div>
+                            <% } %>
+                                <% if (messages[i].image !="" ) { %>
+                                    <p>
+                                        <br>
+                                        <a href=<%=messages[i].image %> target="_blank"><img width=420
+                                                src=<%=messages[i].image %> /></a>
+
+                                    </p>
+                                    <% } %>
+                    </div>
+                </div>
+
+                <% } %>
+
+        </main>
+
+        <form action="" class="msger-inputarea">
+            <input id="r" type="text" class="msger-input" placeholder="Receiver">
+            <input size=40 id="m" autocomplete="off" type="text" class="msger-input"
+                placeholder="Enter your message...">
+            <input id="img" type="file" class="msger-send-btn"></input>
+            <button size=10 type="submit" class="msger-send-btn">Send</button>
+        </form>
+    </section>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    //let userName = prompt("whats your name");
+    //let room = prompt("room name");
+    //userName = document.getElementsByClassName(msger-header-title)[1].textContent;
+    var time = new Date();
+    document.getElementById("current time").innerHTML = time.toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+    })
+
+    scrollBottom();
+
+    var userName = document.querySelector("div[class='username']").textContent.trim();
+    let id = "";
+
+    var socket = io();
+
+    socket.emit("new user", { username: userName });
+    socket.on('send data', (data) => {
+        ID = data.id;
+        //console.log("my ID : " + ID);
+    });
+
+
+    socket.on('newImg', (imgData, receiver, username, time) => {
+        // console.log("Received" + receiver + username);
+        // console.log(time);
+        displayImageMessage(imgData, username, time);
+        scrollBottom();
+    })
+
+    socket.on('show chat message', (data) => {
+        displayMessage(data);
+        console.log("userData: " + data);
+
+        //console.log("Emitted");
+    })
+
+    document.getElementById('m').focus();
+    document.getElementsByTagName("form")[0].addEventListener("submit",
+        (event) => {
+            //console.log(document.getElementById('img').files);
+
+            event.preventDefault();
+
+            var imgform = document.getElementById('img');
+            if (imgform.files.length != 0) {
+                var file = imgform.files[0],
+                    reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imgform.value = '';
+                    socket.emit('img',
+                        e.target.result,
+                        document.getElementById('r').value,
+                        userName);
+
+                };
+                reader.readAsDataURL(file);
+                //console.log("done");
+            }
+            if (document.getElementById('m').value != "") {
+                socket.emit('send chat message', {
+                    value: document.getElementById('m').value,
+                    receiver: document.getElementById('r').value,
+                    user: userName,
+                });
+            }
+            //displayMessage(document.getElementById('m').value)
+
+            document.getElementById("m").value = "";
+        });
+
+
+    /*document.getElementById('img').addEventListener('change', function () {
+
+        if (this.files.length != 0) {
+            var file = this.files[0],
+                reader = new FileReader();
+
+            reader.onload = function (e) {
+                this.value = '';
+                socket.emit('img', e.target.result);
+
+            };
+            reader.readAsDataURL(file);
+            console.log("done");
+        }
+
+    }, false);*/
+
+    function displayImageMessage(imgData, username, time) {
+        var tempnode = document.querySelector("div[class='msg left-msg']").cloneNode(true);
+        tempnode.querySelector("div[class='msg-info-name']").textContent = username;
+        //console.log(time);
+        tempnode.querySelector("div[class='msg-info-time']").textContent = time;
+        var imgDisplay = document.createElement('p');
+        imgDisplay.innerHTML = '<br><a href="' + imgData + '" target="_blank"><img width=420 src="' + imgData + '"/></a>';
+        tempnode.querySelector("div[class='msg-text']").textContent = "";
+        tempnode.querySelector("div[class='msg-text']").appendChild(imgDisplay);
+        document.querySelector("main").appendChild(tempnode);
+        scrollBottom();
+    }
+
+    function displayMessage(data) {
+        var time = new Date();
+        //console.log(username)
+        var tempnode = document.querySelector("div[class='msg left-msg']").cloneNode(true);
+        tempnode.querySelector("div[class='msg-info-name']").textContent = data.username;
+        tempnode.querySelector("div[class='msg-info-time']").textContent = data.t,
+            tempnode.querySelector("div[class='msg-text']").textContent = data.value;
+        document.querySelector("main").appendChild(tempnode);
+        scrollBottom();
+    }
+
+
+    function scrollBottom() {
+        var objDiv = document.querySelector("main");
+        objDiv.scrollTop = objDiv.scrollHeight;
+
+    }
+
+</script>
+
+</html>

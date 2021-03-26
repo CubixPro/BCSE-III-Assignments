@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <title>Takatalk</title>
+    <style>
+
+    </style>
+
+
+</head>
+
+<body>
+    <ul>
+        <% for(var i = 0 ; i < messages.length ; i++) {   %>
+        <ui><%= messages[i].username %>: <%= messages[i].value %></ui><br>
+        <% } %>
+    </ul>
+    <ui id="messages"></ui>
+
+    <form action="">
+        <input id="r" autocomplete="on"/>
+        <input id="m" autocomplete="off"/>
+        <button>Send</button>
+    </form>
+
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    let userName = prompt("whats your name");
+    //let room = prompt("room name");
+    let id = "";
+
+    var socket = io();
+
+    socket.emit("new user", {username : userName});
+    socket.on('send data', (data) => {
+        ID = data.id;
+        //console.log("my ID : " + ID);
+    });
+
+
+    
+
+    socket.on('show chat message', (data) => {
+        displayMessage(data);
+        console.log("Iam here at 49" + data);
+        
+        console.log("Emitted");
+    })
+
+    document.getElementById('m').focus();
+    document.getElementsByTagName("form")[0].addEventListener("submit",
+    (event) => {
+        event.preventDefault();
+        socket.emit('send chat message', {
+            value: document.getElementById('m').value,
+            receiver : document.getElementById('r').value,
+            user: userName,
+        });
+        //displayMessage(document.getElementById('m').value)
+        document.getElementById("m").value = "";
+    });
+
+    function displayMessage(data){
+        const li = document.createElement("li");
+        li.innerHTML = data.username + " : " + data.value;
+        document.getElementById("messages").appendChild(li);
+    }
+    
+</script>
+</html>
