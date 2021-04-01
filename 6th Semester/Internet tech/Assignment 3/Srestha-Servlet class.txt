@@ -1,0 +1,111 @@
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+
+
+
+class Item
+{
+	public String source;
+	public String destination;
+	public int time;
+}
+
+
+public class FlightApp extends HttpServlet
+{
+        JSONObject  getFlight(String dc, String ac, String c, String t, String l)
+        {
+                JSONObject jobj = new JSONObject();
+                jobj.put("dept_city", dc);
+                jobj.put("arr_city", ac);
+                jobj.put("cost", c);
+                jobj.put("time", t);
+                jobj.put("legs", l);
+                return jobj ;
+}
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		response.setContentType("application/json");
+		/*response.setCharacterEncoding("utf-8");
+		response.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+		response.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
+		PrintWriter out = response.getWriter();*/
+                
+                JSONArray jarr = new JSONArray();  
+                jarr.add(getFlight("Kolkata", "Mumbai", "Rs. 4500", "8hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Mumbai", "Rs. 5100", "12hrs", "2"));
+                jarr.add(getFlight("Kolkata", "New Delhi", "Rs. 3500", "11hrs", "2"));
+                jarr.add(getFlight("Mumbai", "New Delhi", "Rs. 5500", "14hrs", "2"));
+                jarr.add(getFlight("Kolkata", "Bangalore", "Rs. 5000", "6hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Mumbai", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "New Delhi", "Rs. ", "hrs", "2"));
+                
+                jarr.add(getFlight("Kolkata", "Mumbai", "Rs. 4500", "8hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Mumbai", "Rs. 5100", "12hrs", "2"));
+                jarr.add(getFlight("Kolkata", "New Delhi", "Rs. 3500", "11hrs", "2"));
+                jarr.add(getFlight("Mumbai", "New Delhi", "Rs. 5500", "14hrs", "2"));
+                jarr.add(getFlight("Kolkata", "Bangalore", "Rs. 5000", "6hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Mumbai", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "New Delhi", "Rs. ", "hrs", "2"));
+                
+                jarr.add(getFlight("Kolkata", "Mumbai", "Rs. 4500", "8hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Mumbai", "Rs. 5100", "12hrs", "2"));
+                jarr.add(getFlight("Kolkata", "New Delhi", "Rs. 3500", "11hrs", "2"));
+                jarr.add(getFlight("Mumbai", "New Delhi", "Rs. 5500", "14hrs", "2"));
+                jarr.add(getFlight("Kolkata", "Bangalore", "Rs. 5000", "6hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Mumbai", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "New Delhi", "Rs. ", "hrs", "2"));
+                
+                jarr.add(getFlight("Kolkata", "Mumbai", "Rs. 4500", "8hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Mumbai", "Rs. 5100", "12hrs", "2"));
+                jarr.add(getFlight("Kolkata", "New Delhi", "Rs. 3500", "11hrs", "2"));
+                jarr.add(getFlight("Mumbai", "New Delhi", "Rs. 5500", "14hrs", "2"));
+                jarr.add(getFlight("Kolkata", "Bangalore", "Rs. 5000", "6hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Mumbai", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "New Delhi", "Rs. ", "hrs", "2"));
+                
+                jarr.add(getFlight("Kolkata", "Mumbai", "Rs. 4500", "8hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Mumbai", "Rs. 5100", "12hrs", "2"));
+                jarr.add(getFlight("Kolkata", "New Delhi", "Rs. 3500", "11hrs", "2"));
+                jarr.add(getFlight("Mumbai", "New Delhi", "Rs. 5500", "14hrs", "2"));
+                jarr.add(getFlight("Kolkata", "Bangalore", "Rs. 5000", "6hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("New Delhi", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Mumbai", "Bangalore", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Mumbai", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "Kolkata", "Rs. ", "hrs", "2"));
+                jarr.add(getFlight("Bangalore", "New Delhi", "Rs. ", "hrs", "2"));
+                
+                               
+                PrintWriter out = response.getWriter();
+                out.print(jarr);
+		
+
+	}
+
+}
