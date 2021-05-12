@@ -1,0 +1,17 @@
+DELETE FROM item;
+INSERT INTO item VALUES (1, "Reebok Tshirt", "Tshirt", "M", 1499, 0, "https://m.media-amazon.com/images/I/71Hl5f6RPYL._UL1500_.jpg", "Yes");
+INSERT INTO item VALUES (2, "Adidas Tshirt", "Tshirt", "S", 999, 899, "https://4.imimg.com/data4/PA/GE/ANDROID-67821668/product-500x500.jpeg", "No");
+INSERT INTO item VALUES (3, "Nike Tshirt", "Tshirt", "L", 1299, 1199, "https://5.imimg.com/data5/XV/QL/NE/ANDROID-78406267/product-jpeg-500x500.jpeg", "No");
+INSERT INTO item VALUES (4, "Polo Tshirt", "Tshirt", "XL", 1899, 0, "https://assets.myntassets.com/h_1440,q_100,w_1080/v1/assets/images/2365517/2019/8/30/fc019a57-4b7c-4ec9-bacb-48a61ac2e5be1567162929190-US-Polo-Assn-Men-Magenta-Solid-Polo-Collar-T-shirt-742156716-1.jpg", "Yes");
+INSERT INTO item VALUES (5, "Turtle Jeans", "Jeans", "S", 2499, 0, "https://rukminim1.flixcart.com/image/714/857/j3uh47k0/jean/x/f/z/32-16387-1001-turtle-original-imaeuv5zccrdhgjb.jpeg?q=50", "Yes");
+INSERT INTO item VALUES (6, "Oxemberg Jeans", "Jeans", "M", 2699, 2199, "https://n4.sdlcdn.com/imgs/a/o/l/Oxemberg-Men-Indigo-Lycra-Slim-SDL856392022-1-ab0db.jpg", "No");
+INSERT INTO item VALUES (7, "Pepe Jeans", "Jeans", "L", 3199, 0, "https://rukminim1.flixcart.com/image/714/857/kfwvcsw0-0/jean/f/i/5/32-pm205887g663-pepe-jeans-original-imafw9nw3rfay7x6.jpeg?q=50", "Yes");
+INSERT INTO item VALUES (8, "Wrangler Jeans", "Jeans", "XL", 3599, 2999, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGk4zR12nYo-tciIDlTedTbeCAxvsUNrbXww&usqp=CAU", "No");
+INSERT INTO item VALUES (9, "Peter England Shirt", "Shirt", "S", 2099, 1999, "https://peterengland.imgix.net/img/app/product/4/472431-3368521.jpg?auto=format&w=412", "No");
+INSERT INTO item VALUES (10, "Park Avenue Shirt", "Shirt", "M", 2699, 2199, "https://www.wrinkle-free.in/wp-content/uploads/2016/03/parkavenue-mens-slim-fit-shirt-purple-00.jpg", "No");
+INSERT INTO item VALUES (11, "Van Heusen Shirt", "Shirt", "L", 3199, 0, "https://vanheusenindia.imgix.net/img/app/product/1/179785-479072.jpg?auto=format&w=618", "Yes");
+INSERT INTO item VALUES (12, "Louis Phillipe Shirt", "Shirt", "XL", 3099, 0, "https://assets.abfrlcdn.com/img/app/product/2/202255-614460-large.jpg", "Yes");
+INSERT INTO item VALUES (13, "Gap Hoodie", "Hoodie", "S", 3199, 0, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfdXnIrZ0D-OvRkf_GVtaTt_wUVqRAT1j9B2-FmTPXSBNhhn94UqZ-xHn9cg&usqp=CAc", "Yes");
+INSERT INTO item VALUES (14, "Wildcraft Hoodie", "Hoodie", "M", 3599, 0, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrD2VkBcEwv9flpqioHDn8ctPrqzTh2pLaEsUipjYlrNOYhmzanAy6jMCi_jW3McnLYJvFTTMV&usqp=CAc", "Yes");
+INSERT INTO item VALUES (15, "Puma Hoodie", "Hoodie", "L", 4199, 3799, "https://adn-static1.nykaa.com/nykdesignstudio-images/tr:w-824,/pub/media/catalog/product/4/0/4059506634055_1.jpg?rnd=20200526195200", "No");
+INSERT INTO item VALUES (16, "Wrogn Hoodie", "Hoodie", "XL", 5199, 4199, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3NaP2dN-HHPoCPhmSgAstQjWq38_hnn6x14WlcTPxG6Y9dQApV7eIwkrmjw&usqp=CAc", "No");

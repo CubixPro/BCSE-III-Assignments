@@ -1,0 +1,12 @@
+.btn-default {
+  color: #fff;
+  text-shadow: none;
+  background-color: transparent;
+  border: 3px solid #fff;
+  border-radius: 0px;
+  padding: 0.5rem 2rem; }
+
+.btn-default:hover,
+.btn-default:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+  }
