@@ -1,4 +1,4 @@
-### Third Year First Semester Assignments
+### Third Year Assignments
 This repo contains all the assignment codes so that collaborating, helping out and plain having a place to get crash code from the night before submission deadlines gets easier.   
   
 Simply create a "Assignment N" folder if it doesn't exist, create a folder under your name and add your codes.   
