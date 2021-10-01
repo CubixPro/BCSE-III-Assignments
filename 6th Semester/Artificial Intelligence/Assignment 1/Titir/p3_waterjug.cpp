@@ -45,12 +45,7 @@ vector<pair<int, int>> dfs(pair<int, int> s, pair<int, int> d, int lj, int rj, v
 
 int main(){
     int lj, rj;//right jug and right jug min capacity
-    int lrj, frj;//final left jug and right jug capacity (if -1 then it does not matter)
-
-
-//     cin >> lj >> rj;
-//     cin >> lrj >> frj;
-    
+    int lrj, frj;//final left jug and right jug capacity (if -1 then it does not matter)    
     
     int n;
     cin >> n;
