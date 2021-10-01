@@ -48,8 +48,17 @@ int main(){
     int lrj, frj;//final left jug and right jug capacity (if -1 then it does not matter)
 
 
-    cin >> lj >> rj;
-    cin >> lrj >> frj;
+//     cin >> lj >> rj;
+//     cin >> lrj >> frj;
+    
+    
+    int n;
+    cin >> n;
+    int jugsize[n];
+    for (int i = 0 ; i  < n ; i++){
+        cin >> jugsize[i];
+    }
+
 
 
     pair<int, int> source = {0, 0};
