@@ -15,7 +15,7 @@ int main(){
     int b_id = msgget(b, 0666 | IPC_CREAT);
     int c_id = msgget(c, 0666 | IPC_CREAT);
 
-    msgctl(a_id ,IPC_RMID,NULL);
-    msgctl(b_id ,IPC_RMID,NULL);
-    msgctl(c_id ,IPC_RMID,NULL);
+    msgctl(a_id ,IPC,NULL);
+    msgctl(b_id ,IPC,NULL);
+    msgctl(c_id ,IPC,NULL);
 }
